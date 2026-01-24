@@ -1,0 +1,34 @@
+{
+  "name": "yowyob_feedback",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "i18n:check": "node scripts/i18n-helper.js check",
+    "i18n:stats": "node scripts/i18n-helper.js stats",
+    "i18n:validate": "node scripts/i18n-helper.js validate",
+    "i18n:report": "node scripts/i18n-helper.js report"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.1.0",
+    "@supabase/supabase-js": "^2.91.1",
+    "@tsparticles/engine": "^3.9.1",
+    "@tsparticles/react": "^3.0.0",
+    "framer-motion": "^12.29.0",
+    "groq-sdk": "^0.37.0",
+    "lucide-react": "^0.555.0",
+    "next": "^16.1.3",
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "babel-plugin-react-compiler": "1.0.0",
+    "typescript": "^5"
+  }
+}

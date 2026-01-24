@@ -1,0 +1,129 @@
+{
+  "header": {
+    "features": "功能",
+    "howItWorks": "工作原理",
+    "testimonials": "用户评价",
+    "contact": "联系我们",
+    "login": "登录",
+    "register": "注册",
+    "language": "语言"
+  },
+  "sidebar": {
+    "appName": "Yowyob 反馈",
+    "account": "我的账户",
+    "projects": "项目",
+    "yowbot": "Yowbot",
+    "feed": "信息源",
+    "subscriptions": "我的订阅",
+    "logout": "登出"
+  },
+  "footer": {
+    "tagline": "Yowyob 反馈 - 分享、学习、成长。",
+    "quickLinks": "快速链接",
+    "contactTitle": "联系方式",
+    "email": "邮箱：contact@yowyobfeedback.com",
+    "phone": "电话：+237 6 77 77 77 77",
+    "rights": "© 2025 Yowyob 反馈。版权所有。"
+  },
+  "landing": {
+    "welcomeTitle": "欢迎来到 Yowyob 反馈",
+    "subtitle": "分享和查询关于实习和培训反馈的终极平台。",
+    "cta": "今天就加入成千上万的学生和专业人士。",
+    "joinButton": "立即注册"
+  },
+  "features": {
+    "title": "为什么选择 Yowyob 反馈？",
+    "f1title": "真实反馈",
+    "f1desc": "经过验证和相关的反馈，帮助您做出更好的职业决策。",
+    "f2title": "多样化的经验",
+    "f2desc": "涵盖学术实习、专业实习和企业培训。",
+    "f3title": "积极的社区",
+    "f3desc": "加入重视分享建设性经验的社区。"
+  },
+  "how": {
+    "title": "工作原理",
+    "step1title": "创建您的账户",
+    "step1desc": "快速注册以访问所有功能。",
+    "step2title": "搜索或发布",
+    "step2desc": "查找特定公司的反馈或分享您自己的经验。",
+    "step3title": "探索并决定",
+    "step3desc": "使用这些信息自信地选择您的下一个实习或培训。"
+  },
+  "testimonials": {
+    "title": "用户评价",
+    "author1": "Sarah D.，学生",
+    "author2": "Marc L.，专业人士"
+  },
+  "auth": {
+    "loginTitle": "Yowyob 反馈",
+    "loginMuted": "登录以访问您的空间并分享反馈。",
+    "emailOrPhone": "邮箱或电话",
+    "password": "密码",
+    "loginButton": "登录",
+    "noAccount": "还没有账户？",
+    "registerLink": "注册",
+    "registerTitle": "创建账户",
+    "registerMuted": "加入社区并开始分享有用的反馈。",
+    "registerButton": "注册",
+    "alreadyRegistered": "已经注册？",
+    "errors": {
+      "fillAll": "请填写所有字段。",
+      "passwordMismatch": "密码不匹配。"
+    },
+    "simulated": "模拟操作 — 实现服务器 API"
+  },
+  "feed": {
+    "title": "信息源",
+    "searchPlaceholder": "搜索人员或公司...",
+    "featuredTitle": "要关注的人物、公司和学校",
+    "subscribe": "订阅",
+    "recentFeedback": "最近的反馈",
+    "like": "赞",
+    "dislike": "踩",
+    "comment": "评论"
+  },
+  "profileEdit": {
+    "editTitle": "编辑我的个人资料",
+    "generalInfo": "基本信息",
+    "changePhoto": "更改照片",
+    "firstName": "名字",
+    "lastName": "姓氏",
+    "username": "用户名",
+    "email": "电子邮件地址",
+    "contact": "联系方式（电话）",
+    "domain": "域名",
+    "bio": "个人简介",
+    "saveChanges": "保存更改",
+    "changePassword": "更改密码",
+    "currentPassword": "当前密码",
+    "newPassword": "新密码",
+    "confirmPassword": "确认新密码",
+    "updatePassword": "更新密码"
+  },
+  "management": {
+    "title": "成员管理",
+    "searchPlaceholder": "按名称或电子邮件搜索...",
+    "addMember": "添加成员",
+    "confirmDeleteTitle": "删除确认",
+    "confirmDeleteText": "您确定要删除用户 {name} ({email}) 吗？",
+    "irreversible": "此操作不可逆。",
+    "cancel": "取消",
+    "delete": "永久删除",
+    "addModalTitle": "添加新成员",
+    "addModalSubmit": "添加用户",
+    "noMembers": "未找到成员。"
+  },
+  "user": {
+    "dashboard": {
+      "title": "仪表盘",
+      "welcome": "欢迎，{name}",
+      "stats": {
+        "publishedReviews": "已发布的评价",
+        "pendingReviews": "待处理的评价",
+        "trainings": "参加的培训"
+      },
+      "recentReviewsTitle": "最近提交的评价",
+      "annualProgress": "年度进度"
+    }
+  }
+}

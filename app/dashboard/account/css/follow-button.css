@@ -1,0 +1,10 @@
+/* Copied from Pages_AYISSI_CSS_HTML/css/follow-button.css */
+.btn-follow-ig,
+#mainFollowBtn { transition: all 0.3s ease; position: relative; overflow: hidden; }
+.btn-primary.btn-follow-ig:hover, #mainFollowBtn.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(106, 27, 154, 0.3); }
+.btn-secondary.btn-follow-ig:hover, #mainFollowBtn.btn-secondary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(142, 36, 170, 0.2); }
+.btn-follow-ig:active, #mainFollowBtn:active { transform: scale(0.95); }
+.btn-secondary.btn-follow-ig::before, #mainFollowBtn.btn-secondary::before { content: '✓ '; font-weight: bold; }
+@media (max-width: 768px) { .btn-follow-ig { padding:6px 10px; font-size:0.8em; } #mainFollowBtn { padding:6px 12px; font-size:0.85em; } }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(106,27,154,0.4); } 70% { box-shadow: 0 0 0 10px rgba(106,27,154,0); } 100% { box-shadow: 0 0 0 0 rgba(106,27,154,0); } }
+#mainFollowBtn.btn-primary { animation: pulse 2s infinite; }

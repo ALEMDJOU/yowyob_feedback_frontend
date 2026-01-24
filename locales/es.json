@@ -1,0 +1,130 @@
+{
+  "header": {
+    "features": "Funcionalidades",
+    "howItWorks": "Cómo funciona",
+    "testimonials": "Testimonios",
+    "contact": "Contacto",
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "language": "Idioma"
+  },
+  "sidebar": {
+    "appName": "Yowyob Feedback",
+    "account": "Mi cuenta",
+    "projects": "Proyectos",
+    "yowbot": "Yowbot",
+    "feed": "Noticias",
+    "subscriptions": "Mis suscripciones",
+    "logout": "Cerrar sesión"
+  },
+  "footer": {
+    "tagline": "Yowyob Feedback - Comparte, Aprende, Crece.",
+    "quickLinks": "Enlaces Rápidos",
+    "contactTitle": "Contacto",
+    "email": "Correo: contact@yowyobfeedback.com",
+    "phone": "Teléfono: +237 6 77 77 77 77",
+    "rights": "© 2025 Yowyob Feedback. Todos los derechos reservados."
+  },
+  "landing": {
+    "welcomeTitle": "Bienvenido a Yowyob Feedback",
+    "subtitle": "La plataforma definitiva para dar y consultar opiniones sobre prácticas y formaciones.",
+    "cta": "Únete a miles de estudiantes y profesionales hoy.",
+    "joinButton": "¡Regístrate ahora"
+  },
+  "features": {
+    "title": "¿Por qué elegir Yowyob Feedback?",
+    "f1title": "Opiniones auténticas",
+    "f1desc": "Opiniones verificadas y relevantes para ayudarte a tomar mejores decisiones de carrera.",
+    "f2title": "Diversidad de experiencias",
+    "f2desc": "Cubre prácticas académicas, profesionales y formaciones en empresas.",
+    "f3title": "Comunidad comprometida",
+    "f3desc": "Únete a una comunidad que valora compartir experiencias constructivas."
+  },
+  "how": {
+    "title": "Cómo funciona",
+    "step1title": "Crea tu cuenta",
+    "step1desc": "Regístrate rápidamente para acceder a todas las funciones.",
+    "step2title": "Busca o Publica",
+    "step2desc": "Encuentra opiniones sobre empresas o comparte tu propia experiencia.",
+    "step3title": "Explora y Decide",
+    "step3desc": "Usa la información para elegir tu próxima práctica o formación con confianza."
+  },
+  "testimonials": {
+    "title": "Lo que dicen nuestros usuarios",
+    "author1": "Sarah D., Estudiante",
+    "author2": "Marc L., Profesional"
+  }
+  ,
+  "auth": {
+    "loginTitle": "Yowyob Feedback",
+    "loginMuted": "Inicia sesión para acceder a tu espacio y compartir opiniones.",
+    "emailOrPhone": "Email o Teléfono",
+    "password": "Contraseña",
+    "loginButton": "Iniciar sesión",
+    "noAccount": "¿Sin cuenta?",
+    "registerLink": "Registrarse",
+    "registerTitle": "Crear una cuenta",
+    "registerMuted": "Únete a la comunidad y comienza a compartir feedback útil.",
+    "registerButton": "Registrarse",
+    "alreadyRegistered": "¿Ya registrado?",
+    "errors": {
+      "fillAll": "Por favor completa todos los campos.",
+      "passwordMismatch": "Las contraseñas no coinciden."
+    },
+    "simulated": "Acción simulada — implementa la API del servidor"
+  },
+  "feed": {
+    "title": "Noticias",
+    "searchPlaceholder": "Buscar personas o empresas...",
+    "featuredTitle": "Personas, Empresas y Escuelas para seguir",
+    "subscribe": "Suscribirse",
+    "recentFeedback": "Feedback Reciente",
+    "like": "Me gusta",
+    "dislike": "No me gusta",
+    "comment": "Comentar"
+  },
+  "profileEdit": {
+    "editTitle": "Editar Mi Perfil",
+    "generalInfo": "Información General",
+    "changePhoto": "Cambiar Foto",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "username": "Nombre de usuario",
+    "email": "Correo Electrónico",
+    "contact": "Contacto (Teléfono)",
+    "domain": "Dominio",
+    "bio": "Biografía",
+    "saveChanges": "Guardar cambios",
+    "changePassword": "Cambiar contraseña",
+    "currentPassword": "Contraseña actual",
+    "newPassword": "Nueva contraseña",
+    "confirmPassword": "Confirmar nueva contraseña",
+    "updatePassword": "Actualizar contraseña"
+  },
+  "management": {
+    "title": "Gestión de Miembros",
+    "searchPlaceholder": "Buscar por nombre o correo...",
+    "addMember": "Agregar un miembro",
+    "confirmDeleteTitle": "Confirmación de eliminación",
+    "confirmDeleteText": "¿Está seguro de que desea eliminar al usuario {name} ({email})?",
+    "irreversible": "Esta acción es irreversible.",
+    "cancel": "Cancelar",
+    "delete": "Eliminar permanentemente",
+    "addModalTitle": "Agregar un nuevo miembro",
+    "addModalSubmit": "Agregar usuario",
+    "noMembers": "No se encontraron miembros."
+  },
+  "user": {
+    "dashboard": {
+      "title": "Panel",
+      "welcome": "Bienvenido, {name}",
+      "stats": {
+        "publishedReviews": "Reseñas publicadas",
+        "pendingReviews": "Reseñas pendientes",
+        "trainings": "Formaciones seguidas"
+      },
+      "recentReviewsTitle": "Reseñas enviadas recientemente",
+      "annualProgress": "Progreso anual"
+    }
+  }
+}

@@ -1,0 +1,485 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+/* Variables de couleurs basées sur votre style.css */
+:root {
+    --primary-color: #6A1B9A; /* Violet profond (pour le hover, fond de bouton) */
+    --primary-accent: #4A00B7; /* Le violet vif/logo (pour l'actif, les icônes) */
+    --text-light: #ECF0F1; /* Blanc cassé */
+    --text-dark: #2C3E50; /* Presque noir, pour les titres sur fond clair */
+    
+    --background-main: #f5f5f7; /* Fond clair pour le contenu principal (Main) */
+    --background-dark: #0c0b0b; /* Noir pour la Sidebar et les grands headers */
+    --sidebar-link-bg: #1e1e1e; /* Noir un peu moins profond pour le hover des liens */
+    
+    --table-bg: #fff; /* Utilisé comme fond de carte */
+    --border-color: #333; /* Bordure foncée */
+    
+    /* Ombre violette légère appliquée aux cartes */
+    --shadow-violet: 0 4px 15px rgba(74, 0, 183, 0.15); /* Basé sur --primary-accent */
+    --shadow-violet-hover: 0 8px 20px rgba(74, 0, 183, 0.25);
+    
+    --delete-btn-bg: #dc3545;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--background-main);
+    line-height: 1.6;
+    color: var(--text-dark);
+}
+
+.dashboard-container {
+    /* Le display: flex est maintenu pour le positionnement initial */
+    display: flex;
+    min-height: 100vh;
+}
+
+/* --- Sidebar (Thème Sombre : Noir/Violet) --- */
+.sidebar {
+    width: 250px;
+    background: var(--background-dark); 
+    color: var(--text-light);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.4);
+    transition: width 0.3s ease, transform 0.3s ease; 
+    
+    /* MODIFICATIONS CLÉS POUR FIXER LA SIDEBAR ET EMPÊCHER LE DÉFILEMENT */
+    position: fixed; /* Fixe l'élément par rapport à la fenêtre du navigateur */
+    height: 100vh; /* Prend 100% de la hauteur visible */
+    top: 0;
+    left: 0;
+    z-index: 100; /* Assure qu'elle est au-dessus du contenu principal */
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logo-image {
+    width: 35px; 
+    height: 35px;
+    object-fit: contain;
+    margin-right: 10px;
+}
+
+.app-name {
+    font-size: 1.5rem;
+    font-weight: 1000;
+    color: whitesmoke;
+}
+
+.main-nav ul { 
+    list-style: none;
+}
+
+.main-nav li {
+    margin-bottom: 10px;
+}
+
+.main-nav a {
+    display: flex;
+    align-items: center;
+    color: var(--text-light);
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.main-nav a:hover {
+    background-color: var(--sidebar-link-bg);
+}
+
+.main-nav li.active a {
+    background: linear-gradient(90deg, var(--primary-accent) 0%, var(--primary-color) 100%);
+    font-weight: 500;
+}
+
+.main-nav .icon {
+    margin-right: 10px;
+    font-size: 1.1rem;
+}
+
+.sidebar-section {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-section h4 {
+    color: #bbb;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+}
+
+
+/* ----------------------------------------------------------------- */
+
+
+/* --- Main Content (Thème Clair) --- */
+.main-content {
+    /* MODIFICATION CLÉ 2 : Ajout de la marge pour décaler le contenu */
+    margin-left: 250px; /* Doit être égal à la largeur de la sidebar */
+    
+    flex-grow: 1;
+    padding: 30px;
+    background-color: var(--background-main);
+}
+
+.content-header {
+    margin-bottom: 30px;
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+}
+
+.header-title .title-icon {
+    font-size: 1.8rem;
+    color: var(--primary-accent);
+    margin-right: 15px;
+}
+
+.content-header h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.control-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    background-color: var(--table-bg);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.search-box {
+    position: relative;
+    flex-grow: 1;
+    margin-right: 20px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 12px 15px 12px 40px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: var(--primary-accent);
+}
+
+.search-box .search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+}
+
+/* --- SECTION A : Têtes d'Affiche / Membres --- */
+
+.featured-members-section {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+}
+
+.featured-members-section h2 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 15px;
+}
+
+.members-grid-container {
+    display: grid;
+    /* 6 colonnes pour desktop pour faire une ligne courte (Section A) */
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); 
+    gap: 15px; /* Réduire l'espacement pour compacter la section */
+    padding: 0;
+}
+
+/* Style de la carte membre (Tête d'Affiche) */
+.member-card {
+    background-color: var(--table-bg);
+    border-radius: 12px;
+    box-shadow: var(--shadow-violet); 
+    padding: 15px 10px; /* Padding plus petit */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    position: relative; 
+    cursor: pointer; 
+}
+
+.member-card:hover {
+    transform: translateY(-5px);
+    /* APPLICATION DE L'OMBRE VIOLETTE AU SURVOL */
+    box-shadow: var(--shadow-violet-hover); 
+}
+
+.card-avatar {
+    width: 60px; /* Taille réduite */
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 5px; /* Moins d'espace */
+    border: 3px solid var(--primary-accent);
+}
+
+.card-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card-name {
+    font-size: 0.9rem; /* Texte plus petit */
+    font-weight: 500;
+}
+
+.subscribe-btn {
+    display: none; 
+}
+
+.card-type {
+    display: none;
+}
+
+/* Le séparateur entre les deux sections */
+.section-separator {
+    border: 0;
+    height: 1px;
+    background-color: rgba(0, 0, 0, 0.1);
+    margin: 20px 0 30px 0;
+}
+
+
+/* --- SECTION B : Contenu Principal (Feedbacks) --- */
+
+.feedback-section {
+    flex-grow: 1; /* S'assure que la Section B prend l'espace restant */
+}
+
+.feedback-section h2 {
+    font-size: 1.5rem; /* Plus grand que Section A */
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 20px;
+}
+
+/* Style de la carte de Feedback (Publication) */
+.feedback-card {
+    background-color: var(--table-bg);
+    border-radius: 12px;
+    box-shadow: var(--shadow-violet); 
+    padding: 20px;
+    margin-bottom: 25px;
+    transition: box-shadow 0.3s ease;
+}
+
+.feedback-card:hover {
+    box-shadow: var(--shadow-violet-hover);
+}
+
+.feedback-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.feedback-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 15px;
+    border: 2px solid var(--primary-color);
+}
+
+.feedback-meta {
+    display: flex;
+    flex-direction: column;
+}
+
+.feedback-author {
+    font-weight: 600;
+    color: var(--primary-accent);
+    font-size: 1rem;
+}
+
+.feedback-time {
+    font-size: 0.8rem;
+    color: #999;
+}
+
+.feedback-time .fas {
+    margin-right: 5px;
+}
+
+.feedback-content {
+    margin-bottom: 20px;
+    padding: 5px 0;
+}
+
+.feedback-content p {
+    font-size: 1rem;
+    color: var(--text-dark);
+}
+
+.feedback-actions button {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    padding: 8px 12px;
+    margin-right: 10px;
+    cursor: pointer;
+    font-weight: 500;
+    border-radius: 5px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.feedback-actions button:hover {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+}
+
+.feedback-actions button .fas {
+    margin-right: 5px;
+}
+
+/* --- Toggle Sidebar Button --- */
+.sidebar-toggle {
+    background: none;
+    border: none;
+    color: var(--primary-accent);
+    font-size: 1.6rem;
+    cursor: pointer;
+    margin-right: 15px;
+}
+
+/* Sidebar collapsed */
+.sidebar.collapsed {
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+    transform: translateX(-100%);
+    
+    /* MAINTIEN DES PROPRIÉTÉS FIXES lors de l'effondrement */
+    position: fixed; 
+    height: 100vh;
+    top: 0; 
+    left: 0;
+}
+
+.sidebar.collapsed ~ .main-content {
+    margin-left: 0; /* Revient à une marge de zéro */
+    width: 100%;
+}
+
+.sidebar.collapsed .app-name,
+.sidebar.collapsed .main-nav a span,
+/* Note : admin-profile, h4, logout-link sont maintenant inclus dans le flux si le HTML est mis à jour */
+.sidebar.collapsed .icon {
+    margin-right: 0;
+}
+
+/* --- MEDIA QUERIES pour la Grille (Section A) --- */
+
+@media (min-width: 1400px) {
+    .members-grid-container {
+        grid-template-columns: repeat(6, 1fr); 
+    }
+}
+
+@media (max-width: 1200px) {
+    .members-grid-container {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .members-grid-container {
+        /* 4 colonnes sur tablette */
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .feedback-card {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .members-grid-container {
+        /* 3 colonnes sur mobile vertical */
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .member-card {
+        flex-direction: column; 
+        padding: 10px;
+    }
+    
+    .card-avatar {
+        margin-right: 0;
+    }
+    
+    .feedback-actions button {
+        padding: 5px 8px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Gestion du responsive pour la sidebar fixée */
+@media (max-width: 768px) {
+    /* Sur petit écran, on peut choisir de masquer complètement la sidebar ou de la faire passer en vue mobile */
+    .sidebar {
+        /* Par exemple, la masquer par défaut et la faire apparaître via un bouton */
+        width: 0;
+        transform: translateX(-100%);
+    }
+    
+    .sidebar.collapsed {
+        /* Si vous utilisez un bouton pour la faire apparaître, cet état devrait être inversé */
+        width: 0;
+        transform: translateX(-100%);
+    }
+    
+    /* Le contenu principal doit toujours prendre tout l'espace sur mobile (pas de marge) */
+    .main-content {
+        margin-left: 0;
+    }
+    
+    .sidebar.active {
+        /* Si vous utilisez une classe 'active' pour afficher la sidebar en plein écran sur mobile */
+        width: 100%;
+        transform: translateX(0);
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+}

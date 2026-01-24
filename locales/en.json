@@ -1,0 +1,154 @@
+{
+  "header": {
+    "features": "Features",
+    "howItWorks": "How it works",
+    "testimonials": "Testimonials",
+    "contact": "Contact",
+    "login": "Login",
+    "register": "Register",
+    "language": "Language"
+  },
+  "sidebar": {
+    "appName": "Yowyob Feedback",
+    "account": "My account",
+    "projects": "Projects",
+    "project": {
+      "join": "Join a project",
+      "new": "+ New project",
+      "role_admin": "Admin",
+      "role_guest": "Guest"
+    },
+    "yowbot": "Yowbot",
+    "feed": "Feed",
+    "subscriptions": "My Subscriptions",
+    "logout": "Logout"
+  },
+  "footer": {
+    "tagline": "Yowyob Feedback - Share, Learn, Grow.",
+    "quickLinks": "Quick Links",
+    "contactTitle": "Contact",
+    "email": "Email: contact@yowyobfeedback.com",
+    "phone": "Phone: +237 6 77 77 77 77",
+    "rights": "© 2025 Yowyob Feedback. All rights reserved."
+  },
+  "landing": {
+    "welcomeTitle": "Welcome to Yowyob Feedback",
+    "subtitle": "The ultimate platform to give and consult feedback about internships and trainings.",
+    "cta": "Join thousands of students and professionals today.",
+    "joinButton": "Sign up now"
+  },
+  "features": {
+    "title": "Why choose Yowyob Feedback?",
+    "f1title": "Authentic Feedback",
+    "f1desc": "Verified and relevant feedback to help you make better career decisions.",
+    "f2title": "Diverse Experiences",
+    "f2desc": "Covers academic internships, professional placements and corporate trainings.",
+    "f3title": "Engaged Community",
+    "f3desc": "Join a community that values sharing constructive experiences."
+  },
+  "how": {
+    "title": "How it works",
+    "step1title": "Create your account",
+    "step1desc": "Sign up quickly to access all features.",
+    "step2title": "Search or Post",
+    "step2desc": "Find feedback on specific companies or share your own experience.",
+    "step3title": "Explore and Decide",
+    "step3desc": "Use the information to choose your next internship or training with confidence."
+  },
+  "testimonials": {
+    "title": "What our users say",
+    "author1": "Sarah D., Student",
+    "author2": "Marc L., Professional"
+  },
+  "auth": {
+    "loginTitle": "Yowyob Feedback",
+    "loginMuted": "Sign in to access your space and share feedback.",
+    "emailOrPhone": "Email or Phone",
+    "password": "Password",
+    "loginButton": "Sign in",
+    "noAccount": "No account yet?",
+    "registerLink": "Sign up",
+    "back": "Back",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "googleLogin": "Sign in with Google",
+    "registerTitle": "Create an account",
+    "registerMuted": "Join the community and start sharing useful feedback.",
+    "registerButton": "Sign up",
+    "alreadyRegistered": "Already registered?",
+    "errors": {
+      "fillAll": "Please fill all fields.",
+      "passwordMismatch": "Passwords do not match."
+    },
+    "simulated": "Simulated action — implement the server API"
+  },
+  "feed": {
+    "title": "Feed",
+    "searchPlaceholder": "Search people or companies...",
+    "featuredTitle": "People, Companies and Schools to follow",
+    "subscribe": "Subscribe",
+    "recentFeedback": "Recent Feedback",
+    "like": "Like",
+    "dislike": "Dislike",
+    "comment": "Comment"
+  },
+  "profileEdit": {
+    "editTitle": "Edit My Profile",
+    "generalInfo": "General Information",
+    "changePhoto": "Change Photo",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "username": "Username",
+    "email": "Email Address",
+    "contact": "Contact (Phone)",
+    "domain": "Domain",
+    "bio": "Biography",
+    "saveChanges": "Save Changes",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm New Password",
+    "updatePassword": "Update Password"
+  },
+  "account": {
+    "title": "My Profile",
+    "editProfile": "Edit profile",
+    "stats_feedbacks": "feedbacks",
+    "stats_followers": "followers",
+    "stats_following": "following",
+    "section_feedbacks": "Feedbacks About Me",
+    "section_discover": "Accounts to Discover",
+    "follow": "Follow",
+    "viewAllSuggestions": "View all suggestions",
+    "viewAllFeedbacks": "View all feedbacks",
+    "reply": "Reply",
+    "suggestedForYou": "Suggested for you",
+    "ago": "{time} ago"
+  },
+  "management": {
+    "title": "Member Management",
+    "searchPlaceholder": "Search by name or email...",
+    "addMember": "Add a Member",
+    "confirmDeleteTitle": "Delete confirmation",
+    "confirmDeleteText": "Are you sure you want to delete user {name} ({email})?",
+    "irreversible": "This action is irreversible.",
+    "cancel": "Cancel",
+    "delete": "Delete permanently",
+    "addModalTitle": "Add a new member",
+    "addModalSubmit": "Add user",
+    "noMembers": "No members found."
+  },
+  "user": {
+    "dashboard": {
+      "title": "Dashboard",
+      "welcome": "Welcome, {name}",
+      "stats": {
+        "publishedReviews": "Published Reviews",
+        "pendingReviews": "Pending Reviews",
+        "trainings": "Trainings Followed"
+      },
+      "recentReviewsTitle": "Recent Submitted Reviews",
+      "annualProgress": "Annual Progress"
+    }
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "header": {
+    "features": "기능",
+    "howItWorks": "작동 방식",
+    "testimonials": "사용자 리뷰",
+    "contact": "연락처",
+    "login": "로그인",
+    "register": "등록",
+    "language": "언어"
+  },
+  "sidebar": {
+    "appName": "Yowyob 피드백",
+    "account": "내 계정",
+    "projects": "프로젝트",
+    "yowbot": "Yowbot",
+    "feed": "피드",
+    "subscriptions": "내 구독",
+    "logout": "로그아웃"
+  },
+  "footer": {
+    "tagline": "Yowyob 피드백 - 공유, 배우기, 성장하기.",
+    "quickLinks": "빠른 링크",
+    "contactTitle": "연락처",
+    "email": "이메일: contact@yowyobfeedback.com",
+    "phone": "전화: +237 6 77 77 77 77",
+    "rights": "© 2025 Yowyob 피드백. 판권소유."
+  },
+  "landing": {
+    "welcomeTitle": "Yowyob 피드백에 오신 것을 환영합니다",
+    "subtitle": "인턴십과 교육에 대한 피드백을 공유하고 참고할 수 있는 최고의 플랫폼입니다.",
+    "cta": "오늘 수천 명의 학생과 전문가에게 합류하세요.",
+    "joinButton": "지금 가입"
+  },
+  "features": {
+    "title": "왜 Yowyob 피드백을 선택해야 할까요?",
+    "f1title": "진정한 피드백",
+    "f1desc": "검증된 관련 피드백으로 더 나은 커리어 결정을 내릴 수 있습니다.",
+    "f2title": "다양한 경험",
+    "f2desc": "학문적 인턴십, 전문 교육 및 기업 교육을 다룹니다.",
+    "f3title": "활발한 커뮤니티",
+    "f3desc": "건설적인 경험 공유를 중시하는 커뮤니티에 참여하세요."
+  },
+  "how": {
+    "title": "작동 방식",
+    "step1title": "계정 만들기",
+    "step1desc": "빠르게 가입하여 모든 기능에 액세스하세요.",
+    "step2title": "검색 또는 게시",
+    "step2desc": "특정 회사의 피드백을 찾거나 자신의 경험을 공유하세요.",
+    "step3title": "탐색 및 결정",
+    "step3desc": "이 정보를 사용하여 다음 인턴십 또는 교육을 자신 있게 선택하세요."
+  },
+  "testimonials": {
+    "title": "사용자 리뷰",
+    "author1": "Sarah D., 학생",
+    "author2": "Marc L., 전문가"
+  },
+  "auth": {
+    "loginTitle": "Yowyob 피드백",
+    "loginMuted": "로그인하여 공간에 접근하고 피드백을 공유하세요.",
+    "emailOrPhone": "이메일 또는 전화",
+    "password": "비밀번호",
+    "loginButton": "로그인",
+    "noAccount": "아직 계정이 없으신가요?",
+    "registerLink": "등록",
+    "registerTitle": "계정 만들기",
+    "registerMuted": "커뮤니티에 참여하고 유용한 피드백을 공유하세요.",
+    "registerButton": "등록",
+    "alreadyRegistered": "이미 등록하셨나요?",
+    "errors": {
+      "fillAll": "모든 필드를 입력해주세요.",
+      "passwordMismatch": "비밀번호가 일치하지 않습니다."
+    },
+    "simulated": "시뮬레이션된 작업 — 서버 API 구현"
+  },
+  "feed": {
+    "title": "피드",
+    "searchPlaceholder": "사람이나 회사 검색...",
+    "featuredTitle": "팔로우할 사람, 회사 및 학교",
+    "subscribe": "구독",
+    "recentFeedback": "최근 피드백",
+    "like": "좋아요",
+    "dislike": "싫어요",
+    "comment": "댓글"
+  },
+  "profileEdit": {
+    "editTitle": "프로필 편집",
+    "generalInfo": "일반 정보",
+    "changePhoto": "사진 변경",
+    "firstName": "이름",
+    "lastName": "성",
+    "username": "사용자명",
+    "email": "이메일 주소",
+    "contact": "연락처 (전화)",
+    "domain": "분야",
+    "bio": "자기소개",
+    "saveChanges": "변경사항 저장",
+    "changePassword": "비밀번호 변경",
+    "currentPassword": "현재 비밀번호",
+    "newPassword": "새 비밀번호",
+    "confirmPassword": "새 비밀번호 확인",
+    "updatePassword": "비밀번호 업데이트"
+  },
+  "management": {
+    "title": "회원 관리",
+    "searchPlaceholder": "이름 또는 이메일로 검색...",
+    "addMember": "회원 추가",
+    "confirmDeleteTitle": "삭제 확인",
+    "confirmDeleteText": "사용자 {name} ({email})을(를) 삭제하시겠습니까?",
+    "irreversible": "이 작업은 되돌릴 수 없습니다.",
+    "cancel": "취소",
+    "delete": "영구 삭제",
+    "addModalTitle": "새 회원 추가",
+    "addModalSubmit": "사용자 추가",
+    "noMembers": "회원을 찾을 수 없습니다."
+  },
+  "user": {
+    "dashboard": {
+      "title": "대시보드",
+      "welcome": "환영합니다, {name}",
+      "stats": {
+        "publishedReviews": "게시된 리뷰",
+        "pendingReviews": "대기 중인 리뷰",
+        "trainings": "이수한 교육"
+      },
+      "recentReviewsTitle": "최근 제출된 리뷰",
+      "annualProgress": "연간 진행률"
+    }
+  }
+}

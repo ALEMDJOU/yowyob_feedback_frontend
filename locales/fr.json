@@ -1,0 +1,154 @@
+{
+  "header": {
+    "features": "Fonctionnalités",
+    "howItWorks": "Comment ça marche",
+    "testimonials": "Témoignages",
+    "contact": "Contact",
+    "login": "Connexion",
+    "register": "S'inscrire",
+    "language": "Langue"
+  },
+  "sidebar": {
+    "appName": "Yowyob Feedback",
+    "account": "Mon compte",
+    "projects": "Projets",
+    "project": {
+      "join": "Rejoindre un projet",
+      "new": "+ Nouveau projet",
+      "role_admin": "Admin",
+      "role_guest": "Invité"
+    },
+    "yowbot": "Yowbot",
+    "feed": "Fil d'actualité",
+    "subscriptions": "Mes Abonnements",
+    "logout": "Déconnexion"
+  },
+  "footer": {
+    "tagline": "Yowyob Feedback - Partagez, Apprenez, Grandissez.",
+    "quickLinks": "Liens Rapides",
+    "contactTitle": "Contact",
+    "email": "Email: contact@yowyobfeedback.com",
+    "phone": "Téléphone: +237 6 77 77 77 77",
+    "rights": "© 2025 Yowyob Feedback. Tous droits réservés."
+  },
+  "landing": {
+    "welcomeTitle": "Bienvenue sur Yowyob Feedback",
+    "subtitle": "La plateforme ultime pour émettre et consulter des retours d'expérience sur les stages et formations.",
+    "cta": "Rejoignez des milliers d'étudiants et de professionnels dès aujourd'hui.",
+    "joinButton": "Je m'inscris !"
+  },
+  "features": {
+    "title": "Pourquoi choisir Yowyob Feedback ?",
+    "f1title": "Feedbacks Authentiques",
+    "f1desc": "Des retours vérifiés et pertinents pour vous aider à prendre les meilleures décisions pour votre carrière.",
+    "f2title": "Diversité des Expériences",
+    "f2desc": "Couvre les stages académiques, professionnels et les formations en entreprise.",
+    "f3title": "Communauté Engagée",
+    "f3desc": "Rejoignez une communauté qui valorise le partage d'expériences constructives."
+  },
+  "how": {
+    "title": "Comment ça marche",
+    "step1title": "Créez votre compte",
+    "step1desc": "Inscrivez-vous rapidement et facilement pour accéder à toutes les fonctionnalités.",
+    "step2title": "Recherchez ou Postez",
+    "step2desc": "Trouvez des feedbacks sur des entreprises spécifiques ou partagez votre propre expérience.",
+    "step3title": "Explorez et Décidez",
+    "step3desc": "Utilisez les informations pour choisir votre prochain stage ou formation en toute confiance."
+  },
+  "testimonials": {
+    "title": "Ce que nos utilisateurs en disent",
+    "author1": "Sarah D., Étudiante",
+    "author2": "Marc L., Professionnel"
+  },
+  "auth": {
+    "loginTitle": "Yowyob Feedback",
+    "loginMuted": "Connectez-vous pour accéder à votre espace et partager vos feedbacks.",
+    "emailOrPhone": "Email ou Téléphone",
+    "password": "Mot de passe",
+    "loginButton": "Se connecter",
+    "noAccount": "Pas encore de compte ?",
+    "registerLink": "S'inscrire",
+    "back": "Retour",
+    "rememberMe": "Se souvenir de moi",
+    "forgotPassword": "Mot de passe oublié ?",
+    "googleLogin": "Connexion avec Google",
+    "registerTitle": "Création de compte",
+    "registerMuted": "Rejoignez la communauté et commencez à partager des feedbacks utiles.",
+    "registerButton": "S'inscrire",
+    "alreadyRegistered": "Déjà inscrit ?",
+    "errors": {
+      "fillAll": "Veuillez remplir tous les champs.",
+      "passwordMismatch": "Les mots de passe ne correspondent pas."
+    },
+    "simulated": "Action simulée — implémentez l’API côté serveur"
+  },
+  "feed": {
+    "title": "Fil d'actualité",
+    "searchPlaceholder": "Rechercher personnes ou entreprises...",
+    "featuredTitle": "Personnes, Entreprises et Écoles à suivre",
+    "subscribe": "S'abonner",
+    "recentFeedback": "Feedbacks Récents",
+    "like": "J'aime",
+    "dislike": "Je n'aime pas",
+    "comment": "Commenter"
+  },
+  "profileEdit": {
+    "editTitle": "Modifier Mon Profil",
+    "generalInfo": "Informations Générales",
+    "changePhoto": "Changer la Photo",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "username": "Nom d'utilisateur",
+    "email": "Adresse Email",
+    "contact": "Contact (Téléphone)",
+    "domain": "Domaine",
+    "bio": "Biographie",
+    "saveChanges": "Enregistrer les Modifications",
+    "changePassword": "Changer de Mot de Passe",
+    "currentPassword": "Mot de Passe Actuel",
+    "newPassword": "Nouveau Mot de Passe",
+    "confirmPassword": "Confirmer Nouveau Mot de Passe",
+    "updatePassword": "Mettre à Jour le Mot de Passe"
+  },
+  "account": {
+    "title": "Mon Profil",
+    "editProfile": "Modifier le profil",
+    "stats_feedbacks": "feedbacks",
+    "stats_followers": "abonnés",
+    "stats_following": "abonnements",
+    "section_feedbacks": "Feedbacks Me Concernant",
+    "section_discover": "Comptes à Découvrir",
+    "follow": "Suivre",
+    "viewAllSuggestions": "Voir toutes les suggestions",
+    "viewAllFeedbacks": "Voir tous les feedbacks",
+    "reply": "Répondre",
+    "suggestedForYou": "Suggéré pour vous",
+    "ago": "Il y a {time}"
+  },
+  "management": {
+    "title": "Gestion des Membres",
+    "searchPlaceholder": "Rechercher par nom ou email...",
+    "addMember": "Ajouter un Membre",
+    "confirmDeleteTitle": "Confirmation de Suppression",
+    "confirmDeleteText": "Êtes-vous sûr de vouloir supprimer l'utilisateur {name} ({email}) ?",
+    "irreversible": "Cette action est irréversible.",
+    "cancel": "Annuler",
+    "delete": "Supprimer Définitivement",
+    "addModalTitle": "Ajouter un Nouveau Membre",
+    "addModalSubmit": "Ajouter l'Utilisateur",
+    "noMembers": "Aucun membre trouvé."
+  },
+  "user": {
+    "dashboard": {
+      "title": "Tableau de Bord",
+      "welcome": "Bienvenue, {name}",
+      "stats": {
+        "publishedReviews": "Avis Publiés",
+        "pendingReviews": "Avis en Attente",
+        "trainings": "Formations Suivies"
+      },
+      "recentReviewsTitle": "Derniers Avis Soumis",
+      "annualProgress": "Progression Annuelle"
+    }
+  }
+}

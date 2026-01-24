@@ -1,0 +1,130 @@
+{
+  "header": {
+    "features": "Funktionen",
+    "howItWorks": "Wie es funktioniert",
+    "testimonials": "Testimonials",
+    "contact": "Kontakt",
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "language": "Sprache"
+  },
+  "sidebar": {
+    "appName": "Yowyob Feedback",
+    "account": "Mein Konto",
+    "projects": "Projekte",
+    "yowbot": "Yowbot",
+    "feed": "Feed",
+    "subscriptions": "Meine Abonnements",
+    "logout": "Abmelden"
+  },
+  "footer": {
+    "tagline": "Yowyob Feedback - Teilen, Lernen, Wachsen.",
+    "quickLinks": "Schnellzugriff",
+    "contactTitle": "Kontakt",
+    "email": "Email: contact@yowyobfeedback.com",
+    "phone": "Telefon: +237 6 77 77 77 77",
+    "rights": "© 2025 Yowyob Feedback. Alle Rechte vorbehalten."
+  },
+  "landing": {
+    "welcomeTitle": "Willkommen bei Yowyob Feedback",
+    "subtitle": "Die ultimative Plattform, um Feedback zu Praktika und Schulungen zu geben und zu lesen.",
+    "cta": "Schließen Sie sich noch heute tausenden Studenten und Fachleuten an.",
+    "joinButton": "Jetzt anmelden"
+  },
+  "features": {
+    "title": "Warum Yowyob Feedback?",
+    "f1title": "Authentisches Feedback",
+    "f1desc": "Verifizierte und relevante Rückmeldungen, die Ihnen helfen, bessere Karriereentscheidungen zu treffen.",
+    "f2title": "Vielfältige Erfahrungen",
+    "f2desc": "Deckt akademische Praktika, berufliche Einsätze und Unternehmensschulungen ab.",
+    "f3title": "Engagierte Community",
+    "f3desc": "Treten Sie einer Community bei, die den Austausch konstruktiver Erfahrungen schätzt."
+  },
+  "how": {
+    "title": "Wie es funktioniert",
+    "step1title": "Erstelle dein Konto",
+    "step1desc": "Registriere dich schnell, um auf alle Funktionen zuzugreifen.",
+    "step2title": "Suchen oder Veröffentlichen",
+    "step2desc": "Finde Feedback zu Unternehmen oder teile deine eigene Erfahrung.",
+    "step3title": "Entdecken und Entscheiden",
+    "step3desc": "Nutzen Sie die Informationen, um Ihr nächstes Praktikum oder Ihre nächste Schulung mit Vertrauen zu wählen."
+  },
+  "testimonials": {
+    "title": "Was unsere Nutzer sagen",
+    "author1": "Sarah D., Studentin",
+    "author2": "Marc L., Profi"
+  }
+  ,
+  "auth": {
+    "loginTitle": "Yowyob Feedback",
+    "loginMuted": "Melde dich an, um auf deinen Bereich zuzugreifen und Feedback zu teilen.",
+    "emailOrPhone": "E-Mail oder Telefon",
+    "password": "Passwort",
+    "loginButton": "Anmelden",
+    "noAccount": "Noch kein Konto?",
+    "registerLink": "Registrieren",
+    "registerTitle": "Konto erstellen",
+    "registerMuted": "Tritt der Community bei und beginne, hilfreiches Feedback zu teilen.",
+    "registerButton": "Registrieren",
+    "alreadyRegistered": "Bereits registriert?",
+    "errors": {
+      "fillAll": "Bitte fülle alle Felder aus.",
+      "passwordMismatch": "Passwörter stimmen nicht überein."
+    },
+    "simulated": "Simulierte Aktion — implementiere die Server-API"
+  },
+  "feed": {
+    "title": "Feed",
+    "searchPlaceholder": "Suche Personen oder Unternehmen...",
+    "featuredTitle": "Personen, Unternehmen und Schulen zum Folgen",
+    "subscribe": "Abonnieren",
+    "recentFeedback": "Neueste Feedbacks",
+    "like": "Gefällt mir",
+    "dislike": "Gefällt mir nicht",
+    "comment": "Kommentieren"
+  },
+  "profileEdit": {
+    "editTitle": "Profil bearbeiten",
+    "generalInfo": "Allgemeine Informationen",
+    "changePhoto": "Foto ändern",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "username": "Benutzername",
+    "email": "E-Mail-Adresse",
+    "contact": "Kontakt (Telefon)",
+    "domain": "Bereich",
+    "bio": "Biografie",
+    "saveChanges": "Änderungen speichern",
+    "changePassword": "Passwort ändern",
+    "currentPassword": "Aktuelles Passwort",
+    "newPassword": "Neues Passwort",
+    "confirmPassword": "Neues Passwort bestätigen",
+    "updatePassword": "Passwort aktualisieren"
+  },
+  "management": {
+    "title": "Mitgliederverwaltung",
+    "searchPlaceholder": "Nach Name oder E-Mail suchen...",
+    "addMember": "Mitglied hinzufügen",
+    "confirmDeleteTitle": "Löschbestätigung",
+    "confirmDeleteText": "Möchten Sie den Benutzer {name} ({email}) wirklich löschen?",
+    "irreversible": "Diese Aktion ist irreversibel.",
+    "cancel": "Abbrechen",
+    "delete": "Endgültig löschen",
+    "addModalTitle": "Neues Mitglied hinzufügen",
+    "addModalSubmit": "Benutzer hinzufügen",
+    "noMembers": "Keine Mitglieder gefunden."
+  },
+  "user": {
+    "dashboard": {
+      "title": "Dashboard",
+      "welcome": "Willkommen, {name}",
+      "stats": {
+        "publishedReviews": "Veröffentlichte Bewertungen",
+        "pendingReviews": "Ausstehende Bewertungen",
+        "trainings": "Abgeschlossene Schulungen"
+      },
+      "recentReviewsTitle": "Kürzlich eingereichte Bewertungen",
+      "annualProgress": "Jährlicher Fortschritt"
+    }
+  }
+}

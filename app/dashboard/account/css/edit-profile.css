@@ -1,0 +1,36 @@
+/* Copied from Pages_AYISSI_CSS_HTML/css/edit-profile.css */
+.edit-profile-section {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.edit-form-card {
+    background-color: var(--white);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.edit-form-card h3 {
+    color: var(--text-dark);
+    border-bottom: 1px solid var(--gray-light);
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+    font-size: 1.5rem;
+}
+
+.form-group { margin-bottom: 20px; }
+.form-group label { display:block; font-weight:600; color:var(--text-dark); margin-bottom:8px; }
+.form-group input[type="text"], .form-group input[type="email"], .form-group input[type="password"], .form-group textarea { width:100%; padding:12px; border:1px solid var(--gray-light); border-radius:8px; font-size:1rem; box-sizing:border-box; transition:border-color 0.3s; }
+.form-group textarea { resize: vertical; }
+.form-group input:focus, .form-group textarea:focus { border-color: var(--primary-accent); outline:none; }
+.avatar-upload-group { display:flex; align-items:center; margin-bottom:30px; }
+.current-avatar { width:80px; height:80px; border-radius:50%; object-fit:cover; margin-right:20px; border:3px solid var(--gray-light); }
+.avatar-upload-group label { display:inline-block; background-color:var(--primary-color); color:white; padding:8px 15px; border-radius:5px; cursor:pointer; font-weight:500; transition:background-color 0.3s; }
+.avatar-upload-group label:hover { background-color: var(--primary-accent); }
+.avatar-upload-group input[type="file"] { display:none; }
+.large-btn { width:100%; padding:15px; font-size:1.1rem; font-weight:700; margin-top:10px; }
