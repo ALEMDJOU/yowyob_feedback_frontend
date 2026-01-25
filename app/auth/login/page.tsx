@@ -58,8 +58,12 @@ export default function LoginPage() {
       >
         {/* Retour arrière animé */}
         <motion.div variants={itemVariants} whileHover={{ x: -5 }}>
-          <Link href="/" style={{ color: '#666', fontSize: '0.9em', display: 'flex', alignItems: 'center', gap: '5px', textDecoration: 'none' }}>
-             <motion.span animate={{ x: [0, -4, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>←</motion.span> 
+          <Link href="/" style={{ color: '#6A1B9A', fontSize: '0.9em', display: 'flex', alignItems: 'center', gap: '5px', textDecoration: 'none' }}>
+             <motion.span animate={{ x: [0, -4, 0] }} transition={{ repeat: Infinity, duration: 1.5 }} style={{ display: 'inline-flex' }}>
+               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                 <path d="M15 19l-7-7 7-7" stroke="#6A1B9A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+               </svg>
+             </motion.span> 
              {t('auth.back')}
           </Link>
         </motion.div>
@@ -137,7 +141,18 @@ export default function LoginPage() {
                   background: 'none', border: 'none', cursor: 'pointer', color: '#6A1B9A', fontSize: '1.3em'
                 }}
               >
-                {showPassword ? '👁️' : '🙈'}
+                {showPassword ? (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" stroke="#6A1B9A" strokeWidth="2" fill="none"/>
+                    <circle cx="12" cy="12" r="3" fill="#6A1B9A"/>
+                  </svg>
+                ) : (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" stroke="#6A1B9A" strokeWidth="2" fill="none"/>
+                    <circle cx="12" cy="12" r="3" fill="#6A1B9A"/>
+                    <path d="M4 4l16 16" stroke="#6A1B9A" strokeWidth="2"/>
+                  </svg>
+                )}
               </motion.button>
             </div>
           </motion.div>

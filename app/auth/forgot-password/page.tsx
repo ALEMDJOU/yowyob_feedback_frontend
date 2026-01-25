@@ -57,7 +57,10 @@ export default function ForgotPasswordPage() {
                             <Image src="/images/logo.jpg" alt="Logo" width={60} height={60} style={{ borderRadius: '50%', objectFit: 'cover' }} />
                         </motion.div>
 
-                        <motion.h2 variants={itemVariants} style={{ textAlign: 'center', marginBottom: '10px', color: '#6A1B9A' }}>
+                        <motion.h2 variants={itemVariants} style={{ textAlign: 'center', marginBottom: '10px', color: '#6A1B9A', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M12 1a10 10 0 100 20 10 10 0 000-20zm1 15h-2v-2h2v2zm0-4h-2V6h2v6z" fill="#6A1B9A"/>
+                            </svg>
                             Mot de passe oublié
                         </motion.h2>
                         
@@ -107,7 +110,23 @@ export default function ForgotPasswordPage() {
                                 }} 
                                 disabled={loading}
                             >
-                                {loading ? 'Envoi en cours...' : 'Envoyer le lien'}
+                                {loading ? (
+                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ animation: 'spin 1s linear infinite' }}>
+                                            <circle cx="12" cy="12" r="10" stroke="#6A1B9A" strokeWidth="4" opacity="0.3"/>
+                                            <path d="M22 12a10 10 0 00-10-10" stroke="#6A1B9A" strokeWidth="4"/>
+                                        </svg>
+                                        Envoi en cours...
+                                    </span>
+                                ) : (
+                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                            <path d="M22 2L11 13" stroke="#6A1B9A" strokeWidth="2"/>
+                                            <path d="M22 2l-7 20-4-9-9-4 20-7z" stroke="#6A1B9A" strokeWidth="2" fill="none"/>
+                                        </svg>
+                                        Envoyer le lien
+                                    </span>
+                                )}
                             </motion.button>
                         </form>
 
@@ -130,9 +149,12 @@ export default function ForgotPasswordPage() {
                             initial={{ scale: 0 }}
                             animate={{ scale: 1, rotate: 360 }}
                             transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                            style={{ fontSize: '60px', marginBottom: '20px' }}
+                            style={{ marginBottom: '20px' }}
                         >
-                            📩
+                            <svg width="58" height="58" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2z" stroke="#6A1B9A" strokeWidth="2" fill="none"/>
+                                <path d="M22 6l-10 7L2 6" stroke="#6A1B9A" strokeWidth="2" fill="none"/>
+                            </svg>
                         </motion.div>
                         <h2 style={{ color: '#6A1B9A', marginBottom: '15px' }}>Vérifiez vos emails</h2>
                         <p style={{ color: '#666', lineHeight: '1.5', marginBottom: '25px' }}>

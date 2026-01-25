@@ -187,27 +187,37 @@ export default function SignupPage() {
                         </AnimatePresence>
 
                         <motion.div variants={itemVariants}>
-                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600' }}>🌐 Domaine d'activité</label>
+                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#6A1B9A' }}>
+                                <span style={{ color: '#6A1B9A' }}>🌐</span> Domaine d'activité
+                            </label>
                             <input type="text" className="auth-form-control" placeholder="Ex: Informatique, Commerce..." style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} onChange={(e) => handleInputChange('domain', e.target.value)} required />
                         </motion.div>
 
                         <motion.div variants={itemVariants}>
-                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600' }}>📍 Localisation</label>
+                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#6A1B9A' }}>
+                                <span style={{ color: '#6A1B9A' }}>📍</span> Localisation
+                            </label>
                             <input type="text" className="auth-form-control" placeholder="Ex: Douala, Cameroun" style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} onChange={(e) => handleInputChange('location', e.target.value)} required />
                         </motion.div>
 
                         <div style={{ gridColumn: 'span 2' }}>
-                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600' }}>📝 Description</label>
+                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#6A1B9A' }}>
+                                <span style={{ color: '#6A1B9A' }}>📝</span> Description
+                            </label>
                             <textarea className="auth-form-control" rows={2} style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} placeholder="Décrivez brièvement l'activité..." onChange={(e) => handleInputChange('description', e.target.value)} required />
                         </div>
 
                         <motion.div variants={itemVariants}>
-                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600' }}>📞 Téléphone (Cameroun)</label>
+                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#6A1B9A' }}>
+                                <span style={{ color: '#6A1B9A' }}>📞</span> Téléphone (Cameroun)
+                            </label>
                             <input type="text" className="auth-form-control" placeholder="6XXXXXXXX" style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} onChange={(e) => handleInputChange('contact', e.target.value)} required />
                         </motion.div>
 
                         <motion.div variants={itemVariants}>
-                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600' }}>📧 Email</label>
+                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#6A1B9A' }}>
+                                <span style={{ color: '#6A1B9A' }}>📧</span> Email
+                            </label>
                             <input type="email" className="auth-form-control" style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} onChange={(e) => handleInputChange('email', e.target.value)} required />
                         </motion.div>
 
@@ -215,7 +225,20 @@ export default function SignupPage() {
                             <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600' }}>Mot de passe</label>
                             <div style={{ position: 'relative' }}>
                                 <input type={showPassword ? "text" : "password"} className="auth-form-control" style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} onChange={(e) => handleInputChange('password', e.target.value)} required />
-                                <span onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }}>{showPassword ? '🙈' : '👁️'}</span>
+                                <span onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', display: 'inline-flex' }}>
+                                    {showPassword ? (
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" stroke="#6A1B9A" strokeWidth="2" fill="none"/>
+                                            <circle cx="12" cy="12" r="3" fill="#6A1B9A"/>
+                                        </svg>
+                                    ) : (
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" stroke="#6A1B9A" strokeWidth="2" fill="none"/>
+                                            <circle cx="12" cy="12" r="3" fill="#6A1B9A"/>
+                                            <path d="M4 4l16 16" stroke="#6A1B9A" strokeWidth="2"/>
+                                        </svg>
+                                    )}
+                                </span>
                             </div>
                             <div style={{ marginTop: '8px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px', backgroundColor: '#f9f9f9', padding: '8px', borderRadius: '6px' }}>
                                 <Requirement met={passwordMetadata.hasMinLength} text="8+ caractères" />
@@ -237,7 +260,9 @@ export default function SignupPage() {
                         </motion.div>
 
                         <div style={{ gridColumn: 'span 2' }}>
-                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600' }}>🖼️ Logo ou Photo</label>
+                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#6A1B9A' }}>
+                                <span style={{ color: '#6A1B9A' }}>🖼️</span> Logo ou Photo
+                            </label>
                             <input type="file" accept="image/*" onChange={handleImageUpload} style={{ width: '100%', padding: '10px', backgroundColor: '#f9f9f9', borderRadius: '8px', border: '1px dashed #ccc' }} />
                         </div>
                     </div>

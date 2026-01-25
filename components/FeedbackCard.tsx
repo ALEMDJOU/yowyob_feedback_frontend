@@ -4,11 +4,15 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 
 // Types
+export interface Author {
+    name: string;
+    avatar: string;
+}
+
 export interface Comment {
     id: string;
-    author: string;
+    author: Author; // Updated
     text: string;
-    avatar?: string;
     likes: number;
     liked: boolean;
     replies: Comment[];
@@ -16,13 +20,16 @@ export interface Comment {
 
 export interface FeedbackData {
     id: string;
-    author: string;
-    authorAvatar: string;
-    time: string;
+    author: Author; // Updated
+    createdAt: string; // Renamed from 'time' for consistency
     content: string;
     likes: number;
     liked: boolean;
     comments: Comment[];
+    project: {
+        name: string;
+        id: string;
+    };
     type?: 'person' | 'business';
 }
 
@@ -46,8 +53,8 @@ const CommentItem = ({
             {/* Thread line for nested comments */}
             <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
                 <img
-                    src={comment.avatar || 'https://i.ibb.co/Qf983vG/avatar-placeholder.png'}
-                    alt={comment.author}
+                    src={comment.author.avatar || 'https://i.ibb.co/Qf983vG/avatar-placeholder.png'}
+                    alt={comment.author.name}
                     width={32}
                     height={32}
                     style={{ borderRadius: '50%', flexShrink: 0 }}
@@ -55,7 +62,7 @@ const CommentItem = ({
                 <div style={{ flex: 1 }}>
                     <div style={{ backgroundColor: '#f5f5f5', borderRadius: '12px', padding: '10px' }}>
                         <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#333', marginBottom: '4px' }}>
-                            {comment.author}
+                            {comment.author.name}
                         </div>
                         <p style={{ fontSize: '0.9rem', color: '#444', margin: 0, lineHeight: 1.4 }}>
                             {comment.text}
@@ -89,7 +96,7 @@ const CommentItem = ({
     );
 };
 
-export default function FeedbackCard({ data }: { data: FeedbackData }) {
+export default function FeedbackCard({ data, hideProjectInfo }: { data: FeedbackData, hideProjectInfo?: boolean }) {
     const [feedback, setFeedback] = useState<FeedbackData>(data);
     const [showCommentBox, setShowCommentBox] = useState(false);
     const [mainCommentText, setMainCommentText] = useState("");
@@ -130,7 +137,7 @@ export default function FeedbackCard({ data }: { data: FeedbackData }) {
                     ...c,
                     replies: [...c.replies, {
                         id: generateId(),
-                        author: 'Moi', // Default current user
+                        author: { name: 'Moi', avatar: 'https://i.ibb.co/Qf983vG/avatar-placeholder.png' }, // Default current user
                         text: replyText,
                         likes: 0,
                         liked: false,
@@ -158,7 +165,7 @@ export default function FeedbackCard({ data }: { data: FeedbackData }) {
                 ...prev,
                 comments: [...prev.comments, {
                     id: generateId(),
-                    author: 'Moi',
+                    author: { name: 'Moi', avatar: 'https://i.ibb.co/Qf983vG/avatar-placeholder.png' },
                     text: mainCommentText,
                     likes: 0,
                     liked: false,
@@ -172,13 +179,25 @@ export default function FeedbackCard({ data }: { data: FeedbackData }) {
 
     const addEmoji = (emoji: string) => setMainCommentText(prev => prev + emoji);
 
+    // Helper to format time
+    const formatTime = (dateString: string) => {
+        const date = new Date(dateString);
+        // Basic time formatting, can be improved with a library like date-fns
+        return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+    }
+
     return (
         <div className="feedback-card">
             <div className="feedback-header">
-                <img src={feedback.authorAvatar} alt={feedback.author} width={45} height={45} className="feedback-avatar" />
+                <img src={feedback.author.avatar} alt={feedback.author.name} width={45} height={45} className="feedback-avatar" />
                 <div className="feedback-meta">
-                    <span className="feedback-author">{feedback.author}</span>
-                    <span className="feedback-time"><i className="fas fa-clock"></i> {feedback.time}</span>
+                    <span className="feedback-author">{feedback.author.name}</span>
+                    <span className="feedback-time"><i className="fas fa-clock"></i> {formatTime(feedback.createdAt)}</span>
+                    {!hideProjectInfo && (
+                         <span className="feedback-project">
+                            pour <Link href={`/dashboard/project/${feedback.project.id}`}>{feedback.project.name}</Link>
+                         </span>
+                    )}
                 </div>
             </div>
             <div className="feedback-content">
@@ -228,7 +247,7 @@ export default function FeedbackCard({ data }: { data: FeedbackData }) {
                         e.currentTarget.style.backgroundColor = 'transparent';
                     }}
                 >
-                    <i className="fas fa-comment"></i> Commenter
+                    <i className="fas fa-comment"></i> Commenter ({feedback.comments.length})
                 </button>
             </div>
 
@@ -296,3 +315,4 @@ export default function FeedbackCard({ data }: { data: FeedbackData }) {
         </div>
     );
 }
+

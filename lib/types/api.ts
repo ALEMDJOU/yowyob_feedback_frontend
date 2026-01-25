@@ -87,6 +87,11 @@ export interface ProjectResponseDTO {
     creator_id: string;
 }
 
+export interface ProjectDetailResponseDTO extends ProjectResponseDTO {
+    creator_name?: string;
+    members?: MemberResponseDTO[];
+}
+
 export interface CreateProjectRequestDTO {
     project_name: string;
     description?: string;
@@ -97,6 +102,7 @@ export interface UpdateProjectRequestDTO {
     project_name?: string;
     description?: string;
     project_logo?: string;
+    code?: string;
 }
 
 export interface MemberResponseDTO {
@@ -105,8 +111,8 @@ export interface MemberResponseDTO {
     user_id: string;
     project_id: string;
     user_firstname?: string;
-    user_lastname: string;
-    user_logo?: string;
+    user_lastname?: string;
+    user_email?: string;
 }
 
 /**
@@ -117,7 +123,7 @@ export interface FeedbackResponseDTO {
     feedback_id: string;
     feedback_date_time: string;
     content: string;
-    attachments?: string[];
+    attachments: string[];
     target_project_id: string;
     project_name: string;
     member_id: string;
@@ -127,15 +133,15 @@ export interface FeedbackResponseDTO {
 }
 
 export interface CreateFeedbackRequestDTO {
+    project_id: string;
+    member_pseudo: string;
     content: string;
-    target_project_id: string;
-    member_id: string;
-    attachments?: string[];
+    attachments: string[];
 }
 
 export interface UpdateFeedbackRequestDTO {
-    content?: string;
-    attachments?: string[];
+    content: string;
+    attachments: string[];
 }
 
 /**

@@ -2,17 +2,12 @@
     display: flex;
     flex-direction: column;
     height: calc(100vh - 40px);
-    background-color: #f5f0fa;
-    /* Light purple tint */
-    background-image: url('/images/arr.jpg');
-    background-size: 600px;
-    /* Reduced size */
-    background-position: center;
-    background-repeat: repeat;
-    /* Repeat pattern */
+    background-color: #F9FAFB;
+    /* Fond naturel épuré */
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    /* Ombre douce et naturelle */
 }
 
 .chat-header {
@@ -36,16 +31,22 @@
     border: none;
     font-size: 1.2rem;
     cursor: pointer;
-    color: #6A1B9A;
-    /* Primary Purple */
+    color: #7C3AED;
+    /* Violet moderne */
+    transition: color 0.2s ease;
+}
+
+.back-btn:hover {
+    color: #6D28D9;
+    /* Violet plus foncé au hover */
 }
 
 .avatar-placeholder {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: #6A1B9A;
-    /* Primary Purple */
+    background-color: #7C3AED;
+    /* Violet moderne */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -80,7 +81,7 @@
     background: none;
     border: none;
     font-size: 1.1rem;
-    color: #6A1B9A;
+    color: #7C3AED;
     cursor: pointer;
 }
 
@@ -141,7 +142,7 @@
 }
 
 .message-me .message-bubble {
-    background-color: #6A1B9A;
+    background-color: #7C3AED;
     /* Primary Purple */
     color: white;
     border-bottom-right-radius: 2px;
@@ -156,7 +157,7 @@
 .message-sender {
     display: block;
     font-size: 0.75rem;
-    color: #6A1B9A;
+    color: #7C3AED;
     font-weight: 600;
     margin-bottom: 2px;
 }
@@ -196,7 +197,7 @@
     background: none;
     border: none;
     font-size: 1.3rem;
-    color: #6A1B9A;
+    color: #7C3AED;
     cursor: pointer;
     transition: transform 0.2s;
 }
@@ -231,8 +232,10 @@
 
 .message-input:focus {
     outline: none;
-    border-color: #6A1B9A;
+    border-color: #7C3AED;
     background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+    /* Effet focus doux */
 }
 
 /* Dropdown Menu Styles */
@@ -280,13 +283,14 @@
 }
 
 .dropdown-item:hover {
-    background-color: #f5f0fa;
-    color: #6A1B9A;
+    background-color: #F3F4F6;
+    /* Gris très clair naturel */
+    color: #7C3AED;
 }
 
 .dropdown-item i {
     margin-right: 12px;
-    color: #6A1B9A;
+    color: #7C3AED;
 }
 
 .dropdown-item.danger {
