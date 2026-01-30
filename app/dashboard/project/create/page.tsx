@@ -29,7 +29,7 @@ export default function CreateProjectPage() {
         try {
             const objectUrl = URL.createObjectURL(file);
             setAvatarPreview(objectUrl);
-            const publicUrl = await projectService.uploadLogoToSupabase(file);
+            const publicUrl = await projectService.uploadLogo(file);
             setFormData(prev => ({ ...prev, project_logo: publicUrl }));
         } catch (err: any) {
             alert(err.message || "Erreur lors de l'upload de l'image");
@@ -125,56 +125,56 @@ export default function CreateProjectPage() {
                         }}>
                             {/* Lien d'invitation simplifié */}
                             {createdProjectName && createdCreatorId && (
-                              <div style={{
-                                background: '#FFFFFF',
-                                border: '1px solid #E5E7EB',
-                                borderRadius: 8,
-                                padding: '12px',
-                                marginBottom: 16
-                              }}>
-                                <div style={{ fontWeight: 700, marginBottom: 6, color: '#111827' }}>
-                                  Lien d'invitation (à partager)
-                                </div>
                                 <div style={{
-                                  display: 'flex',
-                                  gap: 8,
-                                  alignItems: 'center',
-                                  flexWrap: 'wrap'
-                                }}>
-                                  <code style={{
-                                    background: '#F3F4F6',
+                                    background: '#FFFFFF',
                                     border: '1px solid #E5E7EB',
-                                    padding: '8px 10px',
-                                    borderRadius: 6,
-                                    fontSize: '0.85rem',
-                                    color: '#374151'
-                                  }}>
-                                    {`${typeof window !== 'undefined' ? window.location.origin : ''}/dashboard/project/join?project=${encodeURIComponent(createdProjectName)}&creator=${encodeURIComponent(createdCreatorId)}`}
-                                  </code>
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      const link = `${window.location.origin}/dashboard/project/join?project=${encodeURIComponent(createdProjectName)}&creator=${encodeURIComponent(createdCreatorId)}`;
-                                      navigator.clipboard.writeText(link);
-                                      alert('Lien d\'invitation copié.');
-                                    }}
-                                    style={{
-                                      padding: '8px 12px',
-                                      background: '#7C3AED',
-                                      color: '#fff',
-                                      border: 'none',
-                                      borderRadius: 6,
-                                      fontWeight: 600,
-                                      cursor: 'pointer'
-                                    }}
-                                  >
-                                    Copier le lien
-                                  </button>
+                                    borderRadius: 8,
+                                    padding: '12px',
+                                    marginBottom: 16
+                                }}>
+                                    <div style={{ fontWeight: 700, marginBottom: 6, color: '#111827' }}>
+                                        Lien d'invitation (à partager)
+                                    </div>
+                                    <div style={{
+                                        display: 'flex',
+                                        gap: 8,
+                                        alignItems: 'center',
+                                        flexWrap: 'wrap'
+                                    }}>
+                                        <code style={{
+                                            background: '#F3F4F6',
+                                            border: '1px solid #E5E7EB',
+                                            padding: '8px 10px',
+                                            borderRadius: 6,
+                                            fontSize: '0.85rem',
+                                            color: '#374151'
+                                        }}>
+                                            {`${typeof window !== 'undefined' ? window.location.origin : ''}/dashboard/project/join?project=${encodeURIComponent(createdProjectName)}&creator=${encodeURIComponent(createdCreatorId)}`}
+                                        </code>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const link = `${window.location.origin}/dashboard/project/join?project=${encodeURIComponent(createdProjectName)}&creator=${encodeURIComponent(createdCreatorId)}`;
+                                                navigator.clipboard.writeText(link);
+                                                alert('Lien d\'invitation copié.');
+                                            }}
+                                            style={{
+                                                padding: '8px 12px',
+                                                background: '#7C3AED',
+                                                color: '#fff',
+                                                border: 'none',
+                                                borderRadius: 6,
+                                                fontWeight: 600,
+                                                cursor: 'pointer'
+                                            }}
+                                        >
+                                            Copier le lien
+                                        </button>
+                                    </div>
+                                    <p style={{ color: '#6B7280', marginTop: 8, marginBottom: 0 }}>
+                                        Le destinataire n'aura qu'à saisir <strong>le code</strong> et <strong>son pseudo</strong>.
+                                    </p>
                                 </div>
-                                <p style={{ color: '#6B7280', marginTop: 8, marginBottom: 0 }}>
-                                  Le destinataire n'aura qu'à saisir <strong>le code</strong> et <strong>son pseudo</strong>.
-                                </p>
-                              </div>
                             )}
                             <p style={{
                                 fontSize: '0.9rem',

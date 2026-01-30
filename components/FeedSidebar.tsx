@@ -1,10 +1,11 @@
 "use client";
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from './I18nProvider';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { userService } from '@/lib/services/user.service';
 
 type Props = {
   isCollapsed: boolean;
@@ -14,12 +15,48 @@ type Props = {
 export default function FeedSidebar({ isCollapsed, toggleSidebar }: Props) {
   const { t } = useTranslation();
   const pathname = usePathname();
+  const router = useRouter();
+
+  // État pour stocker l'URL dynamique du profil
+  const [profileUrl, setProfileUrl] = useState<string>('/dashboard/account');
+
+  const collapsedWidth = "80px";
+  const expandedWidth = "260px";
 
   const isActive = (path: string) => pathname === path || pathname?.startsWith(path + '/');
 
-  // ON FORCE LES VALEURS ICI POUR ÉCRASER LE CSS
-  const collapsedWidth = "80px";
-  const expandedWidth = "260px";
+  useEffect(() => {
+    const fetchUserForLink = async () => {
+      try {
+        const user = await userService.getCurrentUser();
+        
+        // CORRECTION ICI :
+        // Le backend (PersonDTO.java) utilise userId (UUID).
+        // Selon votre mapping JSON, cela peut être 'user_id' ou 'userId'.
+        // On utilise 'any' temporairement sur 'user' pour contourner le check TS strict
+        // si le type UserResponseDTO n'est pas encore mis à jour, 
+        // mais l'idéal est de mettre à jour le type dans '../types/api'.
+        const u = user as any; 
+        
+        // On cherche l'ID dans les champs probables
+        const identifier = u.user_id || u.userId || u.id;
+
+        if (identifier) {
+            setProfileUrl(`/dashboard/account/user/${identifier}`);
+        }
+      } catch (error) {
+        console.error("Impossible de récupérer l'utilisateur pour la sidebar", error);
+      }
+    };
+
+    fetchUserForLink();
+  }, []);
+
+  const handleLogout = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    await userService.logout();
+    router.push('/auth/login');
+  };
 
   return (
     <aside 
@@ -27,7 +64,7 @@ export default function FeedSidebar({ isCollapsed, toggleSidebar }: Props) {
       style={{ 
         width: isCollapsed ? collapsedWidth : expandedWidth,
         minWidth: isCollapsed ? collapsedWidth : expandedWidth,
-        transform: 'translateX(0)', // On annule le push hors écran du CSS
+        transform: 'translateX(0)',
         padding: isCollapsed ? '20px 0' : '20px',
         transition: 'width 0.3s ease, padding 0.3s ease'
       }}
@@ -50,7 +87,6 @@ export default function FeedSidebar({ isCollapsed, toggleSidebar }: Props) {
           )}
         </div>
         
-        {/* BOUTON DÉGRADÉ */}
         <motion.button 
           onClick={toggleSidebar}
           whileTap={{ scale: 0.9 }}
@@ -80,7 +116,7 @@ export default function FeedSidebar({ isCollapsed, toggleSidebar }: Props) {
             { href: '/dashboard/feed', icon: 'fas fa-globe-americas', label: t('sidebar.feed') },
             { href: '/dashboard/follow', icon: 'fas fa-bell', label: t('sidebar.subscriptions') },
             { href: '/dashboard/project', icon: 'fas fa-folder-open', label: t('sidebar.projects') },
-            { href: '/dashboard/account', icon: 'fas fa-user-circle', label: t('sidebar.account') },
+            { href: profileUrl, icon: 'fas fa-user-circle', label: t('sidebar.account') },
           ].map((item) => (
             <li key={item.href} className={isActive(item.href) ? 'active' : ''} style={{ width: '100%' }}>
               <Link href={item.href} style={{ 
@@ -95,10 +131,22 @@ export default function FeedSidebar({ isCollapsed, toggleSidebar }: Props) {
           ))}
 
           <li style={{ marginTop: '20px' }}>
-            <Link href="/" className="logout-link" style={{ justifyContent: isCollapsed ? 'center' : 'flex-start' }}>
-              <i className="fas fa-sign-out-alt icon" style={{ margin: 0 }} /> 
-              {!isCollapsed && <span>{t('sidebar.logout')}</span>}
-            </Link>
+            <a 
+              href="#" 
+              onClick={handleLogout} 
+              className="logout-link" 
+              style={{ 
+                display: 'flex',
+                justifyContent: isCollapsed ? 'center' : 'flex-start',
+                padding: '12px 15px',
+                textDecoration: 'none',
+                color: 'inherit',
+                cursor: 'pointer'
+              }}
+            >
+              <i className="fas fa-sign-out-alt icon" style={{ margin: 0, fontSize: '1.2rem' }} /> 
+              {!isCollapsed && <span style={{ marginLeft: '15px' }}>{t('sidebar.logout')}</span>}
+            </a>
           </li>
         </ul>
       </nav>

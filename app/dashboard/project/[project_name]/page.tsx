@@ -61,6 +61,7 @@ export default function ProjectDetailPage() {
     const [error, setError] = useState<string | null>(null);
     const [feedbacks, setFeedbacks] = useState<FeedbackData[]>([]);
     const [isProjectInfoOpen, setIsProjectInfoOpen] = useState(false);
+    const [globalUsers, setGlobalUsers] = useState<UserResponseDTO[]>([]);
     const projectInfoRef = useRef<HTMLDivElement>(null);
 
     // New feedback state
@@ -75,9 +76,13 @@ export default function ProjectDetailPage() {
             setLoading(true);
             setError(null);
             try {
-                // Get current user
-                const userData = await userService.getCurrentUser().catch(() => null);
+                // Get current user and project members for profile images
+                const [userData, projectMembers] = await Promise.all([
+                    userService.getCurrentUser().catch(() => null),
+                    userService.getProjectMembers(projectName).catch(() => [])
+                ]);
                 setCurrentUser(userData);
+                setGlobalUsers(projectMembers);
 
                 // Strategy: 
                 // 1. Try to get details by name (Creator only according to user logs)
@@ -312,8 +317,22 @@ export default function ProjectDetailPage() {
                             <div style={{ fontWeight: 600, color: '#374151' }}>{adminName}</div>
                         </div>
                         <div style={{ marginBottom: '16px' }}>
-                            <label style={{ fontSize: '0.8rem', color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Nombre de membres</label>
-                            <div style={{ fontWeight: 600, color: '#374151' }}>{project.number_of_members} membres</div>
+                            <label style={{ fontSize: '0.8rem', color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Membres ({project.number_of_members})</label>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px', maxHeight: '150px', overflowY: 'auto' }}>
+                                {project.members?.map(member => {
+                                    const user = globalUsers.find(u => u.user_id === member.user_id);
+                                    return (
+                                        <div key={member.member_id} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                            <img
+                                                src={user?.user_logo || "https://i.ibb.co/Qf983vG/avatar-placeholder.png"}
+                                                alt={member.member_pseudo}
+                                                style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover', border: '1px solid #E5E7EB' }}
+                                            />
+                                            <span style={{ fontSize: '0.9rem', color: '#374151', fontWeight: 500 }}>{member.member_pseudo}</span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
                         </div>
                         <div>
                             <label style={{ fontSize: '0.8rem', color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Description</label>

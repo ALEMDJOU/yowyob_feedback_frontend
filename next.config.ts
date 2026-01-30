@@ -3,12 +3,12 @@ const nextConfig = {
   async rewrites() {
     return [
       {
+        // Capture toutes les requêtes vers /api/v1/... et les envoie au backend
         source: '/api/v1/:path*',
-        destination: 'http://localhost:8080/api/v1/:path*', // Ton serveur Java
+        destination: `${process.env.NEXT_PUBLIC_API_URL}/:path*`, 
       },
     ];
   },
-  // Correction ici : "images" et non "mages"
   images: {
     remotePatterns: [
       {
@@ -21,4 +21,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig; // Syntaxe TS correcte

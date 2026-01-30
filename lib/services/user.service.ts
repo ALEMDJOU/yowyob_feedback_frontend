@@ -53,5 +53,20 @@ export const userService = {
                 window.location.href = '/auth/login';
             }
         }
+    },
+
+    /**
+     * Récupère les membres d'un projet spécifique.
+     * Utile pour récupérer les profils utilisateur dans le contexte d'un projet.
+     * Endpoint : GET /api/v1/projects/{projectName}/members
+     */
+    getProjectMembers: async (projectName: string): Promise<UserResponseDTO[]> => {
+        try {
+            // Note: En examinant ProjectController, l'endpoint semble être /projects/{projectName}/members
+            return await apiClient.get<UserResponseDTO[]>(`/projects/${encodeURIComponent(projectName)}/members`);
+        } catch (error: any) {
+            console.error("Erreur [userService.getProjectMembers]:", error);
+            return [];
+        }
     }
 };

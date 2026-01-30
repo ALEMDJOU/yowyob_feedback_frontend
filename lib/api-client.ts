@@ -1,15 +1,13 @@
-// lib/api-client.ts
-
 import { ApiError } from './types/api';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1';
+// IMPORTANT : On utilise le chemin local défini dans next.config.ts
+const BASE_URL = '/api/v1'; 
 
 class ApiClient {
     private async request<T>(
         endpoint: string,
         options: RequestInit = {}
     ): Promise<T> {
-        // Récupération du token depuis le localStorage (clé yowyob_token comme utilisé dans ton projet)
         const token = typeof window !== 'undefined' ? localStorage.getItem('yowyob_token') : null;
 
         const headers: HeadersInit = {
@@ -24,12 +22,11 @@ class ApiClient {
         };
 
         try {
+            // Fetch appellera désormais : http://localhost:3000/api/v1/auth/me
+            // Et Next.js fera le pont vers Render.com
             const response = await fetch(`${BASE_URL}${endpoint}`, config);
 
-            // Gestion des réponses vides (No Content)
-            if (response.status === 204) {
-                return {} as T;
-            }
+            if (response.status === 204) return {} as T;
 
             const data = await response.json();
 
@@ -43,9 +40,7 @@ class ApiClient {
 
             return data as T;
         } catch (err: any) {
-            // Gestion des erreurs réseau ou parsing
-            if (err.status) throw err; // C'est déjà une ApiError
-            
+            if (err.status) throw err;
             throw {
                 message: err.message || 'Erreur de connexion au serveur',
                 status: 500
@@ -86,5 +81,4 @@ class ApiClient {
     }
 }
 
-// CRUCIAL : On exporte une instance déjà créée pour qu'elle soit partagée partout
 export const apiClient = new ApiClient();
