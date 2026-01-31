@@ -14,7 +14,7 @@ export default function SignupPage() {
     const [uploading, setUploading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [confirmPassword, setConfirmPassword] = useState('');
-    
+
     const [formData, setFormData] = useState<Partial<RegisterRequestDTO>>({
         user_type: UserType.PERSON,
         email: '',
@@ -27,14 +27,15 @@ export default function SignupPage() {
         user_logo: '',
         location: '',
         description: '',
-        domain: '' 
+        domain: ''
     });
 
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const [step, setStep] = useState(1);
 
     // Validation Regex
-    const cameroonPhoneRegex = /^(2|6)[0-9]{8}$/; 
+    const cameroonPhoneRegex = /^(2|6)[0-9]{8}$/;
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
     // Helper pour la validation visuelle du mot de passe
@@ -47,21 +48,76 @@ export default function SignupPage() {
     };
 
     const itemVariants = {
-        hidden: { opacity: 0, y: 15 },
-        visible: { opacity: 1, y: 0 }
+        hidden: { opacity: 0, x: 20 },
+        visible: { opacity: 1, x: 0 },
+        exit: { opacity: 0, x: -20 }
     };
 
     const handleInputChange = (field: keyof RegisterRequestDTO, value: any) => {
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
+    const validateStep1 = () => {
+        setError(null);
+        if (userType === UserType.PERSON) {
+            if (!formData.user_firstname || !formData.user_lastname) {
+                setError("Veuillez remplir votre nom et prénom.");
+                return false;
+            }
+        } else {
+            if (!formData.organization_name) {
+                setError("Veuillez saisir le nom de l'organisation.");
+                return false;
+            }
+        }
+
+        if (!formData.domain || !formData.contact || !formData.email) {
+            setError("Veuillez remplir les informations de contact et le domaine d'activité.");
+            return false;
+        }
+
+        if (!cameroonPhoneRegex.test(formData.contact || '')) {
+            setError("Numéro de téléphone invalide (format 9 chiffres : 6XXXXXXXX).");
+            return false;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email || '')) {
+            setError("Veuillez saisir une adresse email valide.");
+            return false;
+        }
+
+        return true;
+    };
+
+    const nextStep = () => {
+        if (validateStep1()) {
+            setStep(2);
+            window.scrollTo(0, 0);
+        }
+    };
+
+    const prevStep = () => {
+        setStep(1);
+        window.scrollTo(0, 0);
+    };
+
     const handleSignup = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
 
-        // Validations locales
-        if (!cameroonPhoneRegex.test(formData.contact || '')) {
-            return setError("Numéro de téléphone invalide. Utilisez un format camerounais à 9 chiffres (ex: 6XXXXXXXX).");
+        if (step === 1) {
+            nextStep();
+            return;
+        }
+
+        // Validations locales Step 2
+        if (userType === UserType.PERSON && !formData.occupation) {
+            return setError("Veuillez renseigner votre profession.");
+        }
+
+        if (!formData.location || !formData.description) {
+            return setError("Veuillez renseigner votre localisation et une description.");
         }
 
         if (!passwordRegex.test(formData.password || '')) {
@@ -79,8 +135,8 @@ export default function SignupPage() {
             if (userType === UserType.ORGANIZATION) {
                 // On mappe obligatoirement organization_name vers user_lastname pour la BD
                 finalData.user_lastname = formData.organization_name;
-                finalData.user_firstname = ''; 
-                finalData.occupation = ''; 
+                finalData.user_firstname = '';
+                finalData.occupation = '';
             }
 
             await authService.register(finalData as RegisterRequestDTO);
@@ -119,10 +175,20 @@ export default function SignupPage() {
     return (
         <div className="auth-page" style={{ backgroundColor: '#f0f2f5', minHeight: '100vh', padding: '40px 20px' }}>
             <motion.div initial="hidden" animate="visible" className="auth-card" style={{ maxWidth: '750px', margin: '0 auto', padding: '40px', boxShadow: '0 10px 30px rgba(0,0,0,0.08)', borderRadius: '16px', backgroundColor: '#fff' }}>
-                <motion.div variants={itemVariants} style={{ textAlign: 'center', marginBottom: '30px' }}>
+                <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} style={{ textAlign: 'center', marginBottom: '30px' }}>
                     <Image src="/images/logo.jpg" alt="Logo" width={80} height={80} style={{ borderRadius: '50%' }} />
-                    <h2 style={{ color: '#6A1B9A', marginTop: '15px', fontWeight: '800' }}>Rejoignez l'aventure</h2>
-                    <p style={{ color: '#888' }}>Sécurité et confidentialité garanties sur Yowyob</p>
+                    <h2 style={{ color: '#6A1B9A', marginTop: '15px', fontWeight: '800' }}>{step === 1 ? "Identité et Contact" : "Profil et Sécurité"}</h2>
+                    <p style={{ color: '#888' }}>Étape {step} sur 2</p>
+
+                    {/* Barre de progression */}
+                    <div style={{ width: '100%', height: '6px', backgroundColor: '#eee', borderRadius: '10px', marginTop: '15px', overflow: 'hidden' }}>
+                        <motion.div
+                            initial={{ width: '50%' }}
+                            animate={{ width: step === 1 ? '50%' : '100%' }}
+                            transition={{ duration: 0.5 }}
+                            style={{ height: '100%', backgroundColor: '#6A1B9A' }}
+                        />
+                    </div>
                 </motion.div>
 
                 <AnimatePresence>
@@ -136,140 +202,189 @@ export default function SignupPage() {
                 </AnimatePresence>
 
                 <form onSubmit={handleSignup}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                        
-                        <div style={{ gridColumn: 'span 2' }}>
-                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>Type de compte</label>
-                            <select 
-                                className="auth-form-control" 
-                                style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '2px solid #eee' }} 
-                                value={userType} 
-                                onChange={(e) => { 
-                                    const val = e.target.value as UserType; 
-                                    setUserType(val); 
-                                    handleInputChange('user_type', val); 
-                                }}
+                    <AnimatePresence mode="wait">
+                        {step === 1 ? (
+                            <motion.div
+                                key="step1"
+                                variants={itemVariants}
+                                initial="hidden"
+                                animate="visible"
+                                exit="exit"
+                                transition={{ duration: 0.3 }}
+                                style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}
                             >
-                                <option value={UserType.PERSON}>👤 Particulier</option>
-                                <option value={UserType.ORGANIZATION}>🏢 Entreprise / Organisation</option>
-                            </select>
-                        </div>
+                                <div style={{ gridColumn: 'span 2' }}>
+                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>Type de compte</label>
+                                    <select
+                                        className="auth-form-control"
+                                        style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '2px solid #eee' }}
+                                        value={userType}
+                                        onChange={(e) => {
+                                            const val = e.target.value as UserType;
+                                            setUserType(val);
+                                            handleInputChange('user_type', val);
+                                        }}
+                                    >
+                                        <option value={UserType.PERSON}>👤 Particulier</option>
+                                        <option value={UserType.ORGANIZATION}>🏢 Entreprise / Organisation</option>
+                                    </select>
+                                </div>
 
-                        <AnimatePresence mode="wait">
-                            {userType === UserType.PERSON ? (
-                                <motion.div key="person-fields" variants={itemVariants} initial="hidden" animate="visible" exit="hidden" style={{ gridColumn: 'span 2', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                                    <div>
-                                        <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600' }}>Prénom</label>
-                                        <input type="text" className="auth-form-control" style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} onChange={(e) => handleInputChange('user_firstname', e.target.value)} required />
+                                {userType === UserType.PERSON ? (
+                                    <>
+                                        <div>
+                                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600' }}>Prénom</label>
+                                            <input type="text" className="auth-form-control" style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} onChange={(e) => handleInputChange('user_firstname', e.target.value)} value={formData.user_firstname || ''} required />
+                                        </div>
+                                        <div>
+                                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600' }}>Nom</label>
+                                            <input type="text" className="auth-form-control" style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} onChange={(e) => handleInputChange('user_lastname', e.target.value)} value={formData.user_lastname || ''} required />
+                                        </div>
+                                    </>
+                                ) : (
+                                    <div style={{ gridColumn: 'span 2' }}>
+                                        <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600' }}>Nom de l'organisation</label>
+                                        <input
+                                            type="text"
+                                            className="auth-form-control"
+                                            placeholder="Ex: Yowyob Sarl"
+                                            style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }}
+                                            onChange={(e) => handleInputChange('organization_name', e.target.value)}
+                                            value={formData.organization_name || ''}
+                                            required
+                                        />
                                     </div>
-                                    <div>
-                                        <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600' }}>Nom</label>
-                                        <input type="text" className="auth-form-control" style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} onChange={(e) => handleInputChange('user_lastname', e.target.value)} required />
-                                    </div>
+                                )}
+
+                                <div>
+                                    <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#6A1B9A' }}>
+                                        <span style={{ color: '#6A1B9A' }}>🌐</span> Domaine d'activité
+                                    </label>
+                                    <input type="text" className="auth-form-control" placeholder="Ex: Informatique, Commerce..." style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} onChange={(e) => handleInputChange('domain', e.target.value)} value={formData.domain || ''} required />
+                                </div>
+
+                                <div>
+                                    <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#6A1B9A' }}>
+                                        <span style={{ color: '#6A1B9A' }}>📧</span> Email
+                                    </label>
+                                    <input type="email" className="auth-form-control" style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} onChange={(e) => handleInputChange('email', e.target.value)} value={formData.email || ''} required />
+                                </div>
+
+                                <div style={{ gridColumn: 'span 2' }}>
+                                    <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#6A1B9A' }}>
+                                        <span style={{ color: '#6A1B9A' }}>📞</span> Téléphone (Cameroun)
+                                    </label>
+                                    <input type="text" className="auth-form-control" placeholder="6XXXXXXXX" style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} onChange={(e) => handleInputChange('contact', e.target.value)} value={formData.contact || ''} required />
+                                </div>
+
+                                <div style={{ gridColumn: 'span 2', marginTop: '10px' }}>
+                                    <button
+                                        type="button"
+                                        onClick={nextStep}
+                                        style={{ width: '100%', padding: '16px', backgroundColor: '#6A1B9A', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: 'bold' }}
+                                    >
+                                        Suivant
+                                    </button>
+                                </div>
+                            </motion.div>
+                        ) : (
+                            <motion.div
+                                key="step2"
+                                variants={itemVariants}
+                                initial="hidden"
+                                animate="visible"
+                                exit="exit"
+                                transition={{ duration: 0.3 }}
+                                style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}
+                            >
+                                {userType === UserType.PERSON && (
                                     <div style={{ gridColumn: 'span 2' }}>
                                         <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600' }}>Occupation / Profession</label>
-                                        <input type="text" className="auth-form-control" placeholder="Ex: Étudiant, Développeur..." style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} onChange={(e) => handleInputChange('occupation', e.target.value)} required />
+                                        <input type="text" className="auth-form-control" placeholder="Ex: Étudiant, Développeur..." style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} onChange={(e) => handleInputChange('occupation', e.target.value)} value={formData.occupation || ''} required />
                                     </div>
-                                </motion.div>
-                            ) : (
-                                <motion.div key="org-fields" variants={itemVariants} initial="hidden" animate="visible" exit="hidden" style={{ gridColumn: 'span 2' }}>
-                                    <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600' }}>Nom de l'organisation</label>
-                                    <input 
-                                        type="text" 
-                                        className="auth-form-control" 
-                                        placeholder="Ex: Yowyob Sarl" 
-                                        style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} 
-                                        onChange={(e) => handleInputChange('organization_name', e.target.value)} 
-                                        required 
-                                    />
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
+                                )}
 
-                        <motion.div variants={itemVariants}>
-                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#6A1B9A' }}>
-                                <span style={{ color: '#6A1B9A' }}>🌐</span> Domaine d'activité
-                            </label>
-                            <input type="text" className="auth-form-control" placeholder="Ex: Informatique, Commerce..." style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} onChange={(e) => handleInputChange('domain', e.target.value)} required />
-                        </motion.div>
-
-                        <motion.div variants={itemVariants}>
-                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#6A1B9A' }}>
-                                <span style={{ color: '#6A1B9A' }}>📍</span> Localisation
-                            </label>
-                            <input type="text" className="auth-form-control" placeholder="Ex: Douala, Cameroun" style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} onChange={(e) => handleInputChange('location', e.target.value)} required />
-                        </motion.div>
-
-                        <div style={{ gridColumn: 'span 2' }}>
-                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#6A1B9A' }}>
-                                <span style={{ color: '#6A1B9A' }}>📝</span> Description
-                            </label>
-                            <textarea className="auth-form-control" rows={2} style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} placeholder="Décrivez brièvement l'activité..." onChange={(e) => handleInputChange('description', e.target.value)} required />
-                        </div>
-
-                        <motion.div variants={itemVariants}>
-                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#6A1B9A' }}>
-                                <span style={{ color: '#6A1B9A' }}>📞</span> Téléphone (Cameroun)
-                            </label>
-                            <input type="text" className="auth-form-control" placeholder="6XXXXXXXX" style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} onChange={(e) => handleInputChange('contact', e.target.value)} required />
-                        </motion.div>
-
-                        <motion.div variants={itemVariants}>
-                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#6A1B9A' }}>
-                                <span style={{ color: '#6A1B9A' }}>📧</span> Email
-                            </label>
-                            <input type="email" className="auth-form-control" style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} onChange={(e) => handleInputChange('email', e.target.value)} required />
-                        </motion.div>
-
-                        <motion.div variants={itemVariants}>
-                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600' }}>Mot de passe</label>
-                            <div style={{ position: 'relative' }}>
-                                <input type={showPassword ? "text" : "password"} className="auth-form-control" style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} onChange={(e) => handleInputChange('password', e.target.value)} required />
-                                <span onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', display: 'inline-flex' }}>
-                                    {showPassword ? (
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" stroke="#6A1B9A" strokeWidth="2" fill="none"/>
-                                            <circle cx="12" cy="12" r="3" fill="#6A1B9A"/>
-                                        </svg>
-                                    ) : (
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" stroke="#6A1B9A" strokeWidth="2" fill="none"/>
-                                            <circle cx="12" cy="12" r="3" fill="#6A1B9A"/>
-                                            <path d="M4 4l16 16" stroke="#6A1B9A" strokeWidth="2"/>
-                                        </svg>
-                                    )}
-                                </span>
-                            </div>
-                            <div style={{ marginTop: '8px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px', backgroundColor: '#f9f9f9', padding: '8px', borderRadius: '6px' }}>
-                                <Requirement met={passwordMetadata.hasMinLength} text="8+ caractères" />
-                                <Requirement met={passwordMetadata.hasUpper} text="Majuscule" />
-                                <Requirement met={passwordMetadata.hasLower} text="Minuscule" />
-                                <Requirement met={passwordMetadata.hasNumber} text="Chiffre" />
-                                <Requirement met={passwordMetadata.hasSpecial} text="Spécial (@$!%*?&)" />
-                            </div>
-                        </motion.div>
-
-                        <motion.div variants={itemVariants}>
-                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600' }}>Confirmation</label>
-                            <input type={showPassword ? "text" : "password"} className="auth-form-control" style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
-                            {confirmPassword && (
-                                <div style={{ fontSize: '0.75rem', marginTop: '4px', color: formData.password === confirmPassword ? '#2E7D32' : '#D32F2F' }}>
-                                    {formData.password === confirmPassword ? '✓ Les mots de passe correspondent' : '✗ Les mots de passe diffèrent'}
+                                <div>
+                                    <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#6A1B9A' }}>
+                                        <span style={{ color: '#6A1B9A' }}>📍</span> Localisation
+                                    </label>
+                                    <input type="text" className="auth-form-control" placeholder="Ex: Douala, Cameroun" style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} onChange={(e) => handleInputChange('location', e.target.value)} value={formData.location || ''} required />
                                 </div>
-                            )}
-                        </motion.div>
 
-                        <div style={{ gridColumn: 'span 2' }}>
-                            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#6A1B9A' }}>
-                                <span style={{ color: '#6A1B9A' }}>🖼️</span> Logo ou Photo
-                            </label>
-                            <input type="file" accept="image/*" onChange={handleImageUpload} style={{ width: '100%', padding: '10px', backgroundColor: '#f9f9f9', borderRadius: '8px', border: '1px dashed #ccc' }} />
-                        </div>
-                    </div>
+                                <div>
+                                    <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#6A1B9A' }}>
+                                        <span style={{ color: '#6A1B9A' }}>📝</span> Description
+                                    </label>
+                                    <textarea className="auth-form-control" rows={2} style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} placeholder="Décrivez brièvement l'activité..." onChange={(e) => handleInputChange('description', e.target.value)} value={formData.description || ''} required />
+                                </div>
 
-                    <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit" style={{ width: '100%', padding: '16px', marginTop: '30px', backgroundColor: '#6A1B9A', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: 'bold' }} disabled={loading || uploading}>
-                        {loading ? '🚀 Traitement...' : 'Créer mon compte sécurisé'}
-                    </motion.button>
+                                <div style={{ gridColumn: 'span 2' }}>
+                                    <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#6A1B9A' }}>
+                                        <span style={{ color: '#6A1B9A' }}>🖼️</span> Logo ou Photo
+                                    </label>
+                                    <input type="file" accept="image/*" onChange={handleImageUpload} style={{ width: '100%', padding: '10px', backgroundColor: '#f9f9f9', borderRadius: '8px', border: '1px dashed #ccc' }} />
+                                    {formData.user_logo && <p style={{ fontSize: '0.8rem', color: '#2E7D32', marginTop: '5px' }}>✓ Image chargée</p>}
+                                </div>
+
+                                <div style={{ gridColumn: 'span 2' }}>
+                                    <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600' }}>Mot de passe</label>
+                                    <div style={{ position: 'relative' }}>
+                                        <input type={showPassword ? "text" : "password"} className="auth-form-control" style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} onChange={(e) => handleInputChange('password', e.target.value)} required />
+                                        <span onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', display: 'inline-flex' }}>
+                                            {showPassword ? (
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" stroke="#6A1B9A" strokeWidth="2" fill="none" />
+                                                    <circle cx="12" cy="12" r="3" fill="#6A1B9A" />
+                                                </svg>
+                                            ) : (
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" stroke="#6A1B9A" strokeWidth="2" fill="none" />
+                                                    <circle cx="12" cy="12" r="3" fill="#6A1B9A" />
+                                                    <path d="M4 4l16 16" stroke="#6A1B9A" strokeWidth="2" />
+                                                </svg>
+                                            )}
+                                        </span>
+                                    </div>
+                                    <div style={{ marginTop: '8px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px', backgroundColor: '#f9f9f9', padding: '8px', borderRadius: '6px' }}>
+                                        <Requirement met={passwordMetadata.hasMinLength} text="8+ caractères" />
+                                        <Requirement met={passwordMetadata.hasUpper} text="Majuscule" />
+                                        <Requirement met={passwordMetadata.hasLower} text="Minuscule" />
+                                        <Requirement met={passwordMetadata.hasNumber} text="Chiffre" />
+                                        <Requirement met={passwordMetadata.hasSpecial} text="Spécial (@$!%*?&)" />
+                                    </div>
+                                </div>
+
+                                <div style={{ gridColumn: 'span 2' }}>
+                                    <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600' }}>Confirmation</label>
+                                    <input type={showPassword ? "text" : "password"} className="auth-form-control" style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+                                    {confirmPassword && (
+                                        <div style={{ fontSize: '0.75rem', marginTop: '4px', color: formData.password === confirmPassword ? '#2E7D32' : '#D32F2F' }}>
+                                            {formData.password === confirmPassword ? '✓ Les mots de passe correspondent' : '✗ Les mots de passe diffèrent'}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div style={{ gridColumn: 'span 2', display: 'flex', gap: '15px' }}>
+                                    <button
+                                        type="button"
+                                        onClick={prevStep}
+                                        style={{ flex: 1, padding: '16px', backgroundColor: '#f0f2f5', color: '#666', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: 'bold' }}
+                                    >
+                                        Retour
+                                    </button>
+                                    <motion.button
+                                        whileHover={{ scale: 1.02 }}
+                                        whileTap={{ scale: 0.98 }}
+                                        type="submit"
+                                        style={{ flex: 2, padding: '16px', backgroundColor: '#6A1B9A', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: 'bold' }}
+                                        disabled={loading || uploading}
+                                    >
+                                        {loading ? '🚀 Traitement...' : 'S\'inscrire'}
+                                    </motion.button>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </form>
 
                 <div style={{ marginTop: '25px', textAlign: 'center', color: '#666' }}>

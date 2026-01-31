@@ -102,26 +102,35 @@ export default function FeedPage() {
                 <h3 style={{ marginBottom: '20px', fontWeight: 700, fontSize: '1.25rem' }}>{t('feed.featuredTitle')}</h3>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
 
-                    {feedData.users.slice(0, 6).map(user => (
-                        <div key={user.user_id} style={{ background: 'white', borderRadius: '16px', padding: '20px', textAlign: 'center', boxShadow: '0 4px 10px rgba(0,0,0,0.05)', border: '1px solid #F3F4F6' }}>
-                            <img
-                                src={user.user_logo || "https://i.ibb.co/Qf983vG/avatar-placeholder.png"}
-                                alt={`${user.user_firstname} ${user.user_lastname}`}
-                                style={{ width: '80px', height: '80px', borderRadius: '50%', marginBottom: '15px', border: '3px solid #F3F4F6', objectFit: 'cover' }}
-                            />
-                            <h4 style={{ margin: '0 0 10px 0', color: '#1F2937' }}>
-                                {user.user_firstname} {user.user_lastname}
-                            </h4>
-                            <p style={{ fontSize: '0.85rem', color: '#6B7280', marginBottom: '15px' }}>{user.occupation || user.domain || 'Membre'}</p>
-                            <button style={{
-                                background: '#7C3AED', color: 'white', border: 'none', width: '100%',
-                                borderRadius: '10px', padding: '10px', fontWeight: 600, cursor: 'pointer',
-                                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
-                            }}>
-                                <i className="fas fa-rss"></i> {t('feed.subscribe')}
-                            </button>
-                        </div>
-                    ))}
+                    {feedData.users.map(user => {
+                        // Heuristique pour le type de l'utilisateur si non spécifié (cas des membres de projet)
+                        // Dans Signup.tsx, les organisations ont user_firstname vide.
+                        const isOrg = user.user_type === 'ORGANIZATION' || (!user.user_firstname && user.user_lastname);
+                        const displayName = isOrg ? user.user_lastname : `${user.user_firstname} ${user.user_lastname}`;
+                        const subTitle = isOrg ? (user.domain || 'Organisation') : (user.occupation || user.domain || 'Membre');
+
+                        return (
+                            <div key={user.user_id} style={{ background: 'white', borderRadius: '16px', padding: '20px', textAlign: 'center', boxShadow: '0 4px 10px rgba(0,0,0,0.05)', border: '1px solid #F3F4F6' }}>
+                                <img
+                                    src={user.user_logo || "https://i.ibb.co/Qf983vG/avatar-placeholder.png"}
+                                    alt={displayName}
+                                    style={{ width: '80px', height: '80px', borderRadius: '50%', marginBottom: '15px', border: '3px solid #F3F4F6', objectFit: 'cover' }}
+                                />
+                                <h4 style={{ margin: '0 0 10px 0', color: '#1F2937' }}>
+                                    {displayName}
+                                    {isOrg && <i className="fas fa-check-circle" style={{ marginLeft: '6px', color: '#7C3AED', fontSize: '0.9rem' }}></i>}
+                                </h4>
+                                <p style={{ fontSize: '0.85rem', color: '#6B7280', marginBottom: '15px' }}>{subTitle}</p>
+                                <button style={{
+                                    background: '#7C3AED', color: 'white', border: 'none', width: '100%',
+                                    borderRadius: '10px', padding: '10px', fontWeight: 600, cursor: 'pointer',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
+                                }}>
+                                    <i className="fas fa-rss"></i> {t('feed.subscribe')}
+                                </button>
+                            </div>
+                        );
+                    })}
 
                     {feedData.users.length === 0 && (
                         <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '20px', color: '#9CA3AF' }}>

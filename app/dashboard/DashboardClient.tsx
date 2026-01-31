@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import FeedSidebar from '@/components/FeedSidebar';
 import MagicPageEnhancer from '@/components/MagicPageEnhancer';
+import PageTransition from '@/components/PageTransition';
 import '../feed.css';
 
 export default function DashboardClient({ children }: { children: React.ReactNode }) {
@@ -29,7 +30,6 @@ export default function DashboardClient({ children }: { children: React.ReactNod
     return (
         <MagicPageEnhancer>
             <div className="dashboard-container">
-                {/* Ta sidebar contient maintenant l'unique bouton de contrôle */}
                 <FeedSidebar isCollapsed={isCollapsed} toggleSidebar={toggleSidebar} />
 
                 <main className="main-content" style={{ marginLeft: isCollapsed ? '80px' : '260px', transition: 'margin 0.3s ease' }}>
@@ -37,9 +37,9 @@ export default function DashboardClient({ children }: { children: React.ReactNod
                         <span className="app-name-mobile">Yowyob</span>
                     </div>
 
-                    {/* Le bouton "desktop-toggle" a été supprimé pour épurer l'interface */}
-                    
-                    {children}
+                    <PageTransition>
+                        {children}
+                    </PageTransition>
                 </main>
             </div>
         </MagicPageEnhancer>

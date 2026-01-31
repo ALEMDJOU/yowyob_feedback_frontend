@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { projectService, JoinProjectRequestDTO } from '@/lib/services/project.service';
 
-export default function JoinProjectPage() {
+function JoinProjectForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const presetProject = searchParams.get('project') || '';
@@ -49,12 +49,12 @@ export default function JoinProjectPage() {
 
     setSubmitting(true);
     try {
-        const payload: JoinProjectRequestDTO = {
-            projectName: projectName.trim(),
-            creatorId: creatorId.trim(),
-            code: code.trim().toUpperCase(),
-            memberPseudo: memberPseudo.trim(),
-        };
+      const payload: JoinProjectRequestDTO = {
+        projectName: projectName.trim(),
+        creatorId: creatorId.trim(),
+        code: code.trim().toUpperCase(),
+        memberPseudo: memberPseudo.trim(),
+      };
       await projectService.joinProject(payload);
 
       router.push(`/dashboard/project/${encodeURIComponent(projectName.trim())}`);
@@ -116,7 +116,7 @@ export default function JoinProjectPage() {
                 <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 8, padding: '10px 12px' }}>
                   <div style={{ fontWeight: 600, color: '#111827' }}>Projet ciblé</div>
                   <div style={{ color: '#6B7280' }}>
-                    {projectName} • Créateur: {creatorId ? `${creatorId.slice(0,8)}…` : ''}
+                    {projectName} • Créateur: {creatorId ? `${creatorId.slice(0, 8)}…` : ''}
                   </div>
                 </div>
               )}
@@ -209,5 +209,17 @@ export default function JoinProjectPage() {
         </div>
       </div>
     </>
+  );
+}
+
+export default function JoinProjectPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ maxWidth: 720, margin: '0 auto', padding: 20, textAlign: 'center' }}>
+        <p>Chargement...</p>
+      </div>
+    }>
+      <JoinProjectForm />
+    </Suspense>
   );
 }

@@ -1,0 +1,40 @@
+
+> yowyob_feedback@0.1.0 build
+> next build
+
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 71s
+  Running TypeScript ...
+  Collecting page data using 3 workers ...
+  Generating static pages using 3 workers (0/16) ...
+  Generating static pages using 3 workers (4/16) 
+  Generating static pages using 3 workers (8/16) 
+  Generating static pages using 3 workers (12/16) 
+✓ Generating static pages using 3 workers (16/16) in 4.7s
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/chat
+├ ○ /auth/forgot-password
+├ ○ /auth/login
+├ ○ /auth/signup
+├ ○ /dashboard/account
+├ ○ /dashboard/account/edit
+├ ƒ /dashboard/account/user/[username]
+├ ○ /dashboard/feed
+├ ○ /dashboard/follow
+├ ○ /dashboard/project
+├ ƒ /dashboard/project/[project_name]
+├ ○ /dashboard/project/create
+├ ○ /dashboard/project/join
+└ ○ /dashboard/yowbot
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

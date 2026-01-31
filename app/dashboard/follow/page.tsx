@@ -11,25 +11,24 @@ export default function FollowPage() {
     const initialFeedbacks: FeedbackData[] = [
         {
             id: '1',
-            author: 'Tech Innov S.A.',
-            authorAvatar: 'https://i.ibb.co/6P8N9zR/company-logo.png',
-            time: '5 minutes',
+            author: { name: 'Tech Innov S.A.', avatar: 'https://i.ibb.co/6P8N9zR/company-logo.png' },
+            createdAt: new Date().toISOString(),
             content: 'Nous sommes ravis d\'annoncer la sortie de notre nouveau produit "Quantum Leap" ! Vos premiers feedbacks sont précieux. Dites-nous ce que vous en pensez !',
             likes: 12,
             liked: false,
+            project: { name: 'Quantum Leap', id: 'p1' },
             comments: [
                 {
                     id: 'c1',
-                    author: 'Marie Dubois',
+                    author: { name: 'Marie Dubois', avatar: 'https://i.ibb.co/Qf983vG/avatar-placeholder.png' },
                     text: 'Très intéressant ! J\'ai hâte de tester 🎉',
-                    avatar: 'https://i.ibb.co/Qf983vG/avatar-placeholder.png',
                     likes: 3,
                     liked: false,
                     replies: []
                 },
                 {
                     id: 'c2',
-                    author: 'Pierre Martin',
+                    author: { name: 'Pierre Martin', avatar: 'https://i.ibb.co/Qf983vG/avatar-placeholder.png' },
                     text: 'Excellente initiative !',
                     likes: 0,
                     liked: false,
@@ -39,16 +38,16 @@ export default function FollowPage() {
         },
         {
             id: '2',
-            author: 'Jean Duport',
-            authorAvatar: 'https://i.ibb.co/Qf983vG/avatar-placeholder.png',
-            time: '1 heure',
+            author: { name: 'Jean Duport', avatar: 'https://i.ibb.co/Qf983vG/avatar-placeholder.png' },
+            createdAt: new Date(Date.now() - 3600 * 1000).toISOString(),
             content: 'Le service client de Global Corp est excellent. J\'ai posté un feedback sur leur produit hier et j\'ai eu une réponse en 30 minutes. Bravo !',
             likes: 45,
             liked: false,
+            project: { name: 'Global Corp', id: 'p2' },
             comments: [
                 {
                     id: 'c3',
-                    author: 'Sophie Laurent',
+                    author: { name: 'Sophie Laurent', avatar: 'https://i.ibb.co/Qf983vG/avatar-placeholder.png' },
                     text: 'Je confirme, leur service est top ! 👍',
                     likes: 5,
                     liked: true,
@@ -58,12 +57,12 @@ export default function FollowPage() {
         },
         {
             id: '3',
-            author: 'Sophie Martin',
-            authorAvatar: 'https://i.ibb.co/Qf983vG/avatar-placeholder.png',
-            time: '2 heures',
+            author: { name: 'Sophie Martin', avatar: 'https://i.ibb.co/Qf983vG/avatar-placeholder.png' },
+            createdAt: new Date(Date.now() - 7200 * 1000).toISOString(),
             content: 'Excellente expérience avec l\'équipe de Design Studio ! Ils ont vraiment écouté nos besoins et livré un travail de qualité.',
             likes: 28,
             liked: false,
+            project: { name: 'Design Studio', id: 'p3' },
             comments: []
         }
     ];

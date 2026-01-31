@@ -12,7 +12,7 @@ export default function FollowerIndexPage() {
   const [loading, setLoading] = useState(true);
 
   // Configuration de l'URL de stockage
-  const BUCKET_NAME = 'yowyob_feedback'; 
+  const BUCKET_NAME = 'yowyob_feedback';
   const FOLDER_NAME = 'profiles';
   const SUPABASE_STORAGE_URL = `https://rwjlcxbvpoozggzkjfmi.supabase.co/storage/v1/object/public/${BUCKET_NAME}/${FOLDER_NAME}/`;
 
@@ -30,8 +30,8 @@ export default function FollowerIndexPage() {
     fetchProfile();
   }, []);
 
-  if (loading) return <div className="loading-state" style={{padding: '50px', textAlign: 'center'}}>Chargement du profil...</div>;
-  if (!user) return <div className="error-state" style={{padding: '50px', textAlign: 'center', color: 'red'}}>Erreur : Profil non trouvé.</div>;
+  if (loading) return <div className="loading-state" style={{ padding: '50px', textAlign: 'center' }}>Chargement du profil...</div>;
+  if (!user) return <div className="error-state" style={{ padding: '50px', textAlign: 'center', color: 'red' }}>Erreur : Profil non trouvé.</div>;
 
   const isPerson = user.user_type === UserType.PERSON;
 
@@ -176,15 +176,15 @@ export default function FollowerIndexPage() {
 
       <div className="profile-page">
         <div className="profile-container-custom">
-          
+
           <div className="avatar-main-wrapper">
             <div className="avatar-circle-container">
-              <Image 
-                src={getProfileImage()} 
-                alt="Photo de profil" 
-                fill 
-                style={{ objectFit: 'cover' }} 
-                priority 
+              <Image
+                src={getProfileImage()}
+                alt="Photo de profil"
+                fill
+                style={{ objectFit: 'cover' }}
+                priority
                 unoptimized={process.env.NODE_ENV === 'development'}
               />
             </div>
@@ -197,7 +197,7 @@ export default function FollowerIndexPage() {
           </div>
 
           <div className="user-type-tag">
-             {isPerson ? 'Particulier' : 'Organisation'}
+            {isPerson ? 'Particulier' : 'Organisation'}
           </div>
 
           <div className="info-grid">
@@ -276,13 +276,13 @@ export default function FollowerIndexPage() {
 
             <div className="description-box">
               <span className="info-label"><i className="fas fa-info-circle"></i> Description</span>
-              <p style={{fontStyle: 'italic', color: '#444', marginTop: '8px', fontSize: '1rem'}}>
+              <p style={{ fontStyle: 'italic', color: '#444', marginTop: '8px', fontSize: '1rem' }}>
                 {user.description || "Aucune description disponible pour ce profil."}
               </p>
             </div>
           </div>
 
-          <Link href="/follower/edit" className="btn btn-secondary btn-edit-main">
+          <Link href="/dashboard/account/edit" className="btn btn-secondary btn-edit-main">
             <i className="fas fa-pen"></i>
             {t('account.editProfile')}
           </Link>

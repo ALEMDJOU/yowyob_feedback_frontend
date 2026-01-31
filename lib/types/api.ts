@@ -14,6 +14,19 @@ export interface LoginRequestDTO {
     password: string;
 }
 
+export interface UpdateProfileRequestDTO {
+    user_firstname?: string;
+    user_lastname?: string;
+    email?: string;
+    contact?: string;
+    user_logo?: string;
+    domain?: string;
+    description?: string;
+    password?: string;
+    occupation?: string;
+    location?: string;
+}
+
 export interface RegisterRequestDTO {
     user_type: UserType;
     user_firstname?: string;
@@ -44,6 +57,7 @@ export interface UserResponseDTO {
     certified: boolean;
     occupation?: string;
     location?: string;
+    member_id?: string; // AJOUTÉ : Pour résoudre l'erreur ts(2339)
 }
 
 export interface AuthResponseDTO {
@@ -113,6 +127,7 @@ export interface MemberResponseDTO {
     user_firstname?: string;
     user_lastname?: string;
     user_email?: string;
+    user_logo?: string;
 }
 
 /**
@@ -166,6 +181,47 @@ export interface CreateCommentRequestDTO {
 
 export interface UpdateCommentRequestDTO {
     content: string;
+}
+
+/**
+ * SUBSCRIPTION TYPES
+ */
+
+export interface SubscriptionStatsDTO {
+    followersCount: number;
+    followingCount: number;
+}
+
+export interface PersonDTO {
+    userId: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    contact: string;
+    profileImage: string;
+    domain: string;
+    description: string;
+    certified: boolean;
+    userType: string;
+    registrationDateTime: string;
+    subscriptionStats?: SubscriptionStatsDTO;
+    occupation?: string;
+}
+
+export interface SubscriptionDTO {
+    followedId: string;
+    followerId: string;
+    followed?: PersonDTO;
+    follower?: PersonDTO;
+    followDateTime: string;
+}
+
+export interface PageResponse<T> {
+    content: T[];
+    totalPages: number;
+    totalElements: number;
+    size: number;
+    number: number;
 }
 
 /**

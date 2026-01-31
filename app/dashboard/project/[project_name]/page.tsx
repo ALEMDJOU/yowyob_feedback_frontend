@@ -76,38 +76,31 @@ export default function ProjectDetailPage() {
             setLoading(true);
             setError(null);
             try {
-                // Get current user and project members for profile images
-                const [userData, projectMembers] = await Promise.all([
-                    userService.getCurrentUser().catch(() => null),
-                    userService.getProjectMembers(projectName).catch(() => [])
-                ]);
+                // 1. Get current user first
+                const userData = await userService.getCurrentUser().catch(() => null);
                 setCurrentUser(userData);
-                setGlobalUsers(projectMembers);
 
-                // Strategy: 
-                // 1. Try to get details by name (Creator only according to user logs)
-                // 2. If it fails, fallback to getUserProjects() and find the matching project
-
+                // 2. Resolve project details
                 let projectData: ProjectDetailResponseDTO | null = null;
-
                 try {
                     projectData = await projectService.getProjectDetailsByName(projectName);
                 } catch (err) {
-                    // console.warn("Detail fetch restricted, trying member list fallback...");
                     const userProjects = await projectService.getUserProjects().catch(() => []);
                     const found = userProjects.find(p => p.project_name === projectName);
 
                     if (found) {
-                        projectData = {
-                            ...found,
-                            members: []
-                        };
+                        projectData = { ...found, members: [] };
                     } else if (projectName === "Projet de démo") {
                         projectData = mockProject;
                     } else {
-                        // Strict Access: If not creator AND not in user project list
                         throw new Error("Accès refusé : Vous devez être membre ou administrateur de ce projet pour voir ses détails.");
                     }
+                }
+
+                // 3. Only fetch members if we are the creator (backend restriction)
+                if (projectData && userData && projectData.creator_id === userData.user_id) {
+                    const projectMembers = await userService.getProjectMembers(projectName).catch(() => []);
+                    setGlobalUsers(projectMembers);
                 }
 
                 setProject(projectData);
