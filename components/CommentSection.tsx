@@ -6,7 +6,7 @@ import { useToast } from './ToastProvider';
 import { commentService } from '../lib/services/comment.service';
 import { CommentResponseDTO } from '../lib/types/api';
 import { userService } from '../lib/services/user.service';
-import ConfirmationModal from './ConfirmationModal';
+
 
 interface CommentSectionProps {
     feedbackId: string;
@@ -210,7 +210,34 @@ export default function CommentSection({ feedbackId, onCommentCountChange }: Com
                                         </span>
                                     </div>
 
-                                    {editingCommentId === comment.comments_id ? (
+                                    {deletingCommentId === comment.comments_id ? (
+                                        // Delete Confirmation Mode
+                                        <div style={{ padding: '8px 0', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                            <p style={{ fontSize: '0.9rem', color: '#dc2626', fontWeight: '500', margin: 0 }}>
+                                                Voulez-vous vraiment supprimer ce commentaire ?
+                                            </p>
+                                            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '4px' }}>
+                                                <button
+                                                    onClick={() => setDeletingCommentId(null)}
+                                                    style={{
+                                                        fontSize: '0.85rem', color: '#6b7280', background: 'none', border: '1px solid #e5e7eb',
+                                                        padding: '4px 12px', borderRadius: '6px', cursor: 'pointer'
+                                                    }}
+                                                >
+                                                    Annuler
+                                                </button>
+                                                <button
+                                                    onClick={handleDeleteComment}
+                                                    style={{
+                                                        fontSize: '0.85rem', color: 'white', background: '#ef4444', border: 'none',
+                                                        padding: '4px 12px', borderRadius: '6px', cursor: 'pointer', fontWeight: '600'
+                                                    }}
+                                                >
+                                                    Supprimer
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ) : editingCommentId === comment.comments_id ? (
                                         // Edit Mode
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                             <textarea
@@ -231,49 +258,36 @@ export default function CommentSection({ feedbackId, onCommentCountChange }: Com
                                     )}
                                 </div>
 
-                                {/* Actions */}
-                                <div style={{ display: 'flex', gap: '16px', marginTop: '6px', marginLeft: '8px', fontSize: '0.75rem', fontWeight: '600', color: '#6b7280' }}>
-                                    {/* Like Button (Placeholder functionality as backend API for comment likes wasn't explicitly shown in the task image but often exists) */}
-                                    {/* <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280' }}>J'aime ({comment.likes})</button> */}
-
-                                    {currentUserPseudo === comment.commenter_name && (
-                                        <>
-                                            <button
-                                                onClick={() => { setEditingCommentId(comment.comments_id); setEditContent(comment.content); }}
-                                                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', transition: '0.2s' }}
-                                                onMouseOver={(e) => e.currentTarget.style.color = '#4b5563'}
-                                                onMouseOut={(e) => e.currentTarget.style.color = '#6b7280'}
-                                            >
-                                                Modifier
-                                            </button>
-                                            <button
-                                                onClick={() => setDeletingCommentId(comment.comments_id)}
-                                                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ef4444', transition: '0.2s' }}
-                                                onMouseOver={(e) => e.currentTarget.style.color = '#dc2626'}
-                                                onMouseOut={(e) => e.currentTarget.style.color = '#ef4444'}
-                                            >
-                                                Supprimer
-                                            </button>
-                                        </>
-                                    )}
-                                </div>
+                                {/* Actions - Hide actions if editing or deleting */}
+                                {editingCommentId !== comment.comments_id && deletingCommentId !== comment.comments_id && (
+                                    <div style={{ display: 'flex', gap: '16px', marginTop: '6px', marginLeft: '8px', fontSize: '0.75rem', fontWeight: '600', color: '#6b7280' }}>
+                                        {currentUserPseudo === comment.commenter_name && (
+                                            <>
+                                                <button
+                                                    onClick={() => { setEditingCommentId(comment.comments_id); setEditContent(comment.content); }}
+                                                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', transition: '0.2s' }}
+                                                    onMouseOver={(e) => e.currentTarget.style.color = '#4b5563'}
+                                                    onMouseOut={(e) => e.currentTarget.style.color = '#6b7280'}
+                                                >
+                                                    Modifier
+                                                </button>
+                                                <button
+                                                    onClick={() => setDeletingCommentId(comment.comments_id)}
+                                                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ef4444', transition: '0.2s' }}
+                                                    onMouseOver={(e) => e.currentTarget.style.color = '#dc2626'}
+                                                    onMouseOut={(e) => e.currentTarget.style.color = '#ef4444'}
+                                                >
+                                                    Supprimer
+                                                </button>
+                                            </>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </motion.div>
                     ))}
                 </AnimatePresence>
             </div>
-
-            {/* Confirmation Modal for Deletion */}
-            <ConfirmationModal
-                isOpen={!!deletingCommentId}
-                title="Supprimer le commentaire ?"
-                message="Êtes-vous sûr de vouloir supprimer ce commentaire ?"
-                confirmText="Supprimer"
-                cancelText="Annuler"
-                isDangerous={true}
-                onConfirm={handleDeleteComment}
-                onCancel={() => setDeletingCommentId(null)}
-            />
         </div>
     );
 }

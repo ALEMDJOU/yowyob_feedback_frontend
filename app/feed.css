@@ -495,7 +495,9 @@ body {
     .sidebar.collapsed {
         transform: translateX(-100%);
         /* Hidden state */
-        width: 0 !important; min-width: 0 !important; padding: 0 !important;
+        width: 0 !important;
+        min-width: 0 !important;
+        padding: 0 !important;
         /* Keep width so it slides out nicely, just transform moves it */
     }
 

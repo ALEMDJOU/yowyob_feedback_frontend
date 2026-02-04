@@ -58,6 +58,7 @@ export default function FeedbackCard({
     const [editContent, setEditContent] = useState(data.content);
     const [isSaving, setIsSaving] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [viewMode, setViewMode] = useState<'options' | 'comments'>('options');
     const menuRef = useRef<HTMLDivElement>(null);
 
     // Fermer le menu si on clique ailleurs
@@ -341,55 +342,125 @@ export default function FeedbackCard({
                         {feedback.likes}
                     </div>
                 </div>
+                {/* 
+                // REMOVED: Comment count should not be visible
                 <div style={{ color: '#6b7280', fontSize: '0.85rem', fontWeight: '500' }}>
                     {feedback.comments.length} commentaires
-                </div>
+                </div> 
+                */}
             </div>
 
             {/* Actions */}
-            <div style={{ padding: '8px 20px', display: 'flex', gap: '10px' }}>
-                <button
-                    onClick={handleFeedbackLike}
-                    style={{
-                        flex: 1, padding: '12px', borderRadius: '12px', border: 'none', cursor: 'pointer',
-                        background: feedback.liked ? '#f3e8ff' : 'transparent',
-                        color: feedback.liked ? '#8a2be2' : '#4b5563',
-                        fontWeight: '700', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                        transition: 'all 0.2s'
-                    }}
-                >
-                    <i className={feedback.liked ? "fas fa-heart" : "far fa-heart"}></i>
-                    <span>{feedback.liked ? 'Aimé' : 'J\'aime'}</span>
-                </button>
-                <button
-                    onClick={() => setShowCommentBox(!showCommentBox)}
-                    style={{
-                        flex: 1, padding: '12px', borderRadius: '12px', border: 'none', cursor: 'pointer',
-                        background: 'transparent', color: '#4b5563',
-                        fontWeight: '700', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                        transition: 'all 0.2s'
-                    }}
-                >
-                    <i className="far fa-comment-dots"></i>
-                    <span>Commenter</span>
-                </button>
-            </div>
-
-            {/* Zone de Commentaire avec Animation */}
-            <AnimatePresence>
-                {showCommentBox && (
-                    <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
+            <div style={{ padding: '8px 20px', display: 'flex', gap: '10px', flexDirection: 'column' }}>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    <button
+                        onClick={handleFeedbackLike}
+                        style={{
+                            flex: 1, padding: '12px', borderRadius: '12px', border: 'none', cursor: 'pointer',
+                            background: feedback.liked ? '#f3e8ff' : 'transparent',
+                            color: feedback.liked ? '#8a2be2' : '#4b5563',
+                            fontWeight: '700', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                            transition: 'all 0.2s'
+                        }}
                     >
-                        <CommentSection
-                            feedbackId={feedback.id}
-                            onCommentCountChange={(count) => setFeedback(prev => ({ ...prev, comments: Array(count).fill(null) as any[] }))}
-                        />
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                        <i className={feedback.liked ? "fas fa-heart" : "far fa-heart"}></i>
+                        <span>{feedback.liked ? 'Aimé' : 'J\'aime'}</span>
+                    </button>
+                    <button
+                        onClick={() => {
+                            if (showCommentBox) {
+                                setShowCommentBox(false);
+                            } else {
+                                setShowCommentBox(true);
+                                setViewMode('options');
+                            }
+                        }}
+                        style={{
+                            flex: 1, padding: '12px', borderRadius: '12px', border: 'none', cursor: 'pointer',
+                            background: showCommentBox ? '#f3f4f6' : 'transparent',
+                            color: showCommentBox ? '#111' : '#4b5563',
+                            fontWeight: '700', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                            transition: 'all 0.2s'
+                        }}
+                    >
+                        <i className="far fa-comments"></i>
+                        <span>Commentaires</span>
+                    </button>
+                </div>
+
+                {/* Zone de Sélection / Commentaires */}
+                <AnimatePresence>
+                    {showCommentBox && (
+                        <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            style={{ overflow: 'hidden' }}
+                        >
+                            {viewMode === 'options' ? (
+                                <div style={{
+                                    padding: '20px 0',
+                                    display: 'flex',
+                                    gap: '12px',
+                                    justifyContent: 'center'
+                                }}>
+                                    <button
+                                        onClick={() => setViewMode('comments')}
+                                        style={{
+                                            padding: '10px 20px',
+                                            borderRadius: '12px',
+                                            border: '1px solid #e5e7eb',
+                                            background: 'white',
+                                            color: '#374151',
+                                            fontWeight: '600',
+                                            cursor: 'pointer',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '8px',
+                                            fontSize: '0.9rem',
+                                            transition: 'background 0.2s',
+                                            boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                                        }}
+                                        onMouseOver={(e) => e.currentTarget.style.background = '#f9fafb'}
+                                        onMouseOut={(e) => e.currentTarget.style.background = 'white'}
+                                    >
+                                        <i className="fas fa-pen" style={{ color: '#8a2be2' }}></i>
+                                        Écrire un commentaire
+                                    </button>
+                                    <button
+                                        onClick={() => setViewMode('comments')}
+                                        style={{
+                                            padding: '10px 20px',
+                                            borderRadius: '12px',
+                                            border: '1px solid #e5e7eb',
+                                            background: 'white',
+                                            color: '#374151',
+                                            fontWeight: '600',
+                                            cursor: 'pointer',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '8px',
+                                            fontSize: '0.9rem',
+                                            transition: 'background 0.2s',
+                                            boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                                        }}
+                                        onMouseOver={(e) => e.currentTarget.style.background = '#f9fafb'}
+                                        onMouseOut={(e) => e.currentTarget.style.background = 'white'}
+                                    >
+                                        <i className="fas fa-list" style={{ color: '#8a2be2' }}></i>
+                                        Voir les commentaires
+                                    </button>
+                                </div>
+                            ) : (
+                                <CommentSection
+                                    feedbackId={feedback.id}
+                                    onCommentCountChange={(count) => setFeedback(prev => ({ ...prev, comments: Array(count).fill(null) as any[] }))}
+                                />
+                            )}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
         </motion.div>
     );
 }
