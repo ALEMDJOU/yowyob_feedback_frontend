@@ -74,6 +74,14 @@ export const projectService = {
   createProject: async (payload: CreateProjectRequestDTO): Promise<ProjectResponseDTO> => {
     const created = await apiClient.post<ProjectResponseDTO>('/projects', payload);
     upsertCachedProject(created);
+    // TODO: Related tasks for project feature:
+    // - [x] Analyze backend API and frontend project services
+    // - [x] Create implementation plan
+    // - [x] Implement/Update `ProjectDetailPage` to show project info and feedbacks
+    // - [x] Implement feedback creation functionality in `ProjectDetailPage`
+    // - [x] Ensure "Join Project" and "Create Project" flows redirect to the project page
+    // - [x] Verify functionality with the backend API
+    // - [/] Debug "Member not found" error during feedback submission
     return created;
   },
 
@@ -84,7 +92,7 @@ export const projectService = {
   // Liste des projets de l'utilisateur (créés + rejoints)
   getUserProjects: async (): Promise<ProjectResponseDTO[]> => {
     try {
-      // Corrected endpoint
+      // Direct call to /dashboard/projects which returns Flux<ProjectResponseDTO>
       const list = await apiClient.get<ProjectResponseDTO[]>('/dashboard/projects');
       setCachedProjects(list);
       return list;
@@ -97,6 +105,14 @@ export const projectService = {
   joinProject: async (payload: JoinProjectRequestDTO): Promise<MemberResponseDTO> => {
     const { projectName, creatorId, code, memberPseudo } = payload;
     const endpoint = `/projects/${encodeURIComponent(projectName)}/members/join?creatorId=${encodeURIComponent(creatorId)}&code=${encodeURIComponent(code)}&memberPseudo=${encodeURIComponent(memberPseudo)}`;
-    return apiClient.post<MemberResponseDTO>(endpoint, {});
+    const result = await apiClient.post<MemberResponseDTO>(endpoint, {});
+
+    // On cache le pseudo localement pour pouvoir envoyer des feedbacks plus tard
+    // même si on ne peut pas récupérer la liste des membres (restriction backend)
+    if (typeof window !== 'undefined' && result.project_id && result.user_id) {
+      localStorage.setItem(`yy_pseudo_${result.project_id}_${result.user_id}`, memberPseudo);
+    }
+
+    return result;
   },
 };

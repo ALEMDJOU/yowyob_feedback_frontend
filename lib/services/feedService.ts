@@ -38,7 +38,15 @@ export const feedService = {
             const feedbacksArrays = await Promise.all(feedbacksPromises);
             const allFeedbacksRaw: FeedbackResponseDTO[] = feedbacksArrays.flat();
 
-            // 4. Récupérer les membres des projets dont nous sommes créateurs
+            // 4. Créer une map des projets par ID pour enrichir avec les logos
+            const projectsMap = new Map<string, any>();
+            myProjects.forEach((p: any) => {
+                if (p.project_id) {
+                    projectsMap.set(p.project_id, p);
+                }
+            });
+
+            // 5. Récupérer les membres des projets dont nous sommes créateurs
             const currentUser = await userService.getCurrentUser().catch(() => null);
 
             const memberPromises = myProjects
@@ -63,11 +71,15 @@ export const feedService = {
                 }
             });
 
-            // 5. Enrichir les feedbacks avec les auteurs si on les connaît
-            const enrichedFeedbacks = allFeedbacksRaw.map((fb: FeedbackResponseDTO) => ({
-                ...fb,
-                author: allMembersMap.get(fb.member_id)
-            }));
+            // 6. Enrichir les feedbacks avec les auteurs ET les logos de projet
+            const enrichedFeedbacks = allFeedbacksRaw.map((fb: FeedbackResponseDTO) => {
+                const project = projectsMap.get(fb.target_project_id);
+                return {
+                    ...fb,
+                    project_logo: project?.project_logo,
+                    author: allMembersMap.get(fb.member_id)
+                };
+            });
 
             // Trier par date décroissante
             enrichedFeedbacks.sort((a, b) =>

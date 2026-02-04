@@ -8,7 +8,7 @@ import { projectService } from '@/lib/services/project.service';
 import { feedbackService } from '@/lib/services/feedback.service';
 import { userService } from '@/lib/services/user.service';
 import { fileService } from '@/lib/services/file.service';
-import { ProjectDetailResponseDTO, UserResponseDTO } from '@/lib/types/api';
+import { ProjectDetailResponseDTO, UserResponseDTO, MemberResponseDTO } from '@/lib/types/api';
 
 const MOCK_PROJECT_ID = "mock-id";
 
@@ -61,7 +61,7 @@ export default function ProjectDetailPage() {
     const [error, setError] = useState<string | null>(null);
     const [feedbacks, setFeedbacks] = useState<FeedbackData[]>([]);
     const [isProjectInfoOpen, setIsProjectInfoOpen] = useState(false);
-    const [globalUsers, setGlobalUsers] = useState<UserResponseDTO[]>([]);
+    const [globalMembers, setGlobalMembers] = useState<MemberResponseDTO[]>([]);
     const projectInfoRef = useRef<HTMLDivElement>(null);
 
     // New feedback state
@@ -84,7 +84,9 @@ export default function ProjectDetailPage() {
                 let projectData: ProjectDetailResponseDTO | null = null;
                 try {
                     projectData = await projectService.getProjectDetailsByName(projectName);
-                } catch (err) {
+                } catch (err: any) {
+                    console.error("Error fetching project details by name:", err);
+                    // Fallback: check user projects list
                     const userProjects = await projectService.getUserProjects().catch(() => []);
                     const found = userProjects.find(p => p.project_name === projectName);
 
@@ -93,14 +95,25 @@ export default function ProjectDetailPage() {
                     } else if (projectName === "Projet de démo") {
                         projectData = mockProject;
                     } else {
-                        throw new Error("Accès refusé : Vous devez être membre ou administrateur de ce projet pour voir ses détails.");
+                        // Re-throw if it's a real error and not just 404/403
+                        throw err;
                     }
                 }
 
-                // 3. Only fetch members if we are the creator (backend restriction)
-                if (projectData && userData && projectData.creator_id === userData.user_id) {
-                    const projectMembers = await userService.getProjectMembers(projectName).catch(() => []);
-                    setGlobalUsers(projectMembers);
+                if (!projectData) {
+                    throw new Error("Projet introuvable.");
+                }
+
+                // 3. Attempt to fetch members for display and pseudo identification
+                if (projectData.project_id !== MOCK_PROJECT_ID) {
+                    try {
+                        const members = await userService.getProjectMembers(projectName);
+                        setGlobalMembers(members);
+                    } catch (memberErr) {
+                        console.debug("Could not fetch project members (likely restricted):", memberErr);
+                    }
+                } else {
+                    setGlobalMembers([]);
                 }
 
                 setProject(projectData);
@@ -130,7 +143,7 @@ export default function ProjectDetailPage() {
                 id: fb.feedback_id,
                 author: {
                     name: fb.member_pseudo || 'Membre Anonyme',
-                    avatar: `https://i.pravatar.cc/150?u=${fb.member_id}`
+                    avatar: project.project_logo || 'https://i.ibb.co/Qf983vG/avatar-placeholder.png'
                 },
                 createdAt: fb.feedback_date_time,
                 content: fb.content,
@@ -138,6 +151,7 @@ export default function ProjectDetailPage() {
                 liked: false,
                 comments: [],
                 project: { name: fb.project_name, id: fb.target_project_id },
+                attachments: fb.attachments
             }));
             setFeedbacks(transformedFeedbacks);
         } catch (e) {
@@ -173,12 +187,39 @@ export default function ProjectDetailPage() {
 
         setIsSubmitting(true);
         try {
-            // 1. Find or fallback for member pseudo
+            // 1. Identify the actual member_pseudo for this project
             const currentUserId = currentUser?.user_id;
-            const currentMember = project.members?.find(m => m.user_id === currentUserId);
+            let memberPseudo = '';
 
-            const memberPseudo = currentMember?.member_pseudo ||
-                (currentUser?.user_firstname ? `${currentUser.user_firstname} ${currentUser.user_lastname || ''}` : "Utilisateur");
+            // Strategy A: Find in loaded members list (only works for creators or if members are public)
+            const memberRecord = globalMembers.find(m => m.user_id === currentUserId) ||
+                project.members?.find(m => m.user_id === currentUserId);
+
+            if (memberRecord) {
+                memberPseudo = memberRecord.member_pseudo;
+                console.log("Found member pseudo from project members list:", memberPseudo);
+            }
+            // Strategy B: If current user is the creator, reconstruct their pseudo
+            else if (currentUserId === project.creator_id && currentUser) {
+                memberPseudo = currentUser.user_firstname
+                    ? `${currentUser.user_firstname} ${currentUser.user_lastname}`.trim()
+                    : currentUser.user_lastname;
+                console.log("Reconstructed creator pseudo:", memberPseudo);
+            }
+            // Strategy C: Look in local cache (set when joining)
+            else if (typeof window !== 'undefined' && currentUserId && project.project_id) {
+                const cached = localStorage.getItem(`yy_pseudo_${project.project_id}_${currentUserId}`);
+                if (cached) {
+                    memberPseudo = cached;
+                    console.log("Retrieved member pseudo from local cache:", memberPseudo);
+                }
+            }
+
+            if (!memberPseudo) {
+                // If the user joined, they MUST have a member record. 
+                // Error "Member not found" usually means the pseudo doesn't match or the record is missing.
+                throw new Error("Vous n'êtes pas reconnu comme membre de ce projet. Veuillez vérifier que vous l'avez bien rejoint.");
+            }
 
             // 2. Upload files if any
             let attachmentUrls: string[] = [];
@@ -187,6 +228,7 @@ export default function ProjectDetailPage() {
             }
 
             // 3. Submit feedback
+            console.log(`Submitting feedback for project ${project.project_id} with pseudo: ${memberPseudo}`);
             await feedbackService.createFeedback({
                 project_id: project.project_id,
                 member_pseudo: memberPseudo,
@@ -196,8 +238,14 @@ export default function ProjectDetailPage() {
 
             setNewFeedbackContent('');
             setAttachedFiles([]);
-            alert("Feedback envoyé avec succès !");
-            fetchFeedbacks();
+            const fileInput = document.getElementById('file-upload') as HTMLInputElement;
+            if (fileInput) fileInput.value = '';
+
+            // 4. Refresh feedbacks
+            await fetchFeedbacks();
+
+            // Subtle success indication instead of alert
+            console.log("Feedback envoyé avec succès !");
         } catch (err: any) {
             console.error("Failed to submit feedback", err);
             const msg = err.message || (typeof err === 'object' ? JSON.stringify(err) : String(err));
@@ -313,7 +361,7 @@ export default function ProjectDetailPage() {
                             <label style={{ fontSize: '0.8rem', color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Membres ({project.number_of_members})</label>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px', maxHeight: '150px', overflowY: 'auto' }}>
                                 {project.members?.map(member => {
-                                    const user = globalUsers.find(u => u.user_id === member.user_id);
+                                    const user = globalMembers.find(u => u.user_id === member.user_id);
                                     return (
                                         <div key={member.member_id} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                             <img

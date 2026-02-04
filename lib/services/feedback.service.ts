@@ -7,6 +7,7 @@ export interface FeedbackResponseDTO {
     attachments: string[];
     target_project_id: string;
     project_name: string;
+    project_logo?: string; // Added to display project logo on feedbacks
     member_id: string;
     member_pseudo: string;
     number_of_likes: number;

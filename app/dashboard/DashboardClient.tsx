@@ -8,10 +8,14 @@ import '../feed.css';
 
 export default function DashboardClient({ children }: { children: React.ReactNode }) {
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
         const handleResize = () => {
-            if (window.innerWidth <= 768) {
+            const mobile = window.innerWidth <= 768;
+            setIsMobile(mobile);
+            // On mobile, default to collapsed (hidden). On desktop, default to open.
+            if (mobile) {
                 setIsCollapsed(true);
             } else {
                 setIsCollapsed(false);
@@ -29,11 +33,36 @@ export default function DashboardClient({ children }: { children: React.ReactNod
 
     return (
         <MagicPageEnhancer>
-            <div className="dashboard-container">
+            <div className={`dashboard-container ${isMobile ? 'mobile-view' : ''}`}>
                 <FeedSidebar isCollapsed={isCollapsed} toggleSidebar={toggleSidebar} />
 
-                <main className="main-content" style={{ marginLeft: isCollapsed ? '80px' : '260px', transition: 'margin 0.3s ease' }}>
+                {/* Mobile Overlay Backdrop */}
+                {isMobile && !isCollapsed && (
+                    <div
+                        className="sidebar-overlay"
+                        onClick={() => setIsCollapsed(true)}
+                        style={{
+                            position: 'fixed',
+                            top: 0,
+                            left: 0,
+                            width: '100vw',
+                            height: '100vh',
+                            background: 'rgba(0,0,0,0.5)',
+                            zIndex: 99,
+                            backdropFilter: 'blur(2px)'
+                        }}
+                    />
+                )}
+
+                <main className="main-content" style={{
+                    marginLeft: isMobile ? '0' : (isCollapsed ? '80px' : '250px'),
+                    transition: 'margin 0.3s ease',
+                    width: isMobile ? '100%' : 'auto' // Important for causing reflow
+                }}>
                     <div className="mobile-dashboard-header">
+                        <button className="sidebar-toggle" onClick={toggleSidebar} aria-label="Menu">
+                            <i className="fas fa-bars"></i>
+                        </button>
                         <span className="app-name-mobile">Yowyob</span>
                     </div>
 

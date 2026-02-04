@@ -4,6 +4,7 @@ import { Montserrat } from 'next/font/google';
 import { I18nProvider } from '@/components/I18nProvider';
 import MagicPageEnhancer from '@/components/MagicPageEnhancer';
 import YowbotFAB from '@/components/YowbotFAB';
+import { ToastProvider } from '@/components/ToastProvider';
 
 // Configuration de la police Montserrat
 const montserrat = Montserrat({
@@ -29,10 +30,10 @@ export default function RootLayout({
         {/* MagicPageEnhancer enveloppe tout pour les particules et l'animation d'entrée globale */}
         <MagicPageEnhancer>
           <I18nProvider>
-            {/* Header and Footer are now in (marketing)/layout.tsx */}
-
-            {children}
-
+            <ToastProvider>
+              {/* ToastProvider ajouté ici pour envelopper l'application */}
+              {children}
+            </ToastProvider>
           </I18nProvider>
         </MagicPageEnhancer>
         <YowbotFAB />

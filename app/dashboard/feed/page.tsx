@@ -29,12 +29,19 @@ export default function FeedPage() {
         fetchFeedData();
     }, []);
 
+    const handleDeleteFeedback = (feedbackId: string) => {
+        setFeedData(prev => ({
+            ...prev,
+            feedbacks: prev.feedbacks.filter(f => f.feedback_id !== feedbackId)
+        }));
+    };
+
     // Transformation pour le composant FeedbackCard
     const feedbacks = feedData.feedbacks.map((fb): FeedbackData => ({
         id: fb.feedback_id,
         author: {
             name: fb.member_pseudo || fb.author?.user_lastname || 'Membre',
-            avatar: fb.author?.user_logo || `https://i.pravatar.cc/150?u=${fb.member_id}`
+            avatar: fb.project_logo || 'https://i.ibb.co/Qf983vG/avatar-placeholder.png'
         },
         createdAt: fb.feedback_date_time,
         content: fb.content,
@@ -86,7 +93,11 @@ export default function FeedPage() {
                     <div style={{ textAlign: 'center', padding: '40px' }}>Chargement...</div>
                 ) : feedbacks.length > 0 ? (
                     feedbacks.map(data => (
-                        <FeedbackCard key={data.id} data={data} />
+                        <FeedbackCard
+                            key={data.id}
+                            data={data}
+                            onDelete={handleDeleteFeedback}
+                        />
                     ))
                 ) : (
                     <div style={{ textAlign: 'center', padding: '40px', background: '#F9FAFB', borderRadius: '16px', color: '#9CA3AF' }}>

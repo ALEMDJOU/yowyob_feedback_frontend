@@ -137,6 +137,10 @@ export default function SignupPage() {
                 finalData.user_lastname = formData.organization_name;
                 finalData.user_firstname = '';
                 finalData.occupation = '';
+            } else if (userType === UserType.PERSON && formData.location) {
+                // WORKAROUND: The backend Person entity lacks a 'location' field.
+                // We append it to the description to persist it without backend changes.
+                finalData.description = `${formData.description} [Location: ${formData.location}]`;
             }
 
             await authService.register(finalData as RegisterRequestDTO);

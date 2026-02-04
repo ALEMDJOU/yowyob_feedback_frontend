@@ -26,6 +26,7 @@ export default function YowbotFAB() {
     const [isDragging, setIsDragging] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [showHistory, setShowHistory] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
     
     const [sessions, setSessions] = useState<ChatSession[]>([]);
     const [currentSessionId, setCurrentSessionId] = useState<string>(Date.now().toString());
@@ -60,6 +61,13 @@ export default function YowbotFAB() {
         }
         setIsLoaded(true);
     }, [x, y]);
+
+    useEffect(() => {
+        const update = () => setIsMobile(typeof window !== 'undefined' ? window.innerWidth <= 768 : false);
+        update();
+        window.addEventListener('resize', update);
+        return () => window.removeEventListener('resize', update);
+    }, []);
 
     // Sauvegarde automatique des messages dans l'historique
     useEffect(() => {
@@ -126,19 +134,13 @@ export default function YowbotFAB() {
         <>
             <AnimatePresence>
                 {isOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 40, scale: 0.9, filter: 'blur(10px)' }}
-                        animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
-                        exit={{ opacity: 0, y: 40, scale: 0.9, filter: 'blur(10px)' }}
-                        style={{
-                            position: 'fixed', bottom: '100px', right: '30px',
-                            width: '380px', height: '550px', maxHeight: '80vh',
-                            backgroundColor: 'rgba(12, 11, 11, 0.95)', backdropFilter: 'blur(15px)',
-                            border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '24px',
-                            boxShadow: '0 20px 50px rgba(0,0,0,0.6)', display: 'flex', 
-                            flexDirection: 'column', overflow: 'hidden', zIndex: 10000
-                        }}
-                    >
+                        <motion.div
+                            initial={{ opacity: 0, y: 40, scale: 0.9, filter: 'blur(10px)' }}
+                            animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+                            exit={{ opacity: 0, y: 40, scale: 0.9, filter: 'blur(10px)' }}
+                            className="yowbot-modal"
+                            style={{ zIndex: 10000 }}
+                        >
                         {/* Header avec Logo et Boutons de navigation */}
                         <div style={{ padding: '20px', background: 'linear-gradient(90deg, #6A1B9A 0%, #4A00B7 100%)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -231,18 +233,18 @@ export default function YowbotFAB() {
             </AnimatePresence>
 
             {/* Bouton Flottant (FAB) */}
-            <motion.div
+                        <motion.div
                 drag dragMomentum={false}
                 onDragStart={() => setIsDragging(true)}
                 onDragEnd={() => {
                     localStorage.setItem('yowbot-position', JSON.stringify({ x: x.get(), y: y.get() }));
                     setTimeout(() => setIsDragging(false), 100);
                 }}
-                onClick={() => !isDragging && setIsOpen(!isOpen)}
-                style={{ x, y, position: 'fixed', bottom: '30px', right: '30px', zIndex: 9999, cursor: 'grab' }}
+                            onClick={() => !isDragging && setIsOpen(!isOpen)}
+                            style={{ x, y, position: 'fixed', bottom: isMobile ? '20px' : '30px', right: isMobile ? '18px' : '30px', zIndex: 9999, cursor: 'grab' }}
             >
-                <div style={{ width: '65px', height: '65px', borderRadius: '22px', background: 'linear-gradient(135deg, #6A1B9A, #4A00B7)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', boxShadow: '0 10px 30px rgba(106, 27, 154, 0.5)' }}>
-                    {isOpen ? <X size={28} /> : <Bot size={28} />}
+                <div className="yowbot-fab" style={{ background: 'linear-gradient(135deg, #6A1B9A, #4A00B7)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', boxShadow: '0 10px 30px rgba(106, 27, 154, 0.5)' }}>
+                    {isOpen ? <X size={isMobile ? 22 : 28} /> : <Bot size={isMobile ? 22 : 28} />}
                 </div>
             </motion.div>
         </>

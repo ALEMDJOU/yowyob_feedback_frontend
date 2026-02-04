@@ -1,5 +1,5 @@
 import { apiClient } from '../api-client';
-import { UserResponseDTO, AuthResponseDTO, UpdateProfileRequestDTO } from '../types/api';
+import { UserResponseDTO, AuthResponseDTO, UpdateProfileRequestDTO, MemberResponseDTO } from '../types/api';
 
 /**
  * Service gérant les opérations liées à l'utilisateur
@@ -16,7 +16,6 @@ export const userService = {
         try {
             return await apiClient.get<UserResponseDTO>('/auth/me');
         } catch (error: any) {
-            console.error("Erreur [userService.getCurrentUser]:", error.message || error);
             throw error;
         }
     },
@@ -27,21 +26,9 @@ export const userService = {
      */
     updateProfile: async (userData: UpdateProfileRequestDTO): Promise<AuthResponseDTO> => {
         try {
-            // 🔍 DEBUG: Log exact payload being sent
-            console.log('📤 [updateProfile] Sending data to backend:', JSON.stringify(userData, null, 2));
-            console.log('📤 [updateProfile] Field count:', Object.keys(userData).length);
-
             const response = await apiClient.patch<AuthResponseDTO>('/profile', userData);
-
-            console.log('✅ [updateProfile] Success:', response);
             return response;
         } catch (error: any) {
-            // 🔍 DEBUG: Enhanced error logging
-            console.error('❌ [userService.updateProfile] Error occurred:');
-            console.error('  Message:', error.message);
-            console.error('  Status:', error.status);
-            console.error('  Name:', error.name);
-            console.error('  Full Error:', error);
             throw error;
         }
     },
@@ -55,7 +42,7 @@ export const userService = {
         try {
             await apiClient.post('/auth/logout', {});
         } catch (error) {
-            console.warn("Le serveur n'a pas pu traiter le logout, suppression locale uniquement.");
+            // Silence failure
         } finally {
             // Nettoyage impératif du token local
             if (typeof window !== 'undefined') {
@@ -66,23 +53,14 @@ export const userService = {
 
     /**
      * Récupère les membres d'un projet spécifique.
-     * Utile pour récupérer les profils utilisateur dans le contexte d'un projet.
+     * Utile pour récupérer les pseudos des membres.
      * Endpoint : GET /api/v1/projects/{projectName}/members
      */
-    getProjectMembers: async (projectName: string): Promise<UserResponseDTO[]> => {
+    getProjectMembers: async (projectName: string): Promise<MemberResponseDTO[]> => {
         try {
-            return await apiClient.get<UserResponseDTO[]>(`/projects/${encodeURIComponent(projectName)}/members`);
+            return await apiClient.get<MemberResponseDTO[]>(`/projects/${encodeURIComponent(projectName)}/members`);
         } catch (error: any) {
-            // Un professionnel gère les erreurs de manière informative et évite de polluer la console
-            const status = error.status || error.response?.status;
-            const message = error.message || "Erreur inconnue";
-
-            if (status === 403) {
-                // On sait que le backend restreint parfois l'accès aux membres aux seuls créateurs
-                console.debug(`[userService.getProjectMembers] Accès restreint pour le projet "${projectName}".`);
-            } else {
-                console.error(`Erreur [userService.getProjectMembers] pour ${projectName}:`, message);
-            }
+            // On renvoie un tableau vide pour ne pas bloquer le composant
             return [];
         }
     }

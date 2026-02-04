@@ -5,9 +5,11 @@ import Image from 'next/image';
 import { useTranslation } from '@/components/I18nProvider';
 import { userService } from '@/lib/services';
 import { UserResponseDTO, UserType } from '@/lib/types/api';
+import { useToast } from '@/components/ToastProvider';
 
 export default function FollowerIndexPage() {
   const { t } = useTranslation();
+  const { showToast } = useToast();
   const [user, setUser] = useState<UserResponseDTO | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -17,13 +19,13 @@ export default function FollowerIndexPage() {
         const data = await userService.getCurrentUser();
         setUser(data);
       } catch (error) {
-        console.error("Failed to fetch user:", error);
+        showToast("Impossible de charger les informations du profil.", "error");
       } finally {
         setLoading(false);
       }
     };
     fetchUser();
-  }, []);
+  }, [showToast]);
 
   if (loading) return <div style={{ padding: '40px', textAlign: 'center' }}>Chargement...</div>;
   if (!user) return <div style={{ padding: '40px', textAlign: 'center' }}>Veuillez vous reconnecter.</div>;
@@ -68,9 +70,21 @@ export default function FollowerIndexPage() {
 
             <div className="profile-bio-ig">
               <p className="profile-name-ig">{displayName}</p>
-              <p className="profile-description-ig">{user.description || "Aucune description"}</p>
+              <p className="profile-description-ig">
+                {(() => {
+                  const desc = user.description || "";
+                  const match = desc.match(/(.*)\s\[Location:\s(.*)\]$/);
+                  return match ? match[1] : (desc || "Aucune description");
+                })()}
+              </p>
               {user.domain && <p className="profile-domain-ig" style={{ fontSize: '0.9rem', color: '#6A1B9A' }}><strong>{user.domain}</strong></p>}
-              <a href="#" className="profile-website-ig">{user.location || "Cameroun"}</a>
+              <a href="#" className="profile-website-ig">
+                {(() => {
+                  if (user.location) return user.location;
+                  const match = (user.description || "").match(/\[Location:\s(.*)\]$/);
+                  return match ? match[1] : "Cameroun";
+                })()}
+              </a>
             </div>
           </div>
         </section>
