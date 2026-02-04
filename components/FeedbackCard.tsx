@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { feedbackService } from '../lib/services/feedback.service';
 import { useToast } from './ToastProvider';
 import ConfirmationModal from './ConfirmationModal';
+import CommentSection from './CommentSection';
 
 // Types (Conservés)
 export interface Author { name: string; avatar: string; }
@@ -33,56 +34,23 @@ export interface FeedbackData {
 
 const generateId = () => Math.random().toString(36).substr(2, 9);
 
-// --- Sous-composant Commentaire Optimisé ---
-const CommentItem = ({ comment, onLike }: { comment: Comment; onLike: (id: string) => void }) => (
-    <motion.div
-        initial={{ opacity: 0, x: -10 }}
-        animate={{ opacity: 1, x: 0 }}
-        style={{ marginTop: '14px', display: 'flex', gap: '12px' }}
-    >
-        <img
-            src={comment.author.avatar || 'https://i.ibb.co/Qf983vG/avatar-placeholder.png'}
-            alt={comment.author.name}
-            style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #fff', boxShadow: '0 2px 5px rgba(0,0,0,0.1)' }}
-        />
-        <div style={{ flex: 1 }}>
-            <div style={{ backgroundColor: '#f3f4f6', borderRadius: '0 16px 16px 16px', padding: '12px', position: 'relative' }}>
-                <div style={{ fontSize: '0.85rem', fontWeight: '800', color: '#111', marginBottom: '4px' }}>
-                    {comment.author.name}
-                </div>
-                <p style={{ fontSize: '0.9rem', color: '#374151', margin: 0, lineHeight: 1.5 }}>
-                    {comment.text}
-                </p>
-            </div>
-            <div style={{ display: 'flex', gap: '16px', marginTop: '6px', marginLeft: '8px', fontSize: '0.75rem', fontWeight: '700' }}>
-                <button
-                    onClick={() => onLike(comment.id)}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: comment.liked ? '#8a2be2' : '#6b7280', transition: '0.2s' }}
-                >
-                    {comment.liked ? '❤️ Aimé' : 'J\'aime'} {comment.likes > 0 && `(${comment.likes})`}
-                </button>
-                <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280' }}>Répondre</button>
-            </div>
-        </div>
-    </motion.div>
-);
-
 // --- Composant Principal ---
 export default function FeedbackCard({
     data,
     hideProjectInfo,
     onDelete,
-    onUpdate
+    onUpdate,
+    index = 0
 }: {
     data: FeedbackData,
     hideProjectInfo?: boolean,
     onDelete?: (id: string) => void,
-    onUpdate?: (updatedData: FeedbackData) => void
+    onUpdate?: (updatedData: FeedbackData) => void,
+    index?: number
 }) {
     const { showToast } = useToast();
     const [feedback, setFeedback] = useState<FeedbackData>(data);
     const [showCommentBox, setShowCommentBox] = useState(false);
-    const [mainCommentText, setMainCommentText] = useState("");
 
     // États pour le menu d'actions (Modifier/Supprimer)
     const [showMenu, setShowMenu] = useState(false);
@@ -111,20 +79,6 @@ export default function FeedbackCard({
             liked: !prev.liked,
             likes: prev.liked ? prev.likes - 1 : prev.likes + 1
         }));
-    };
-
-    const handleMainCommentSubmit = () => {
-        if (!mainCommentText.trim()) return;
-        setFeedback(prev => ({
-            ...prev,
-            comments: [...prev.comments, {
-                id: generateId(),
-                author: { name: 'Moi', avatar: 'https://i.ibb.co/Qf983vG/avatar-placeholder.png' },
-                text: mainCommentText,
-                likes: 0, liked: false, replies: []
-            }]
-        }));
-        setMainCommentText("");
     };
 
     // Ouverture du modal de suppression
@@ -181,16 +135,17 @@ export default function FeedbackCard({
     };
 
     return (
-        <div className="feedback-card" style={{
-            background: 'white',
-            borderRadius: '20px',
-            border: '1px solid #f0f0f0',
-            marginBottom: '24px',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
-            overflow: 'visible',
-            transition: 'transform 0.2s ease',
-            position: 'relative'
-        }}>
+        <motion.div
+            className="feedback-card"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{
+                duration: 0.5,
+                ease: "easeOut",
+                delay: index * 0.1 // Stagger effect based on index
+            }}
+        >
             {/* Modal de Confirmation */}
             <ConfirmationModal
                 isOpen={isDeleteModalOpen}
@@ -427,42 +382,14 @@ export default function FeedbackCard({
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        style={{ backgroundColor: '#f9fafb', padding: '20px', borderTop: '1px solid #f3f4f6' }}
                     >
-                        <div style={{ display: 'flex', gap: '12px', marginBottom: feedback.comments.length > 0 ? '20px' : '0' }}>
-                            <input
-                                type="text"
-                                value={mainCommentText}
-                                onChange={(e) => setMainCommentText(e.target.value)}
-                                placeholder="Votre avis sur ce projet..."
-                                style={{
-                                    flex: 1, padding: '12px 20px', borderRadius: '14px', border: '1px solid #e5e7eb',
-                                    fontSize: '0.9rem', outline: 'none', boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
-                                }}
-                                onKeyPress={(e) => e.key === 'Enter' && handleMainCommentSubmit()}
-                            />
-                            <button
-                                onClick={handleMainCommentSubmit}
-                                disabled={!mainCommentText.trim()}
-                                style={{
-                                    padding: '0 24px', borderRadius: '14px', border: 'none',
-                                    backgroundColor: mainCommentText.trim() ? '#8a2be2' : '#d1d5db',
-                                    color: 'white', cursor: 'pointer', fontWeight: '700', transition: '0.2s'
-                                }}
-                            >
-                                Envoyer
-                            </button>
-                        </div>
-
-                        {/* Liste des commentaires */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                            {feedback.comments.map(comment => (
-                                <CommentItem key={comment.id} comment={comment} onLike={() => { }} />
-                            ))}
-                        </div>
+                        <CommentSection
+                            feedbackId={feedback.id}
+                            onCommentCountChange={(count) => setFeedback(prev => ({ ...prev, comments: Array(count).fill(null) as any[] }))}
+                        />
                     </motion.div>
                 )}
             </AnimatePresence>
-        </div>
+        </motion.div>
     );
 }

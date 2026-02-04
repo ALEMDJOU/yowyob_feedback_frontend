@@ -434,8 +434,8 @@ export default function ProjectDetailPage() {
             <div className="feedback-section">
                 <h3 style={{ marginBottom: '20px', fontWeight: 700 }}>Feedbacks récents</h3>
                 {feedbacks.length > 0 ? (
-                    feedbacks.map(fb => (
-                        <FeedbackCard key={fb.id} data={fb} hideProjectInfo={true} />
+                    feedbacks.map((fb, index) => (
+                        <FeedbackCard key={fb.id} data={fb} hideProjectInfo={true} index={index} />
                     ))
                 ) : (
                     <div style={{ textAlign: 'center', padding: '40px', background: '#F9FAFB', borderRadius: '16px', color: '#9CA3AF' }}>

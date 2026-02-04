@@ -258,7 +258,13 @@ export default function FollowerIndexPage() {
               <i className="fas fa-map-marker-alt"></i>
               <div>
                 <span className="info-label">Localisation</span>
-                <span className="info-value">{user.location || 'Non renseignée'}</span>
+                <span className="info-value">
+                  {(() => {
+                    if (user.location) return user.location;
+                    const match = (user.description || "").match(/\[Location:\s(.*)\]$/);
+                    return match ? match[1] : 'Non renseignée';
+                  })()}
+                </span>
               </div>
             </div>
 
@@ -277,7 +283,11 @@ export default function FollowerIndexPage() {
             <div className="description-box">
               <span className="info-label"><i className="fas fa-info-circle"></i> Description</span>
               <p style={{ fontStyle: 'italic', color: '#444', marginTop: '8px', fontSize: '1rem' }}>
-                {user.description || "Aucune description disponible pour ce profil."}
+                {(() => {
+                  const desc = user.description || "";
+                  const match = desc.match(/(.*)\s\[Location:\s(.*)\]$/);
+                  return match ? match[1] : (desc || "Aucune description disponible pour ce profil.");
+                })()}
               </p>
             </div>
           </div>

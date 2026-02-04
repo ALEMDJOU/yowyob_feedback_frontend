@@ -45,19 +45,17 @@ export interface RegisterRequestDTO {
 export interface UserResponseDTO {
     user_id: string;
     user_type: UserType;
-    user_firstname?: string;
+    user_firstname: string;
     user_lastname: string;
-    organization_name?: string; // AJOUTÉ : Pour la cohérence des données
-    email?: string;
-    contact?: string;
-    user_logo?: string;
-    domain?: string;
-    description?: string;
+    email: string;
+    contact: string;
+    user_logo: string;
+    domain: string;
+    description: string;
     registration_date_time: string;
     certified: boolean;
     occupation?: string;
     location?: string;
-    member_id?: string; // AJOUTÉ : Pour résoudre l'erreur ts(2339)
 }
 
 export interface AuthResponseDTO {
