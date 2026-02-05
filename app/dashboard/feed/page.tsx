@@ -8,6 +8,7 @@ import FeedbackCard, { FeedbackData } from '@/components/FeedbackCard';
 import { feedService, AggregatedFeed } from '@/lib/services/feedService';
 import { userService } from '@/lib/services/user.service';
 import { likeService } from '@/lib/services/like.service';
+import { subscriptionService } from '@/lib/services/subscription.service';
 
 export default function FeedPage() {
     const { t } = useTranslation();
@@ -15,13 +16,15 @@ export default function FeedPage() {
     const [userLikes, setUserLikes] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
     const [showAllUsers, setShowAllUsers] = useState(false);
+    const [subscriptions, setSubscriptions] = useState<Set<string>>(new Set());
+    const [subscribingTo, setSubscribingTo] = useState<Set<string>>(new Set());
+    const [unsubscribingFrom, setUnsubscribingFrom] = useState<Set<string>>(new Set());
     const headerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const fetchFeedData = async () => {
             setLoading(true);
             try {
-                // Fetch both global feed (for feedbacks) and all users (for featured members)
                 const [feed, allUsers, currentUser] = await Promise.all([
                     feedService.getGlobalFeed(),
                     userService.getAllUsers(),
@@ -31,9 +34,25 @@ export default function FeedPage() {
                 if (currentUser) {
                     const likes = await likeService.getLikesByUser(currentUser.user_id);
                     setUserLikes(likes.map(l => l.feedback_id));
+
+                    // Charger les abonnements existants
+                    if (allUsers && allUsers.length > 0) {
+                        const subscriptionStatuses = await Promise.all(
+                            allUsers.map(user =>
+                                subscriptionService.checkSubscription(user.user_id)
+                                    .then(isSubscribed => ({ userId: user.user_id, isSubscribed }))
+                                    .catch(() => ({ userId: user.user_id, isSubscribed: false }))
+                            )
+                        );
+                        const followingIds = new Set(
+                            subscriptionStatuses
+                                .filter(status => status.isSubscribed)
+                                .map(status => status.userId)
+                        );
+                        setSubscriptions(followingIds);
+                    }
                 }
 
-                // Merge or prioritize as needed. Here we use users from getAllUsers for the featured section.
                 setFeedData({
                     feedbacks: feed.feedbacks,
                     users: allUsers
@@ -54,8 +73,51 @@ export default function FeedPage() {
         }));
     };
 
-    // Transformation pour le composant FeedbackCard
-    // Filter out Yowbot from feedbacks content if present
+    const handleSubscribe = async (userId: string) => {
+        if (subscribingTo.has(userId)) return;
+
+        setSubscribingTo(prev => new Set(prev).add(userId));
+        try {
+            await subscriptionService.subscribe(userId);
+            setSubscriptions(prev => new Set(prev).add(userId));
+        } catch (err: any) {
+            if (err.response?.status === 400 || err.message?.includes('déjà abonné')) {
+                setSubscriptions(prev => new Set(prev).add(userId));
+                console.warn("User already subscribed", userId);
+            } else {
+                console.error("Failed to subscribe", err);
+            }
+        } finally {
+            setSubscribingTo(prev => {
+                const newSet = new Set(prev);
+                newSet.delete(userId);
+                return newSet;
+            });
+        }
+    };
+
+    const handleUnsubscribe = async (userId: string) => {
+        if (unsubscribingFrom.has(userId)) return;
+
+        setUnsubscribingFrom(prev => new Set(prev).add(userId));
+        try {
+            await subscriptionService.unsubscribe(userId);
+            setSubscriptions(prev => {
+                const newSet = new Set(prev);
+                newSet.delete(userId);
+                return newSet;
+            });
+        } catch (err: any) {
+            console.error("Failed to unsubscribe", err);
+        } finally {
+            setUnsubscribingFrom(prev => {
+                const newSet = new Set(prev);
+                newSet.delete(userId);
+                return newSet;
+            });
+        }
+    };
+
     const feedbacks = feedData.feedbacks
         .filter(fb => {
             const authorName = (fb.member_pseudo || fb.author?.user_lastname || '').toLowerCase();
@@ -64,7 +126,7 @@ export default function FeedPage() {
         .map((fb): FeedbackData => ({
             id: fb.feedback_id,
             author: {
-                name: fb.member_pseudo || fb.author?.user_lastname || 'Membre',
+                name: fb.member_pseudo || fb.author?.user_lastname || t('feed.defaultRole'),
                 avatar: fb.project_logo || 'https://i.ibb.co/Qf983vG/avatar-placeholder.png'
             },
             createdAt: fb.feedback_date_time,
@@ -72,10 +134,10 @@ export default function FeedPage() {
             likes: fb.number_of_likes,
             liked: userLikes.includes(fb.feedback_id),
             project: { name: fb.project_name, id: fb.target_project_id },
-            comments: []
+            comments: [],
+            attachments: fb.attachments
         }));
 
-    // Filter out Yowbot from users list
     const filteredUsers = feedData.users.filter(user => {
         const name = `${user.user_firstname} ${user.user_lastname}`.toLowerCase();
         return !name.includes('yowbot') && !user.user_lastname?.toLowerCase().includes('yowbot');
@@ -137,7 +199,7 @@ export default function FeedPage() {
                         maxWidth: '600px',
                         lineHeight: 1.6
                     }}>
-                        Explorez les dernières activités de Yowyob Feedback
+                        {t('feed.explore')}
                     </p>
                 </motion.div>
 
@@ -176,7 +238,7 @@ export default function FeedPage() {
                             background: 'rgba(255, 255, 255, 0.5)', borderRadius: '24px',
                             border: '2px dashed #E5E7EB', color: '#6B7280'
                         }}>
-                            <p style={{ fontSize: '1.1rem', fontWeight: 500 }}>Aucun feedback récent à afficher.</p>
+                            <p style={{ fontSize: '1.1rem', fontWeight: 500 }}>{t('feed.noRecentFeedback')}</p>
                         </div>
                     )}
                 </section>
@@ -201,7 +263,9 @@ export default function FeedPage() {
                             {displayedUsers.map((user, idx) => {
                                 const isOrg = user.user_type === 'ORGANIZATION' || (!user.user_firstname && user.user_lastname);
                                 const displayName = isOrg ? user.user_lastname : `${user.user_firstname} ${user.user_lastname}`;
-                                const subTitle = isOrg ? (user.domain || 'Organisation') : (user.occupation || user.domain || 'Membre');
+                                const subTitle = isOrg ? (user.domain || t('feed.organizationRole')) : (user.occupation || user.domain || t('feed.defaultRole'));
+                                const isSubscribed = subscriptions.has(user.user_id);
+                                const isSubscribing = subscribingTo.has(user.user_id);
 
                                 return (
                                     <motion.div
@@ -240,9 +304,31 @@ export default function FeedPage() {
                                             {displayName}
                                         </h4>
                                         <p style={{ fontSize: '0.9rem', color: '#6B7280', marginBottom: '20px', fontWeight: 500 }}>{subTitle}</p>
-                                        <button className="btn-subscribe-premium">
-                                            <i className="fas fa-plus"></i> {t('feed.subscribe')}
-                                        </button>
+                                        {isSubscribed ? (
+                                            <button
+                                                className="btn-unsubscribe-premium"
+                                                onClick={() => handleUnsubscribe(user.user_id)}
+                                                disabled={unsubscribingFrom.has(user.user_id)}
+                                            >
+                                                <i className="fas fa-check"></i>
+                                                {unsubscribingFrom.has(user.user_id)
+                                                    ? t('feed.unsubscribing')
+                                                    : t('feed.unsubscribe')
+                                                }
+                                            </button>
+                                        ) : (
+                                            <button
+                                                className="btn-subscribe-premium"
+                                                onClick={() => handleSubscribe(user.user_id)}
+                                                disabled={subscribingTo.has(user.user_id)}
+                                            >
+                                                <i className="fas fa-plus"></i>
+                                                {subscribingTo.has(user.user_id)
+                                                    ? t('feed.subscribing')
+                                                    : t('feed.subscribe')
+                                                }
+                                            </button>
+                                        )}
                                     </motion.div>
                                 );
                             })}
@@ -273,9 +359,9 @@ export default function FeedPage() {
                                 }}
                             >
                                 {showAllUsers ? (
-                                    <> <i className="fas fa-chevron-up"></i> Voir moins </>
+                                    <> <i className="fas fa-chevron-up"></i> {t('feed.showLess')} </>
                                 ) : (
-                                    <> <i className="fas fa-chevron-down"></i> Voir plus ({filteredUsers.length - 4}) </>
+                                    <> <i className="fas fa-chevron-down"></i> {t('feed.showMore')} ({filteredUsers.length - 4}) </>
                                 )}
                             </button>
                         </motion.div>
@@ -283,7 +369,7 @@ export default function FeedPage() {
 
                     {!loading && filteredUsers.length === 0 && (
                         <div style={{ textAlign: 'center', padding: '40px', color: '#9CA3AF' }}>
-                            Aucun membre à afficher.
+                            {t('feed.noMembers')}
                         </div>
                     )}
                 </section>
@@ -324,9 +410,65 @@ export default function FeedPage() {
                     gap: 8px;
                     transition: all 0.3s ease;
                 }
-                .btn-subscribe-premium:hover {
+                .btn-subscribe-premium:hover:not(:disabled) {
                     background: #6D28D9;
                     box-shadow: 0 10px 20px rgba(124, 58, 237, 0.3);
+                }
+                .btn-subscribe-premium:disabled {
+                    opacity: 0.6;
+                    cursor: not-allowed;
+                }
+                .btn-subscribe-premium.subscribed {
+                    background: #10B981;
+                }
+                .btn-subscribe-premium.subscribed:hover {
+                    background: #059669;
+                }
+                .btn-unsubscribe-premium {
+                    background: #EF4444;
+                    color: white;
+                    border: none;
+                    width: 100%;
+                    border-radius: 14px;
+                    padding: 12px;
+                    font-weight: 700;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 8px;
+                    transition: all 0.3s ease;
+                }
+                .btn-unsubscribe-premium:hover:not(:disabled) {
+                    background: #DC2626;
+                    box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
+                }
+                .btn-unsubscribe-premium:disabled {
+                    opacity: 0.6;
+                    cursor: not-allowed;
+                }
+                .btn-unsubscribe-premium {
+                    background: #10B981;
+                    color: white;
+                    border: none;
+                    width: 100%;
+                    border-radius: 14px;
+                    padding: 12px;
+                    font-weight: 700;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 8px;
+                    transition: all 0.3s ease;
+                }
+                .btn-unsubscribe-premium:hover:not(:disabled) {
+                    background: #059669;
+                    box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+                }
+                .btn-unsubscribe-premium:disabled {
+                    opacity: 0.6;
+                    cursor: not-allowed;
                 }
             `}</style>
 

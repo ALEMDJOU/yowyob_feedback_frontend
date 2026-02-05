@@ -1,5 +1,5 @@
 import { apiClient } from '../api-client';
-import { PageResponse, PersonDTO, SubscriptionDTO, SubscriptionStatsDTO } from '../types/api';
+import { PageResponse, PersonDTO, SubscriptionStatsDTO } from '../types/api';
 
 /**
  * Service gérant les abonnements entre utilisateurs.
@@ -9,36 +9,15 @@ export const subscriptionService = {
     /**
      * S'abonner à un utilisateur.
      */
-    subscribe: async (followedId: string): Promise<SubscriptionDTO> => {
-        return await apiClient.post<SubscriptionDTO>(`/subscribe/${followedId}`, {});
+    subscribe: async (followedId: string) => {
+        return await apiClient.post(`/subscribe/${followedId}`, {});
     },
 
     /**
      * Se désabonner d'un utilisateur.
      */
-    unsubscribe: async (followedId: string): Promise<void> => {
+    unsubscribe: async (followedId: string) => {
         return await apiClient.delete(`/unsubscribe/${followedId}`);
-    },
-
-    /**
-     * Récupère la liste des personnes suivies par l'utilisateur connecté.
-     */
-    getFollowing: async (page = 0, size = 20): Promise<PageResponse<PersonDTO>> => {
-        return await apiClient.get<PageResponse<PersonDTO>>(`/following?page=${page}&size=${size}`);
-    },
-
-    /**
-     * Récupère la liste des abonnés de l'utilisateur connecté.
-     */
-    getFollowers: async (page = 0, size = 20): Promise<PageResponse<PersonDTO>> => {
-        return await apiClient.get<PageResponse<PersonDTO>>(`/followers?page=${page}&size=${size}`);
-    },
-
-    /**
-     * Récupère les statistiques d'abonnement.
-     */
-    getStats: async (): Promise<SubscriptionStatsDTO> => {
-        return await apiClient.get<SubscriptionStatsDTO>('/subscription/stats');
     },
 
     /**
@@ -46,5 +25,26 @@ export const subscriptionService = {
      */
     checkSubscription: async (followedId: string): Promise<boolean> => {
         return await apiClient.get<boolean>(`/subscription/check/${followedId}`);
+    },
+
+    /**
+     * Récupère la liste des personnes suivies par l'utilisateur connecté.
+     */
+    getFollowing: async (page = 0, size = 20) => {
+        return await apiClient.get<PageResponse<PersonDTO>>(`/following?page=${page}&size=${size}`);
+    },
+
+    /**
+     * Récupère la liste des abonnés de l'utilisateur connecté.
+     */
+    getFollowers: async (page = 0, size = 20) => {
+        return await apiClient.get<PageResponse<PersonDTO>>(`/followers?page=${page}&size=${size}`);
+    },
+
+    /**
+     * Récupère les statistiques d'abonnement.
+     */
+    getSubscriptionStats: async () => {
+        return await apiClient.get<SubscriptionStatsDTO>(`/subscription/stats`);
     }
 };
