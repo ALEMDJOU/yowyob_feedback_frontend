@@ -53,7 +53,7 @@ function getAllKeys(obj, prefix = '') {
 function checkMissingKeys() {
   const locales = loadLocales();
   const allKeys = {};
-  
+
   SUPPORTED_LOCALES.forEach(lang => {
     allKeys[lang] = getAllKeys(locales[lang]);
   });
@@ -65,7 +65,7 @@ function checkMissingKeys() {
 
   SUPPORTED_LOCALES.forEach(lang => {
     if (lang === 'fr') return;
-    
+
     const missing = Array.from(referenceKeys).filter(key => !allKeys[lang].includes(key));
     const extra = allKeys[lang].filter(key => !referenceKeys.has(key));
 
@@ -125,7 +125,7 @@ function generateReport() {
   });
 
   const reportPath = path.join(LOCALES_DIR, '../I18N_REPORT.txt');
-  
+
   let report = '🌍 RAPPORT I18N COMPLET\n';
   report += '='.repeat(50) + '\n\n';
 
@@ -143,10 +143,10 @@ function generateReport() {
   report += '\n\n⚠️ DIFFÉRENCES:\n';
   SUPPORTED_LOCALES.forEach(lang => {
     if (lang === 'fr') return;
-    
+
     const missing = allKeys['fr'].filter(key => !allKeys[lang].includes(key));
     const extra = allKeys[lang].filter(key => !allKeys['fr'].includes(key));
-    
+
     if (missing.length > 0 || extra.length > 0) {
       report += `\n${lang.toUpperCase()}:\n`;
       if (missing.length > 0) report += `  Manquantes: ${missing.join(', ')}\n`;

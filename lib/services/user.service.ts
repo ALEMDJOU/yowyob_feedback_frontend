@@ -63,5 +63,44 @@ export const userService = {
             // On renvoie un tableau vide pour ne pas bloquer le composant
             return [];
         }
+    },
+
+    /**
+     * Récupère tous les utilisateurs de l'application.
+     * Endpoint : GET /api/v1/users
+     */
+    getAllUsers: async (): Promise<UserResponseDTO[]> => {
+        try {
+            return await apiClient.get<UserResponseDTO[]>('/users');
+        } catch (error: any) {
+            console.error("Erreur lors de la récupération des utilisateurs:", error);
+            return [];
+        }
+    },
+
+    /**
+     * Récupère toutes les organisations.
+     * Endpoint : GET /api/v1/users/organizations
+     */
+    getAllOrganizations: async (): Promise<UserResponseDTO[]> => {
+        try {
+            return await apiClient.get<UserResponseDTO[]>('/users/organizations');
+        } catch (error: any) {
+            console.error("Erreur lors de la récupération des organisations:", error);
+            return [];
+        }
+    },
+
+    /**
+     * Récupère toutes les personnes.
+     * Endpoint : GET /api/v1/users/persons
+     */
+    getAllPersons: async (): Promise<UserResponseDTO[]> => {
+        try {
+            return await apiClient.get<UserResponseDTO[]>('/users/persons');
+        } catch (error: any) {
+            console.error("Erreur lors de la récupération des personnes:", error);
+            return [];
+        }
     }
 };

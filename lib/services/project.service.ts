@@ -74,14 +74,6 @@ export const projectService = {
   createProject: async (payload: CreateProjectRequestDTO): Promise<ProjectResponseDTO> => {
     const created = await apiClient.post<ProjectResponseDTO>('/projects', payload);
     upsertCachedProject(created);
-    // TODO: Related tasks for project feature:
-    // - [x] Analyze backend API and frontend project services
-    // - [x] Create implementation plan
-    // - [x] Implement/Update `ProjectDetailPage` to show project info and feedbacks
-    // - [x] Implement feedback creation functionality in `ProjectDetailPage`
-    // - [x] Ensure "Join Project" and "Create Project" flows redirect to the project page
-    // - [x] Verify functionality with the backend API
-    // - [/] Debug "Member not found" error during feedback submission
     return created;
   },
 
@@ -101,18 +93,47 @@ export const projectService = {
     }
   },
 
-  // NOUVELLE MÉTHODE : Rejoindre un projet
+  // Rejoindre un projet
   joinProject: async (payload: JoinProjectRequestDTO): Promise<MemberResponseDTO> => {
     const { projectName, creatorId, code, memberPseudo } = payload;
     const endpoint = `/projects/${encodeURIComponent(projectName)}/members/join?creatorId=${encodeURIComponent(creatorId)}&code=${encodeURIComponent(code)}&memberPseudo=${encodeURIComponent(memberPseudo)}`;
     const result = await apiClient.post<MemberResponseDTO>(endpoint, {});
 
-    // On cache le pseudo localement pour pouvoir envoyer des feedbacks plus tard
-    // même si on ne peut pas récupérer la liste des membres (restriction backend)
     if (typeof window !== 'undefined' && result.project_id && result.user_id) {
       localStorage.setItem(`yy_pseudo_${result.project_id}_${result.user_id}`, memberPseudo);
     }
 
     return result;
   },
+
+  // Mettre à jour un projet
+  updateProject: async (projectName: string, payload: any): Promise<ProjectResponseDTO> => {
+    const updated = await apiClient.patch<ProjectResponseDTO>(`/projects/${encodeURIComponent(projectName)}`, payload);
+    upsertCachedProject(updated);
+    return updated;
+  },
+
+  // Supprimer un projet
+  deleteProject: async (projectName: string): Promise<void> => {
+    await apiClient.delete(`/projects/${encodeURIComponent(projectName)}`);
+    const list = getCachedProjects().filter(p => p.project_name !== projectName);
+    setCachedProjects(list);
+  },
+
+  // Quitter un projet
+  leaveProject: async (projectName: string, creatorId: string): Promise<void> => {
+    await apiClient.post(`/projects/${encodeURIComponent(projectName)}/members/leave?creatorId=${encodeURIComponent(creatorId)}`, {});
+    const list = getCachedProjects().filter(p => p.project_name !== projectName);
+    setCachedProjects(list);
+  },
+
+  // Récupérer les membres d'un projet
+  getProjectMembers: async (projectName: string): Promise<MemberResponseDTO[]> => {
+    return apiClient.get<MemberResponseDTO[]>(`/projects/${encodeURIComponent(projectName)}/members`);
+  },
+
+  // Mettre à jour son pseudo dans le projet
+  updateMemberPseudo: async (projectName: string, memberId: string, newPseudo: string): Promise<MemberResponseDTO> => {
+    return apiClient.patch<MemberResponseDTO>(`/projects/${encodeURIComponent(projectName)}/members/${memberId}?newPseudo=${encodeURIComponent(newPseudo)}`, {});
+  }
 };

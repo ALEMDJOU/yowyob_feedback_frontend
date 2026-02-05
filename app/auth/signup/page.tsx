@@ -7,6 +7,7 @@ import { authService } from '@/lib/services';
 import { UserType, RegisterRequestDTO } from '@/lib/types/api';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import { useToast } from '@/components/ToastProvider';
 
 export default function SignupPage() {
     const router = useRouter();
@@ -16,6 +17,7 @@ export default function SignupPage() {
     const [confirmPassword, setConfirmPassword] = useState('');
 
     const [formData, setFormData] = useState<Partial<RegisterRequestDTO>>({
+        // ... same
         user_type: UserType.PERSON,
         email: '',
         password: '',
@@ -30,7 +32,7 @@ export default function SignupPage() {
         domain: ''
     });
 
-    const [error, setError] = useState<string | null>(null);
+    const { showToast } = useToast();
     const [loading, setLoading] = useState(false);
     const [step, setStep] = useState(1);
 
@@ -58,32 +60,31 @@ export default function SignupPage() {
     };
 
     const validateStep1 = () => {
-        setError(null);
         if (userType === UserType.PERSON) {
             if (!formData.user_firstname || !formData.user_lastname) {
-                setError("Veuillez remplir votre nom et prénom.");
+                showToast("Veuillez remplir votre nom et prénom.", "error");
                 return false;
             }
         } else {
             if (!formData.organization_name) {
-                setError("Veuillez saisir le nom de l'organisation.");
+                showToast("Veuillez saisir le nom de l'organisation.", "error");
                 return false;
             }
         }
 
         if (!formData.domain || !formData.contact || !formData.email) {
-            setError("Veuillez remplir les informations de contact et le domaine d'activité.");
+            showToast("Veuillez remplir les informations de contact et le domaine d'activité.", "error");
             return false;
         }
 
         if (!cameroonPhoneRegex.test(formData.contact || '')) {
-            setError("Numéro de téléphone invalide (format 9 chiffres : 6XXXXXXXX).");
+            showToast("Numéro de téléphone invalide (format 9 chiffres : 6XXXXXXXX).", "error");
             return false;
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(formData.email || '')) {
-            setError("Veuillez saisir une adresse email valide.");
+            showToast("Veuillez saisir une adresse email valide.", "error");
             return false;
         }
 
@@ -104,7 +105,6 @@ export default function SignupPage() {
 
     const handleSignup = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError(null);
 
         if (step === 1) {
             nextStep();
@@ -113,19 +113,23 @@ export default function SignupPage() {
 
         // Validations locales Step 2
         if (userType === UserType.PERSON && !formData.occupation) {
-            return setError("Veuillez renseigner votre profession.");
+            showToast("Veuillez renseigner votre profession.", "error");
+            return;
         }
 
         if (!formData.location || !formData.description) {
-            return setError("Veuillez renseigner votre localisation et une description.");
+            showToast("Veuillez renseigner votre localisation et une description.", "error");
+            return;
         }
 
         if (!passwordRegex.test(formData.password || '')) {
-            return setError("Le mot de passe ne respecte pas toutes les consignes de sécurité.");
+            showToast("Le mot de passe ne respecte pas toutes les consignes de sécurité.", "error");
+            return;
         }
 
         if (formData.password !== confirmPassword) {
-            return setError("Les mots de passe ne correspondent pas.");
+            showToast("Les mots de passe ne correspondent pas.", "error");
+            return;
         }
 
         setLoading(true);
@@ -144,9 +148,10 @@ export default function SignupPage() {
             }
 
             await authService.register(finalData as RegisterRequestDTO);
+            showToast("Inscription réussie !", "success");
             router.push('/dashboard/feed');
         } catch (err: any) {
-            setError(err.message || 'Erreur lors de l\'inscription.');
+            showToast(err.message || 'Erreur lors de l\'inscription.', "error");
         } finally {
             setLoading(false);
         }
@@ -155,7 +160,6 @@ export default function SignupPage() {
     const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
         try {
             setUploading(true);
-            setError(null);
             if (!e.target.files || e.target.files.length === 0) return;
             const file = e.target.files[0];
             const filePath = `profiles/${Date.now()}-${file.name}`;
@@ -163,8 +167,9 @@ export default function SignupPage() {
             if (uploadError) throw uploadError;
             const { data } = supabase.storage.from('yowyob_feedback').getPublicUrl(filePath);
             handleInputChange('user_logo', data.publicUrl);
+            showToast("Image téléchargée avec succès !", "success");
         } catch (err: any) {
-            setError("Erreur upload image: " + err.message);
+            showToast("Erreur upload image: " + err.message, "error");
         } finally {
             setUploading(false);
         }
@@ -195,15 +200,7 @@ export default function SignupPage() {
                     </div>
                 </motion.div>
 
-                <AnimatePresence>
-                    {error && (
-                        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}>
-                            <div style={{ color: '#D32F2F', backgroundColor: '#FFEBEE', padding: '12px', borderRadius: '8px', marginBottom: '20px', fontSize: '0.9em', border: '1px solid #FFCDD2' }}>
-                                ⚠️ {error}
-                            </div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+                {/* Erreurs gérées par Toasts */}
 
                 <form onSubmit={handleSignup}>
                     <AnimatePresence mode="wait">

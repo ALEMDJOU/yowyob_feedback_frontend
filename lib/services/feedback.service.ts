@@ -60,6 +60,10 @@ class FeedbackService {
     async deleteFeedback(feedbackId: string): Promise<void> {
         return apiClient.delete<void>(`/feedbacks/${feedbackId}`);
     }
+
+    async getAllFeedbacks(): Promise<FeedbackResponseDTO[]> {
+        return apiClient.get<FeedbackResponseDTO[]>('/feedbacks');
+    }
 }
 
 export const feedbackService = new FeedbackService();

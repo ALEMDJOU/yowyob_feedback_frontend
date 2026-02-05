@@ -5,6 +5,8 @@ import { useTranslation } from '@/components/I18nProvider';
 import Link from 'next/link';
 import { projectService, ProjectResponseDTO } from '@/lib/services/project.service';
 import { userService } from '@/lib/services';
+import { useToast } from '@/components/ToastProvider';
+import ConfirmationModal from '@/components/ConfirmationModal';
 
 interface Project {
     id: string;
@@ -16,6 +18,7 @@ interface Project {
     unread: number;
     role: 'admin' | 'invite';
     creatorUsername: string; // Username du créateur du groupe
+    creatorId: string; // ID du créateur pour quitter le projet
 }
 
 const mockProjects: Project[] = [
@@ -28,7 +31,8 @@ const mockProjects: Project[] = [
         lastActivity: "Actif il y a 10 min",
         unread: 2,
         role: 'admin',
-        creatorUsername: 'techinnov'
+        creatorUsername: 'techinnov',
+        creatorId: 'mock-id-1'
     },
     {
         id: "p2-kadea-stage",
@@ -39,7 +43,8 @@ const mockProjects: Project[] = [
         lastActivity: "Actif hier",
         unread: 0,
         role: 'invite',
-        creatorUsername: 'globalcorp'
+        creatorUsername: 'globalcorp',
+        creatorId: 'mock-id-2'
     },
     {
         id: "p3-react-proj",
@@ -50,7 +55,8 @@ const mockProjects: Project[] = [
         lastActivity: "Actif lundi",
         unread: 5,
         role: 'admin',
-        creatorUsername: 'techinnov'
+        creatorUsername: 'techinnov',
+        creatorId: 'mock-id-3'
     },
     {
         id: "p4-support",
@@ -61,7 +67,8 @@ const mockProjects: Project[] = [
         lastActivity: "Actif le 15/12",
         unread: 0,
         role: 'invite',
-        creatorUsername: 'designstudio'
+        creatorUsername: 'designstudio',
+        creatorId: 'mock-id-4'
     },
 ];
 
@@ -69,7 +76,19 @@ export default function ProjectsPage() {
     const { t } = useTranslation();
     const [projects, setProjects] = useState<Project[]>([]);
     const [showMenu, setShowMenu] = useState(false);
+    const [activeProjectMenu, setActiveProjectMenu] = useState<string | null>(null);
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+    const [editData, setEditData] = useState({ name: '', description: '' });
+    const [isPseudoModalOpen, setIsPseudoModalOpen] = useState(false);
+    const [newPseudo, setNewPseudo] = useState('');
+    const [currentUser, setCurrentUser] = useState<any>(null);
+    const [isActionLoading, setIsActionLoading] = useState(false);
+    const { showToast } = useToast();
     const menuRef = useRef<HTMLDivElement>(null);
+    const projectMenuRef = useRef<HTMLDivElement>(null);
 
     // Close menu when clicking outside
     useEffect(() => {
@@ -77,38 +96,115 @@ export default function ProjectsPage() {
             if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
                 setShowMenu(false);
             }
+            if (projectMenuRef.current && !projectMenuRef.current.contains(event.target as Node)) {
+                setActiveProjectMenu(null);
+            }
         };
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    // Charger les projets (créés + rejoints) pour l'utilisateur connecté
+    const loadProjects = async () => {
+        try {
+            const [me, list] = await Promise.all([
+                userService.getCurrentUser(),
+                projectService.getUserProjects(),
+            ]);
+            setCurrentUser(me);
+            const mapped: Project[] = list.map((p: ProjectResponseDTO) => ({
+                id: p.project_name,
+                name: p.project_name,
+                description: p.description || '',
+                avatar: p.project_logo || 'https://i.ibb.co/Qf983vG/avatar-placeholder.png',
+                membersCount: p.number_of_members ?? 0,
+                lastActivity: new Date(p.creation_date_time).toLocaleDateString(),
+                unread: 0,
+                role: p.creator_id === (me as any).user_id ? 'admin' : 'invite',
+                creatorUsername: '',
+                creatorId: p.creator_id
+            }));
+            setProjects(mapped);
+        } catch (e) {
+            console.error("Failed to load user projects", e);
+            setProjects([]);
+        }
+    };
+
     useEffect(() => {
-        const load = async () => {
-            try {
-                const [me, list] = await Promise.all([
-                    userService.getCurrentUser(),
-                    projectService.getUserProjects(),
-                ]);
-                const mapped: Project[] = list.map((p: ProjectResponseDTO) => ({
-                    id: p.project_name,
-                    name: p.project_name,
-                    description: p.description || '',
-                    avatar: p.project_logo || 'https://i.ibb.co/Qf983vG/avatar-placeholder.png',
-                    membersCount: p.number_of_members ?? 0,
-                    lastActivity: new Date(p.creation_date_time).toLocaleDateString(),
-                    unread: 0,
-                    role: p.creator_id === (me as any).user_id ? 'admin' : 'invite',
-                    creatorUsername: ''
-                }));
-                setProjects(mapped);
-            } catch (e) {
-                console.error("Failed to load user projects", e);
-                setProjects([]); // Ensure we show nothing if not authorized or error
-            }
-        };
-        load();
+        loadProjects();
     }, []);
+
+    const handleDeleteProject = async () => {
+        if (!selectedProject) return;
+        setIsActionLoading(true);
+        try {
+            await projectService.deleteProject(selectedProject.name);
+            showToast("Projet supprimé avec succès", "success");
+            setProjects(prev => prev.filter(p => p.id !== selectedProject.id));
+            setIsDeleteDialogOpen(false);
+        } catch (error: any) {
+            showToast(error.message || "Erreur lors de la suppression", "error");
+        } finally {
+            setIsActionLoading(false);
+        }
+    };
+
+    const handleLeaveProject = async () => {
+        if (!selectedProject) return;
+        setIsActionLoading(true);
+        try {
+            await projectService.leaveProject(selectedProject.name, selectedProject.creatorId);
+            showToast("Vous avez quitté le projet", "success");
+            setProjects(prev => prev.filter(p => p.id !== selectedProject.id));
+            setIsLeaveDialogOpen(false);
+        } catch (error: any) {
+            showToast(error.message || "Erreur lors de l'action", "error");
+        } finally {
+            setIsActionLoading(false);
+        }
+    };
+
+    const handleUpdateProject = async () => {
+        if (!selectedProject) return;
+        setIsActionLoading(true);
+        try {
+            await projectService.updateProject(selectedProject.name, {
+                project_name: editData.name,
+                description: editData.description
+            });
+            showToast("Projet mis à jour", "success");
+            loadProjects();
+            setIsEditModalOpen(false);
+        } catch (error: any) {
+            showToast(error.message || "Erreur lors de la mise à jour", "error");
+        } finally {
+            setIsActionLoading(false);
+        }
+    };
+
+    const handleUpdatePseudo = async () => {
+        if (!selectedProject || !currentUser) return;
+        setIsActionLoading(true);
+        try {
+            // 1. Récupérer les membres pour trouver le memberId de l'utilisateur courant
+            const members = await projectService.getProjectMembers(selectedProject.name);
+            const myMember = members.find(m => m.user_id === currentUser.user_id);
+
+            if (!myMember) {
+                throw new Error("Impossible de récupérer vos informations de membre dans ce projet.");
+            }
+
+            // 2. Mettre à jour le pseudo
+            await projectService.updateMemberPseudo(selectedProject.name, myMember.member_id, newPseudo);
+            showToast("Pseudo mis à jour avec succès", "success");
+            setIsPseudoModalOpen(false);
+            setNewPseudo('');
+        } catch (error: any) {
+            showToast(error.message || "Erreur lors de la mise à jour du pseudo", "error");
+        } finally {
+            setIsActionLoading(false);
+        }
+    };
 
     return (
         <>
@@ -131,16 +227,15 @@ export default function ProjectsPage() {
                 </div>
 
                 <div style={{ position: 'relative' }} ref={menuRef}>
-                    {/* BOUTON MODIFIÉ ICI */}
                     <button
                         onClick={() => setShowMenu(!showMenu)}
                         style={{
                             backgroundColor: '#F3F4F6',
-                            border: '1.5px solid #000000', // Bordure noire plus foncée
-                            color: '#000000', // Plus de contraste
+                            border: '1.5px solid #000000',
+                            color: '#000000',
                             width: '42px',
                             height: '42px',
-                            borderRadius: '50%', // Cercle parfait
+                            borderRadius: '50%',
                             fontSize: '1.5rem',
                             display: 'flex',
                             alignItems: 'center',
@@ -226,6 +321,128 @@ export default function ProjectsPage() {
                 gap: '20px',
                 padding: '8px'
             }}>
+                <ConfirmationModal
+                    isOpen={isDeleteDialogOpen}
+                    title="Supprimer le projet"
+                    message={`Êtes-vous sûr de vouloir supprimer définitivement le projet "${selectedProject?.name}" ?`}
+                    onConfirm={handleDeleteProject}
+                    onCancel={() => setIsDeleteDialogOpen(false)}
+                    confirmText={isActionLoading ? "Suppression..." : "Oui, supprimer"}
+                    cancelText="Annuler"
+                    isDangerous={true}
+                />
+
+                <ConfirmationModal
+                    isOpen={isLeaveDialogOpen}
+                    title="Quitter le projet"
+                    message={`Voulez-vous vraiment quitter le projet "${selectedProject?.name}" ?`}
+                    onConfirm={handleLeaveProject}
+                    onCancel={() => setIsLeaveDialogOpen(false)}
+                    confirmText={isActionLoading ? "Départ..." : "Oui, quitter"}
+                    cancelText="Annuler"
+                    isDangerous={true}
+                />
+
+                {/* Modal d'édition simplifié */}
+                {isEditModalOpen && (
+                    <div style={{
+                        position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+                        backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex',
+                        alignItems: 'center', justifyContent: 'center', zIndex: 1000
+                    }}>
+                        <div style={{
+                            backgroundColor: 'white', padding: '30px', borderRadius: '16px',
+                            width: '400px', maxWidth: '90%', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)'
+                        }}>
+                            <h2 style={{ marginBottom: '20px', fontSize: '1.25rem' }}>Modifier le projet</h2>
+                            <div style={{ marginBottom: '15px' }}>
+                                <label style={{ display: 'block', marginBottom: '5px', fontSize: '0.9rem', fontWeight: 600 }}>Nom du projet</label>
+                                <input
+                                    type="text"
+                                    value={editData.name}
+                                    onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+                                    style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #E5E7EB' }}
+                                />
+                            </div>
+                            <div style={{ marginBottom: '25px' }}>
+                                <label style={{ display: 'block', marginBottom: '5px', fontSize: '0.9rem', fontWeight: 600 }}>Description</label>
+                                <textarea
+                                    value={editData.description}
+                                    onChange={(e) => setEditData({ ...editData, description: e.target.value })}
+                                    style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #E5E7EB', minHeight: '80px' }}
+                                />
+                            </div>
+                            <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+                                <button
+                                    onClick={() => setIsEditModalOpen(false)}
+                                    style={{ padding: '10px 16px', borderRadius: '8px', border: '1px solid #E5E7EB', background: 'white' }}
+                                >
+                                    Annuler
+                                </button>
+                                <button
+                                    onClick={handleUpdateProject}
+                                    disabled={isActionLoading}
+                                    style={{
+                                        padding: '10px 16px', borderRadius: '8px', border: 'none',
+                                        background: '#7C3AED', color: 'white', fontWeight: 600,
+                                        opacity: isActionLoading ? 0.7 : 1
+                                    }}
+                                >
+                                    {isActionLoading ? 'Enregistrement...' : 'Enregistrer'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Modal Changement de Pseudo */}
+                {isPseudoModalOpen && (
+                    <div style={{
+                        position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+                        backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex',
+                        alignItems: 'center', justifyContent: 'center', zIndex: 1000
+                    }}>
+                        <div style={{
+                            backgroundColor: 'white', padding: '30px', borderRadius: '16px',
+                            width: '400px', maxWidth: '90%', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)'
+                        }}>
+                            <h2 style={{ marginBottom: '20px', fontSize: '1.25rem' }}>Changer mon pseudo</h2>
+                            <p style={{ marginBottom: '20px', color: '#6B7280', fontSize: '0.9rem' }}>
+                                Ce pseudo sera visible par les autres membres du projet <strong>{selectedProject?.name}</strong>.
+                            </p>
+                            <div style={{ marginBottom: '25px' }}>
+                                <label style={{ display: 'block', marginBottom: '5px', fontSize: '0.9rem', fontWeight: 600 }}>Nouveau pseudo</label>
+                                <input
+                                    type="text"
+                                    value={newPseudo}
+                                    onChange={(e) => setNewPseudo(e.target.value)}
+                                    placeholder="Entrez votre nouveau pseudo"
+                                    style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #E5E7EB' }}
+                                />
+                            </div>
+                            <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+                                <button
+                                    onClick={() => setIsPseudoModalOpen(false)}
+                                    style={{ padding: '10px 16px', borderRadius: '8px', border: '1px solid #E5E7EB', background: 'white' }}
+                                >
+                                    Annuler
+                                </button>
+                                <button
+                                    onClick={handleUpdatePseudo}
+                                    disabled={isActionLoading || !newPseudo.trim()}
+                                    style={{
+                                        padding: '10px 16px', borderRadius: '8px', border: 'none',
+                                        background: '#7C3AED', color: 'white', fontWeight: 600,
+                                        opacity: isActionLoading || !newPseudo.trim() ? 0.7 : 1
+                                    }}
+                                >
+                                    {isActionLoading ? 'Enregistrement...' : 'Enregistrer'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {projects.map((project) => (
                     <Link key={project.id} href={`/dashboard/project/${project.id}`} style={{ textDecoration: 'none' }}>
                         <div className="project-card" style={{
@@ -267,6 +484,140 @@ export default function ProjectsPage() {
                                     Admin
                                 </div>
                             )}
+
+                            {/* Menu 3 points verticaux */}
+                            <div
+                                style={{ position: 'absolute', top: '40px', right: '12px', zIndex: 10 }}
+                                ref={activeProjectMenu === project.id ? projectMenuRef : null}
+                            >
+                                <button
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        setActiveProjectMenu(activeProjectMenu === project.id ? null : project.id);
+                                    }}
+                                    style={{
+                                        background: 'transparent', border: 'none', color: '#6B7280',
+                                        cursor: 'pointer', padding: '6px', borderRadius: '50%',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                    }}
+                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F3F4F6'}
+                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                >
+                                    <i className="fas fa-ellipsis-v"></i>
+                                </button>
+
+                                {activeProjectMenu === project.id && (
+                                    <div style={{
+                                        position: 'absolute', right: 0, top: '100%',
+                                        backgroundColor: 'white', borderRadius: '8px',
+                                        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                                        border: '1px solid #E5E7EB', minWidth: '160px',
+                                        padding: '4px', zIndex: 20
+                                    }}>
+                                        {project.role === 'admin' ? (
+                                            <>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.preventDefault(); e.stopPropagation();
+                                                        setSelectedProject(project);
+                                                        setEditData({ name: project.name, description: project.description });
+                                                        setIsEditModalOpen(true);
+                                                        setActiveProjectMenu(null);
+                                                    }}
+                                                    style={{
+                                                        width: '100%', textAlign: 'left', padding: '10px 12px',
+                                                        borderRadius: '6px', border: 'none', background: 'transparent',
+                                                        display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer',
+                                                        fontSize: '0.9rem', color: '#1F2937'
+                                                    }}
+                                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F3F4F6'}
+                                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                                >
+                                                    <i className="fas fa-edit" style={{ color: '#4B5563' }}></i> Modifier
+                                                </button>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.preventDefault(); e.stopPropagation();
+                                                        setSelectedProject(project);
+                                                        setIsDeleteDialogOpen(true);
+                                                        setActiveProjectMenu(null);
+                                                    }}
+                                                    style={{
+                                                        width: '100%', textAlign: 'left', padding: '10px 12px',
+                                                        borderRadius: '6px', border: 'none', background: 'transparent',
+                                                        display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer',
+                                                        fontSize: '0.9rem', color: '#EF4444'
+                                                    }}
+                                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#FEF2F2'}
+                                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                                >
+                                                    <i className="fas fa-trash-alt"></i> Supprimer
+                                                </button>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.preventDefault(); e.stopPropagation();
+                                                        setSelectedProject(project);
+                                                        setNewPseudo('');
+                                                        setIsPseudoModalOpen(true);
+                                                        setActiveProjectMenu(null);
+                                                    }}
+                                                    style={{
+                                                        width: '100%', textAlign: 'left', padding: '10px 12px',
+                                                        borderRadius: '6px', border: 'none', background: 'transparent',
+                                                        display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer',
+                                                        fontSize: '0.9rem', color: '#1F2937'
+                                                    }}
+                                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F3F4F6'}
+                                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                                >
+                                                    <i className="fas fa-user-edit" style={{ color: '#4B5563' }}></i> Changer mon pseudo
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.preventDefault(); e.stopPropagation();
+                                                        setSelectedProject(project);
+                                                        setNewPseudo('');
+                                                        setIsPseudoModalOpen(true);
+                                                        setActiveProjectMenu(null);
+                                                    }}
+                                                    style={{
+                                                        width: '100%', textAlign: 'left', padding: '10px 12px',
+                                                        borderRadius: '6px', border: 'none', background: 'transparent',
+                                                        display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer',
+                                                        fontSize: '0.9rem', color: '#1F2937'
+                                                    }}
+                                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F3F4F6'}
+                                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                                >
+                                                    <i className="fas fa-user-edit" style={{ color: '#4B5563' }}></i> Changer mon pseudo
+                                                </button>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.preventDefault(); e.stopPropagation();
+                                                        setSelectedProject(project);
+                                                        setIsLeaveDialogOpen(true);
+                                                        setActiveProjectMenu(null);
+                                                    }}
+                                                    style={{
+                                                        width: '100%', textAlign: 'left', padding: '10px 12px',
+                                                        borderRadius: '6px', border: 'none', background: 'transparent',
+                                                        display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer',
+                                                        fontSize: '0.9rem', color: '#EF4444'
+                                                    }}
+                                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#FEF2F2'}
+                                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                                >
+                                                    <i className="fas fa-sign-out-alt"></i> Quitter le groupe
+                                                </button>
+                                            </>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
 
                             {/* Header avec avatar et nom */}
                             <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>

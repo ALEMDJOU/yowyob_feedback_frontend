@@ -182,6 +182,21 @@ export interface UpdateCommentRequestDTO {
 }
 
 /**
+ * LIKE TYPES
+ */
+
+export interface LikeResponseDTO {
+    feedback_id: string;
+    liker_id: string;
+    liker_name: string;
+    likes_date_time: string;
+}
+
+export interface CreateLikeRequestDTO {
+    feedback_id: string;
+}
+
+/**
  * SUBSCRIPTION TYPES
  */
 

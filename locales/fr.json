@@ -150,5 +150,8 @@
       "recentReviewsTitle": "Derniers Avis Soumis",
       "annualProgress": "Progression Annuelle"
     }
+  },
+  "joinProject": {
+    "codeLabel": "Codes à 6 caractères du groupe"
   }
 }

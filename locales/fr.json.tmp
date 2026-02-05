@@ -1,0 +1,60 @@
+{
+  "auth": {
+    "signup": {
+      "step1Title": "Identité et Contact",
+      "step2Title": "Profil et Sécurité",
+      "stepProgress": "Étape {step} sur 2",
+      "accountType": "Type de compte",
+      "accountTypePerson": "👤 Particulier",
+      "accountTypeOrg": "🏢 Entreprise / Organisation",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "orgName": "Nom de l'organisation",
+      "orgNamePlaceholder": "Ex: Yowyob Sarl",
+      "domain": "Domaine d'activité",
+      "domainPlaceholder": "Ex: Informatique, Commerce...",
+      "email": "Email",
+      "phone": "Téléphone (Cameroun)",
+      "phonePlaceholder": "6XXXXXXXX",
+      "occupation": "Occupation / Profession",
+      "occupationPlaceholder": "Ex: Étudiant, Développeur...",
+      "location": "Localisation",
+      "locationPlaceholder": "Ex: Douala, Cameroun",
+      "description": "Description",
+      "descriptionPlaceholder": "Décrivez brièvement l'activité...",
+      "logoPhoto": "Logo ou Photo",
+      "imageUploaded": "✓ Image chargée",
+      "password": "Mot de passe",
+      "confirmPassword": "Confirmation",
+      "passwordMatch": "✓ Les mots de passe correspondent",
+      "passwordMismatch": "✗ Les mots de passe diffèrent",
+      "passwordReq1": "8+ caractères",
+      "passwordReq2": "Majuscule",
+      "passwordReq3": "Minuscule",
+      "passwordReq4": "Chiffre",
+      "passwordReq5": "Spécial (@$!%*?&)",
+      "nextButton": "Suivant",
+      "backButton": "Retour",
+      "submitButton": "S'inscrire",
+      "processing": "🚀 Traitement...",
+      "alreadyRegistered": "Déjà inscrit ?",
+      "loginLink": "Connexion",
+      "errors": {
+        "fillNamePerson": "Veuillez remplir votre nom et prénom.",
+        "fillOrgName": "Veuillez saisir le nom de l'organisation.",
+        "fillContactDomain": "Veuillez remplir les informations de contact et le domaine d'activité.",
+        "invalidPhone": "Numéro de téléphone invalide (format 9 chiffres : 6XXXXXXXX).",
+        "invalidEmail": "Veuillez saisir une adresse email valide.",
+        "fillOccupation": "Veuillez renseigner votre profession.",
+        "fillLocationDesc": "Veuillez renseigner votre localisation et une description.",
+        "passwordInsecure": "Le mot de passe ne respecte pas toutes les consignes de sécurité.",
+        "passwordMismatch": "Les mots de passe ne correspondent pas.",
+        "uploadError": "Erreur upload image: "
+      },
+      "success": {
+        "registered": "Inscription réussie !",
+        "imageUploaded": "Image téléchargée avec succès !"
+      }
+    }
+  }
+}

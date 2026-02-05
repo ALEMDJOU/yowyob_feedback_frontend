@@ -3,11 +3,11 @@
 
 export const I18N_CONFIG = {
   // Langues supportées
-  supportedLanguages: ['fr', 'en', 'es', 'de'] as const,
-  
+  supportedLanguages: ['fr', 'en'] as const,
+
   // Langue par défaut
   defaultLanguage: 'fr' as const,
-  
+
   // Configuration de chaque langue
   languages: {
     fr: {
@@ -23,20 +23,6 @@ export const I18N_CONFIG = {
       flag: '🇬🇧',
       dir: 'ltr',
       htmlLang: 'en-US',
-    },
-    es: {
-      name: 'Español',
-      nativeName: 'Español',
-      flag: '🇪🇸',
-      dir: 'ltr',
-      htmlLang: 'es-ES',
-    },
-    de: {
-      name: 'Deutsch',
-      nativeName: 'Deutsch',
-      flag: '🇩🇪',
-      dir: 'ltr',
-      htmlLang: 'de-DE',
     },
   },
 

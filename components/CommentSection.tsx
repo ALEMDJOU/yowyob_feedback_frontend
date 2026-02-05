@@ -6,6 +6,7 @@ import { useToast } from './ToastProvider';
 import { commentService } from '../lib/services/comment.service';
 import { CommentResponseDTO } from '../lib/types/api';
 import { userService } from '../lib/services/user.service';
+import EmojiPicker from './EmojiPicker';
 
 
 interface CommentSectionProps {
@@ -29,6 +30,10 @@ export default function CommentSection({ feedbackId, onCommentCountChange }: Com
 
     // Deleting state
     const [deletingCommentId, setDeletingCommentId] = useState<string | null>(null);
+
+    // Emoji search states
+    const [showNewEmojiPicker, setShowNewEmojiPicker] = useState(false);
+    const [showEditEmojiPicker, setShowEditEmojiPicker] = useState(false);
 
     useEffect(() => {
         const fetchUserAndComments = async () => {
@@ -148,17 +153,39 @@ export default function CommentSection({ feedbackId, onCommentCountChange }: Com
                     />
                 )}
                 <div style={{ display: 'flex', gap: '12px' }}>
-                    <input
-                        type="text"
-                        value={newCommentText}
-                        onChange={(e) => setNewCommentText(e.target.value)}
-                        placeholder="Votre avis sur ce projet..."
-                        style={{
-                            flex: 1, padding: '12px 20px', borderRadius: '14px', border: '1px solid #e5e7eb',
-                            fontSize: '0.9rem', outline: 'none', boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
-                        }}
-                        onKeyPress={(e) => e.key === 'Enter' && handleCreateComment()}
-                    />
+                    <div style={{ flex: 1, position: 'relative', display: 'flex', gap: '8px', alignItems: 'center' }}>
+                        <input
+                            type="text"
+                            value={newCommentText}
+                            onChange={(e) => setNewCommentText(e.target.value)}
+                            placeholder="Votre avis sur ce projet..."
+                            style={{
+                                flex: 1, padding: '12px 20px', borderRadius: '14px', border: '1px solid #e5e7eb',
+                                fontSize: '0.9rem', outline: 'none', boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+                            }}
+                            onKeyPress={(e) => e.key === 'Enter' && handleCreateComment()}
+                        />
+                        <div style={{ position: 'relative' }}>
+                            <button
+                                onClick={() => setShowNewEmojiPicker(!showNewEmojiPicker)}
+                                style={{
+                                    background: 'none', border: 'none', fontSize: '1.2rem',
+                                    cursor: 'pointer', padding: '5px', borderRadius: '8px',
+                                    color: '#6b7280'
+                                }}
+                            >
+                                <i className="far fa-smile"></i>
+                            </button>
+                            {showNewEmojiPicker && (
+                                <EmojiPicker
+                                    onEmojiSelect={(emoji) => {
+                                        setNewCommentText(prev => prev + emoji);
+                                        setShowNewEmojiPicker(false);
+                                    }}
+                                />
+                            )}
+                        </div>
+                    </div>
                     <button
                         onClick={handleCreateComment}
                         disabled={!newCommentText.trim() || isSubmitting}
@@ -245,9 +272,31 @@ export default function CommentSection({ feedbackId, onCommentCountChange }: Com
                                                 onChange={(e) => setEditContent(e.target.value)}
                                                 style={{ width: '100%', padding: '8px', borderRadius: '8px', borderColor: '#e5e7eb', fontSize: '0.9rem' }}
                                             />
-                                            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-                                                <button onClick={() => setEditingCommentId(null)} style={{ fontSize: '0.8rem', color: '#6b7280', background: 'none', border: 'none', cursor: 'pointer' }}>Annuler</button>
-                                                <button onClick={handleUpdateComment} style={{ fontSize: '0.8rem', color: '#8a2be2', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}>Enregistrer</button>
+                                            <div style={{ display: 'flex', gap: '8px', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                <div style={{ position: 'relative' }}>
+                                                    <button
+                                                        onClick={() => setShowEditEmojiPicker(!showEditEmojiPicker)}
+                                                        style={{
+                                                            background: 'none', border: 'none', fontSize: '1.2rem',
+                                                            cursor: 'pointer', padding: '5px', borderRadius: '8px',
+                                                            color: '#6b7280'
+                                                        }}
+                                                    >
+                                                        <i className="far fa-smile"></i>
+                                                    </button>
+                                                    {showEditEmojiPicker && (
+                                                        <EmojiPicker
+                                                            onEmojiSelect={(emoji) => {
+                                                                setEditContent(prev => prev + emoji);
+                                                                setShowEditEmojiPicker(false);
+                                                            }}
+                                                        />
+                                                    )}
+                                                </div>
+                                                <div style={{ display: 'flex', gap: '8px' }}>
+                                                    <button onClick={() => { setEditingCommentId(null); setShowEditEmojiPicker(false); }} style={{ fontSize: '0.8rem', color: '#6b7280', background: 'none', border: 'none', cursor: 'pointer' }}>Annuler</button>
+                                                    <button onClick={handleUpdateComment} style={{ fontSize: '0.8rem', color: '#8a2be2', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}>Enregistrer</button>
+                                                </div>
                                             </div>
                                         </div>
                                     ) : (

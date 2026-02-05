@@ -8,7 +8,10 @@ import { projectService } from '@/lib/services/project.service';
 import { feedbackService } from '@/lib/services/feedback.service';
 import { userService } from '@/lib/services/user.service';
 import { fileService } from '@/lib/services/file.service';
+import { likeService } from '@/lib/services/like.service';
 import { ProjectDetailResponseDTO, UserResponseDTO, MemberResponseDTO } from '@/lib/types/api';
+import EmojiPicker from '@/components/EmojiPicker';
+import { useToast } from '@/components/ToastProvider';
 
 const MOCK_PROJECT_ID = "mock-id";
 
@@ -58,7 +61,7 @@ export default function ProjectDetailPage() {
     const [project, setProject] = useState<ProjectDetailResponseDTO | null>(null);
     const [currentUser, setCurrentUser] = useState<UserResponseDTO | null>(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const { showToast } = useToast();
     const [feedbacks, setFeedbacks] = useState<FeedbackData[]>([]);
     const [isProjectInfoOpen, setIsProjectInfoOpen] = useState(false);
     const [globalMembers, setGlobalMembers] = useState<MemberResponseDTO[]>([]);
@@ -68,13 +71,15 @@ export default function ProjectDetailPage() {
     const [newFeedbackContent, setNewFeedbackContent] = useState('');
     const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [userLikes, setUserLikes] = useState<string[]>([]);
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const feedbackInputRef = useRef<HTMLTextAreaElement>(null);
 
     // Fetch user and project details
     useEffect(() => {
         const fetchData = async () => {
             if (!projectName) return;
             setLoading(true);
-            setError(null);
             try {
                 // 1. Get current user first
                 const userData = await userService.getCurrentUser().catch(() => null);
@@ -116,11 +121,16 @@ export default function ProjectDetailPage() {
                     setGlobalMembers([]);
                 }
 
+                if (userData) {
+                    const likes = await likeService.getLikesByUser(userData.user_id).catch(() => []);
+                    setUserLikes(likes.map(l => l.feedback_id));
+                }
+
                 setProject(projectData);
             } catch (err: any) {
                 console.error("Failed to fetch project details.", err);
                 const msg = err.message || (typeof err === 'object' ? JSON.stringify(err) : String(err));
-                setError(msg);
+                showToast(msg, "error");
             } finally {
                 setLoading(false);
             }
@@ -148,7 +158,7 @@ export default function ProjectDetailPage() {
                 createdAt: fb.feedback_date_time,
                 content: fb.content,
                 likes: fb.number_of_likes,
-                liked: false,
+                liked: userLikes.includes(fb.feedback_id),
                 comments: [],
                 project: { name: fb.project_name, id: fb.target_project_id },
                 attachments: fb.attachments
@@ -244,12 +254,11 @@ export default function ProjectDetailPage() {
             // 4. Refresh feedbacks
             await fetchFeedbacks();
 
-            // Subtle success indication instead of alert
-            console.log("Feedback envoyé avec succès !");
+            showToast("Feedback envoyé avec succès !", "success");
         } catch (err: any) {
             console.error("Failed to submit feedback", err);
             const msg = err.message || (typeof err === 'object' ? JSON.stringify(err) : String(err));
-            alert(`Erreur lors de l'envoi du feedback: ${msg}`);
+            showToast(`Erreur lors de l'envoi du feedback: ${msg}`, "error");
         } finally {
             setIsSubmitting(false);
         }
@@ -257,18 +266,7 @@ export default function ProjectDetailPage() {
 
     if (loading) return <div style={{ padding: '40px', textAlign: 'center' }}>Chargement...</div>;
 
-    if (error) {
-        return (
-            <div style={{ padding: '40px', textAlign: 'center', maxWidth: '600px', margin: '0 auto' }}>
-                <i className="fas fa-exclamation-triangle" style={{ fontSize: '3rem', color: '#EF4444', marginBottom: '20px' }}></i>
-                <h2 style={{ color: '#1F2937', marginBottom: '10px' }}>Accès Interdit ou Erreur</h2>
-                <p style={{ color: '#6B7280', marginBottom: '20px' }}>{error}</p>
-                <Link href="/dashboard/project" style={{ color: '#7C3AED', fontWeight: 600, textDecoration: 'none' }}>
-                    <i className="fas fa-arrow-left"></i> Retour à mes projets
-                </Link>
-            </div>
-        );
-    }
+    /* Erreurs gérées par Toasts */
 
     // Determine Admin Name
     const projectAdminMember = project?.members?.find(m => m.user_id === project.creator_id);
@@ -387,33 +385,63 @@ export default function ProjectDetailPage() {
             <div style={{ background: 'white', borderRadius: '16px', padding: '20px', boxShadow: '0 4px 10px rgba(0,0,0,0.05)', marginBottom: '30px' }}>
                 <h3 style={{ marginBottom: '15px', fontWeight: 700 }}>Donner votre feedback</h3>
                 <form onSubmit={handleFeedbackSubmit}>
-                    <textarea
-                        value={newFeedbackContent}
-                        onChange={(e) => setNewFeedbackContent(e.target.value)}
-                        placeholder="Qu'en pensez-vous ?"
-                        style={{
-                            width: '100%', minHeight: '100px', border: '1px solid #E5E7EB',
-                            borderRadius: '12px', padding: '12px', resize: 'vertical',
-                            marginBottom: '10px', fontFamily: 'inherit'
-                        }}
-                    />
+                    <div style={{ position: 'relative' }}>
+                        <textarea
+                            ref={feedbackInputRef}
+                            value={newFeedbackContent}
+                            onChange={(e) => setNewFeedbackContent(e.target.value)}
+                            placeholder="Qu'en pensez-vous ?"
+                            style={{
+                                width: '100%', minHeight: '100px', border: '1px solid #E5E7EB',
+                                borderRadius: '12px', padding: '12px', resize: 'vertical',
+                                marginBottom: '10px', fontFamily: 'inherit'
+                            }}
+                        />
+                    </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div style={{ position: 'relative' }}>
-                            <input
-                                type="file"
-                                id="file-upload"
-                                multiple
-                                onChange={handleFileChange}
-                                style={{ display: 'none' }}
-                            />
-                            <label htmlFor="file-upload" style={{
-                                display: 'flex', alignItems: 'center', gap: '8px',
-                                color: '#6B7280', cursor: 'pointer', fontSize: '0.9rem',
-                                padding: '8px 12px', borderRadius: '8px', background: '#F9FAFB'
-                            }}>
-                                <i className="fas fa-paperclip"></i>
-                                {attachedFiles.length > 0 ? `${attachedFiles.length} fichier(s)` : 'Joindre un fichier'}
-                            </label>
+                        <div style={{ display: 'flex', gap: '10px' }}>
+                            <div style={{ position: 'relative' }}>
+                                <input
+                                    type="file"
+                                    id="file-upload"
+                                    multiple
+                                    onChange={handleFileChange}
+                                    style={{ display: 'none' }}
+                                />
+                                <label htmlFor="file-upload" style={{
+                                    display: 'flex', alignItems: 'center', gap: '8px',
+                                    color: '#6B7280', cursor: 'pointer', fontSize: '0.9rem',
+                                    padding: '8px 12px', borderRadius: '8px', background: '#F9FAFB'
+                                }}>
+                                    <i className="fas fa-paperclip"></i>
+                                    {attachedFiles.length > 0 ? `${attachedFiles.length} fichier(s)` : 'Joindre un fichier'}
+                                </label>
+                            </div>
+
+                            <div style={{ position: 'relative' }}>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                                    style={{
+                                        display: 'flex', alignItems: 'center', gap: '8px',
+                                        color: '#6B7280', cursor: 'pointer', fontSize: '1.2rem',
+                                        padding: '5px 10px', borderRadius: '8px', background: '#F9FAFB',
+                                        border: 'none'
+                                    }}
+                                    title="Ajouter un emoji"
+                                >
+                                    <i className="far fa-smile"></i>
+                                </button>
+                                {showEmojiPicker && (
+                                    <EmojiPicker
+                                        onEmojiSelect={(emoji) => {
+                                            setNewFeedbackContent(prev => prev + emoji);
+                                            setShowEmojiPicker(false);
+                                            feedbackInputRef.current?.focus();
+                                        }}
+                                    />
+                                )}
+                            </div>
                         </div>
                         <button
                             type="submit"

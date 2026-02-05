@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, useMotionValue, AnimatePresence } from 'framer-motion';
-import { X, Send, Bot, Minimize2, History, Plus } from 'lucide-react'; 
+import { X, Send, Bot, Minimize2, History, Plus } from 'lucide-react';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 
 type Message = {
     id: string;
@@ -20,6 +21,7 @@ type ChatSession = {
 };
 
 export default function YowbotFAB() {
+    const pathname = usePathname();
     const x = useMotionValue(0);
     const y = useMotionValue(0);
     const [isLoaded, setIsLoaded] = useState(false);
@@ -27,7 +29,7 @@ export default function YowbotFAB() {
     const [isOpen, setIsOpen] = useState(false);
     const [showHistory, setShowHistory] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
-    
+
     const [sessions, setSessions] = useState<ChatSession[]>([]);
     const [currentSessionId, setCurrentSessionId] = useState<string>(Date.now().toString());
     const [messages, setMessages] = useState<Message[]>([
@@ -117,7 +119,7 @@ export default function YowbotFAB() {
             const response = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
+                body: JSON.stringify({
                     message: userMsg.text,
                     history: messages.map(m => ({ role: m.sender === 'bot' ? 'assistant' : 'user', content: m.text }))
                 }),
@@ -128,19 +130,19 @@ export default function YowbotFAB() {
         } catch (error) { console.error(error); } finally { setIsTyping(false); }
     };
 
-    if (!isLoaded) return null;
+    if (!isLoaded || pathname === '/') return null;
 
     return (
         <>
             <AnimatePresence>
                 {isOpen && (
-                        <motion.div
-                            initial={{ opacity: 0, y: 40, scale: 0.9, filter: 'blur(10px)' }}
-                            animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
-                            exit={{ opacity: 0, y: 40, scale: 0.9, filter: 'blur(10px)' }}
-                            className="yowbot-modal"
-                            style={{ zIndex: 10000 }}
-                        >
+                    <motion.div
+                        initial={{ opacity: 0, y: 40, scale: 0.9, filter: 'blur(10px)' }}
+                        animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+                        exit={{ opacity: 0, y: 40, scale: 0.9, filter: 'blur(10px)' }}
+                        className="yowbot-modal"
+                        style={{ zIndex: 10000 }}
+                    >
                         {/* Header avec Logo et Boutons de navigation */}
                         <div style={{ padding: '20px', background: 'linear-gradient(90deg, #6A1B9A 0%, #4A00B7 100%)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -176,8 +178,8 @@ export default function YowbotFAB() {
                                         <h3 style={{ color: 'white', marginBottom: '15px', fontSize: '1rem', fontWeight: 700 }}>Historique</h3>
                                         {sessions.length === 0 && <p style={{ color: '#666', fontSize: '0.9rem' }}>Aucune discussion.</p>}
                                         {sessions.map(s => (
-                                            <div key={s.id} onClick={() => loadSession(s)} style={{ 
-                                                padding: '12px', borderRadius: '12px', backgroundColor: currentSessionId === s.id ? '#6A1B9A' : '#252525', 
+                                            <div key={s.id} onClick={() => loadSession(s)} style={{
+                                                padding: '12px', borderRadius: '12px', backgroundColor: currentSessionId === s.id ? '#6A1B9A' : '#252525',
                                                 color: 'white', cursor: 'pointer', marginBottom: '10px', border: '1px solid #333'
                                             }}>
                                                 <div style={{ fontSize: '0.85rem', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.title}</div>
@@ -202,9 +204,9 @@ export default function YowbotFAB() {
                                         {msg.text}
                                     </motion.div>
                                 ))}
-                                
+
                                 {isTyping && (
-                                    <motion.div 
+                                    <motion.div
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: [0.4, 1, 0.4] }}
                                         transition={{ repeat: Infinity, duration: 1.5 }}
@@ -233,15 +235,15 @@ export default function YowbotFAB() {
             </AnimatePresence>
 
             {/* Bouton Flottant (FAB) */}
-                        <motion.div
+            <motion.div
                 drag dragMomentum={false}
                 onDragStart={() => setIsDragging(true)}
                 onDragEnd={() => {
                     localStorage.setItem('yowbot-position', JSON.stringify({ x: x.get(), y: y.get() }));
                     setTimeout(() => setIsDragging(false), 100);
                 }}
-                            onClick={() => !isDragging && setIsOpen(!isOpen)}
-                            style={{ x, y, position: 'fixed', bottom: isMobile ? '20px' : '30px', right: isMobile ? '18px' : '30px', zIndex: 9999, cursor: 'grab' }}
+                onClick={() => !isDragging && setIsOpen(!isOpen)}
+                style={{ x, y, position: 'fixed', bottom: isMobile ? '20px' : '30px', right: isMobile ? '18px' : '30px', zIndex: 9999, cursor: 'grab' }}
             >
                 <div className="yowbot-fab" style={{ background: 'linear-gradient(135deg, #6A1B9A, #4A00B7)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', boxShadow: '0 10px 30px rgba(106, 27, 154, 0.5)' }}>
                     {isOpen ? <X size={isMobile ? 22 : 28} /> : <Bot size={isMobile ? 22 : 28} />}

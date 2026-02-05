@@ -5,9 +5,11 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { projectService } from '@/lib/services/project.service';
+import { useToast } from '@/components/ToastProvider';
 
 export default function CreateProjectPage() {
     const router = useRouter();
+    const { showToast } = useToast();
     const [formData, setFormData] = useState({
         project_name: '',
         description: '',
@@ -31,8 +33,9 @@ export default function CreateProjectPage() {
             setAvatarPreview(objectUrl);
             const publicUrl = await projectService.uploadLogo(file);
             setFormData(prev => ({ ...prev, project_logo: publicUrl }));
+            showToast("Logo téléchargé !", "success");
         } catch (err: any) {
-            alert(err.message || "Erreur lors de l'upload de l'image");
+            showToast(err.message || "Erreur lors de l'upload de l'image", "error");
         } finally {
             setUploading(false);
         }
@@ -41,7 +44,7 @@ export default function CreateProjectPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!formData.project_name.trim() || !formData.description.trim()) {
-            alert('Veuillez remplir tous les champs obligatoires');
+            showToast('Veuillez remplir tous les champs obligatoires', "error");
             return;
         }
         setSubmitting(true);
@@ -55,8 +58,9 @@ export default function CreateProjectPage() {
             setCreatedProjectName(created.project_name);
             setCreatedCreatorId(created.creator_id);
             setIsCreated(true);
+            showToast("Groupe créé !", "success");
         } catch (err: any) {
-            alert(err.message || 'Erreur lors de la création du projet');
+            showToast(err.message || 'Erreur lors de la création du projet', "error");
         } finally {
             setSubmitting(false);
         }
@@ -156,7 +160,7 @@ export default function CreateProjectPage() {
                                             onClick={() => {
                                                 const link = `${window.location.origin}/dashboard/project/join?project=${encodeURIComponent(createdProjectName)}&creator=${encodeURIComponent(createdCreatorId)}`;
                                                 navigator.clipboard.writeText(link);
-                                                alert('Lien d\'invitation copié.');
+                                                showToast('Lien d\'invitation copié.', "success");
                                             }}
                                             style={{
                                                 padding: '8px 12px',
@@ -367,7 +371,7 @@ export default function CreateProjectPage() {
                                 id="name"
                                 value={formData.project_name}
                                 onChange={(e) => setFormData(prev => ({ ...prev, project_name: e.target.value }))}
-                                placeholder="Ex: Groupe BD, Projet React..."
+                                placeholder=""
                                 required
                                 style={{ width: '100%', padding: '12px 16px', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '0.95rem' }}
                             />
@@ -381,7 +385,7 @@ export default function CreateProjectPage() {
                                 id="description"
                                 value={formData.description}
                                 onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                                placeholder="Décrivez brièvement l'objectif de ce groupe..."
+                                placeholder=""
                                 required
                                 rows={4}
                                 style={{ width: '100%', padding: '12px 16px', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '0.95rem', resize: 'vertical' }}

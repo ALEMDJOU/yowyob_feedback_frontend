@@ -150,5 +150,8 @@
       "recentReviewsTitle": "Recent Submitted Reviews",
       "annualProgress": "Annual Progress"
     }
+  },
+  "joinProject": {
+    "codeLabel": "Group 6-character code"
   }
 }

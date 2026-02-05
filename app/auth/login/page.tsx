@@ -6,24 +6,25 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/components/I18nProvider';
 import { authService } from '@/lib/services';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/components/ToastProvider';
 
 export default function LoginPage() {
   const { t } = useTranslation();
   const router = useRouter();
-  
-  const [identifier, setIdentifier] = useState(''); 
+  const { showToast } = useToast();
+
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   // Variantes d'animation
   const containerVariants = {
     hidden: { opacity: 0, y: 30 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { duration: 0.6, ease: "easeOut", staggerChildren: 0.1 } 
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut", staggerChildren: 0.1 }
     }
   };
 
@@ -34,14 +35,14 @@ export default function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
     setLoading(true);
 
     try {
       await authService.login({ identifier, password });
+      showToast("Connexion réussie !", "success");
       router.push('/dashboard/feed');
     } catch (err: any) {
-      setError(err.message || 'Authentication failed');
+      showToast(err.message || 'Échec de l\'authentification', "error");
     } finally {
       setLoading(false);
     }
@@ -49,7 +50,7 @@ export default function LoginPage() {
 
   return (
     <div className="auth-page" style={{ overflow: 'hidden', perspective: '1000px' }}>
-      <motion.div 
+      <motion.div
         initial="hidden"
         animate="visible"
         whileHover={{ rotateY: -1, rotateX: 1 }} // Effet 3D léger au survol
@@ -59,17 +60,17 @@ export default function LoginPage() {
         {/* Retour arrière animé */}
         <motion.div variants={itemVariants} whileHover={{ x: -5 }}>
           <Link href="/" style={{ color: '#6A1B9A', fontSize: '0.9em', display: 'flex', alignItems: 'center', gap: '5px', textDecoration: 'none' }}>
-             <motion.span animate={{ x: [0, -4, 0] }} transition={{ repeat: Infinity, duration: 1.5 }} style={{ display: 'inline-flex' }}>
-               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                 <path d="M15 19l-7-7 7-7" stroke="#6A1B9A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-               </svg>
-             </motion.span> 
-             {t('auth.back')}
+            <motion.span animate={{ x: [0, -4, 0] }} transition={{ repeat: Infinity, duration: 1.5 }} style={{ display: 'inline-flex' }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M15 19l-7-7 7-7" stroke="#6A1B9A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </motion.span>
+            {t('auth.back')}
           </Link>
         </motion.div>
 
         {/* Logo avec effet de pulsation */}
-        <motion.div 
+        <motion.div
           variants={itemVariants}
           style={{ textAlign: 'center', marginBottom: '25px' }}
         >
@@ -79,7 +80,7 @@ export default function LoginPage() {
           >
             <Image src="/images/logo.jpg" alt="Logo" width={70} height={70} style={{ borderRadius: '50%', border: '3px solid #f3e5f5' }} />
           </motion.div>
-          <motion.h2 
+          <motion.h2
             initial={{ letterSpacing: '0px' }}
             animate={{ letterSpacing: '1px' }}
             style={{ color: '#6A1B9A', marginTop: '10px', fontWeight: '800' }}
@@ -88,19 +89,7 @@ export default function LoginPage() {
           </motion.h2>
         </motion.div>
 
-        {/* Erreur avec secousse */}
-        <AnimatePresence>
-          {error && (
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.8, x: 0 }}
-              animate={{ opacity: 1, scale: 1, x: [0, -10, 10, -10, 10, 0] }}
-              exit={{ opacity: 0, scale: 0.5 }}
-              style={{ color: 'red', backgroundColor: '#FEE', padding: '12px', borderRadius: '8px', marginBottom: '15px', fontSize: '0.9em', textAlign: 'center', border: '1px solid #ffcdd2' }}
-            >
-              {error}
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Erreur avec secousse - REMOVED for Toast standardization */}
 
         <form onSubmit={handleLogin}>
           <motion.div variants={itemVariants} className="auth-form-group">
@@ -143,14 +132,14 @@ export default function LoginPage() {
               >
                 {showPassword ? (
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" stroke="#6A1B9A" strokeWidth="2" fill="none"/>
-                    <circle cx="12" cy="12" r="3" fill="#6A1B9A"/>
+                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" stroke="#6A1B9A" strokeWidth="2" fill="none" />
+                    <circle cx="12" cy="12" r="3" fill="#6A1B9A" />
                   </svg>
                 ) : (
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" stroke="#6A1B9A" strokeWidth="2" fill="none"/>
-                    <circle cx="12" cy="12" r="3" fill="#6A1B9A"/>
-                    <path d="M4 4l16 16" stroke="#6A1B9A" strokeWidth="2"/>
+                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" stroke="#6A1B9A" strokeWidth="2" fill="none" />
+                    <circle cx="12" cy="12" r="3" fill="#6A1B9A" />
+                    <path d="M4 4l16 16" stroke="#6A1B9A" strokeWidth="2" />
                   </svg>
                 )}
               </motion.button>
@@ -158,26 +147,26 @@ export default function LoginPage() {
           </motion.div>
 
           <motion.div variants={itemVariants} style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '25px' }}>
-             <Link href="/auth/forgot-password" style={{ color: '#6A1B9A', fontSize: '0.85em', fontWeight: '500' }}>
+            <Link href="/auth/forgot-password" style={{ color: '#6A1B9A', fontSize: '0.85em', fontWeight: '500' }}>
               {t('auth.forgotPassword')}
             </Link>
           </motion.div>
 
           {/* Bouton avec effet de brillance (Shine) */}
-          <motion.button 
+          <motion.button
             variants={itemVariants}
-            whileHover={{ 
-              scale: 1.03, 
+            whileHover={{
+              scale: 1.03,
               boxShadow: '0 10px 20px rgba(106, 27, 154, 0.3)',
             }}
             whileTap={{ scale: 0.97 }}
-            type="submit" 
-            className="btn btn-primary" 
-            style={{ 
-              width: '100%', padding: '14px', backgroundColor: '#6A1B9A', color: 'white', 
+            type="submit"
+            className="btn btn-primary"
+            style={{
+              width: '100%', padding: '14px', backgroundColor: '#6A1B9A', color: 'white',
               border: 'none', borderRadius: '10px', cursor: loading ? 'not-allowed' : 'pointer',
               fontWeight: 'bold', fontSize: '1em', position: 'relative', overflow: 'hidden'
-            }} 
+            }}
             disabled={loading}
           >
             {loading ? (
@@ -187,7 +176,7 @@ export default function LoginPage() {
             ) : (
               t('auth.loginButton')
             )}
-            
+
             {/* Animation de reflet qui passe sur le bouton */}
             {!loading && (
               <motion.div

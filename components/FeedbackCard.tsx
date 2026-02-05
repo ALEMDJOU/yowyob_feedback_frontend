@@ -4,9 +4,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { feedbackService } from '../lib/services/feedback.service';
+import { likeService } from '../lib/services/like.service';
 import { useToast } from './ToastProvider';
 import ConfirmationModal from './ConfirmationModal';
 import CommentSection from './CommentSection';
+import EmojiPicker from './EmojiPicker';
 
 // Types (Conservés)
 export interface Author { name: string; avatar: string; }
@@ -59,7 +61,9 @@ export default function FeedbackCard({
     const [isSaving, setIsSaving] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [viewMode, setViewMode] = useState<'options' | 'comments'>('options');
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
+    const editRef = useRef<HTMLTextAreaElement>(null);
 
     // Fermer le menu si on clique ailleurs
     useEffect(() => {
@@ -74,12 +78,31 @@ export default function FeedbackCard({
         };
     }, []);
 
-    const handleFeedbackLike = () => {
+    const handleFeedbackLike = async () => {
+        const wasLiked = feedback.liked;
+
+        // Optimistic update
         setFeedback(prev => ({
             ...prev,
-            liked: !prev.liked,
-            likes: prev.liked ? prev.likes - 1 : prev.likes + 1
+            liked: !wasLiked,
+            likes: wasLiked ? prev.likes - 1 : prev.likes + 1
         }));
+
+        try {
+            if (wasLiked) {
+                await likeService.deleteLike(feedback.id);
+            } else {
+                await likeService.createLike(feedback.id);
+            }
+        } catch (error) {
+            // Revert on error
+            setFeedback(prev => ({
+                ...prev,
+                liked: wasLiked,
+                likes: wasLiked ? prev.likes + 1 : prev.likes - 1
+            }));
+            showToast("Une erreur est survenue lors de l'action J'aime.", "error");
+        }
     };
 
     // Ouverture du modal de suppression
@@ -257,8 +280,9 @@ export default function FeedbackCard({
             {/* Contenu Texte */}
             <div style={{ padding: '0 20px 16px 20px', fontSize: '1rem', color: '#374151', lineHeight: '1.6' }}>
                 {isEditing ? (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', position: 'relative' }}>
                         <textarea
+                            ref={editRef}
                             value={editContent}
                             onChange={(e) => setEditContent(e.target.value)}
                             style={{
@@ -268,27 +292,51 @@ export default function FeedbackCard({
                             }}
                             autoFocus
                         />
-                        <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-                            <button
-                                onClick={() => setIsEditing(false)}
-                                style={{
-                                    padding: '8px 16px', borderRadius: '8px', border: '1px solid #d1d5db',
-                                    background: 'white', color: '#374151', cursor: 'pointer', fontWeight: '600'
-                                }}
-                            >
-                                Annuler
-                            </button>
-                            <button
-                                onClick={handleUpdate}
-                                disabled={isSaving}
-                                style={{
-                                    padding: '8px 16px', borderRadius: '8px', border: 'none',
-                                    background: '#8a2be2', color: 'white', cursor: 'pointer', fontWeight: '600',
-                                    opacity: isSaving ? 0.7 : 1
-                                }}
-                            >
-                                {isSaving ? 'Enregistrement...' : 'Enregistrer'}
-                            </button>
+                        <div style={{ display: 'flex', gap: '10px', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div style={{ position: 'relative' }}>
+                                <button
+                                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                                    style={{
+                                        background: 'none', border: 'none', fontSize: '1.2rem',
+                                        cursor: 'pointer', padding: '5px', borderRadius: '8px',
+                                        color: '#6b7280'
+                                    }}
+                                    title="Ajouter un emoji"
+                                >
+                                    <i className="far fa-smile"></i>
+                                </button>
+                                {showEmojiPicker && (
+                                    <EmojiPicker
+                                        onEmojiSelect={(emoji) => {
+                                            setEditContent(prev => prev + emoji);
+                                            setShowEmojiPicker(false);
+                                            editRef.current?.focus();
+                                        }}
+                                    />
+                                )}
+                            </div>
+                            <div style={{ display: 'flex', gap: '10px' }}>
+                                <button
+                                    onClick={() => { setIsEditing(false); setShowEmojiPicker(false); }}
+                                    style={{
+                                        padding: '8px 16px', borderRadius: '8px', border: '1px solid #d1d5db',
+                                        background: 'white', color: '#374151', cursor: 'pointer', fontWeight: '600'
+                                    }}
+                                >
+                                    Annuler
+                                </button>
+                                <button
+                                    onClick={handleUpdate}
+                                    disabled={isSaving}
+                                    style={{
+                                        padding: '8px 16px', borderRadius: '8px', border: 'none',
+                                        background: '#8a2be2', color: 'white', cursor: 'pointer', fontWeight: '600',
+                                        opacity: isSaving ? 0.7 : 1
+                                    }}
+                                >
+                                    {isSaving ? 'Enregistrement...' : 'Enregistrer'}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 ) : (
@@ -395,7 +443,6 @@ export default function FeedbackCard({
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: 'auto', opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
-                            style={{ overflow: 'hidden' }}
                         >
                             {viewMode === 'options' ? (
                                 <div style={{

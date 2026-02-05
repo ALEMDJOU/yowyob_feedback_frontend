@@ -4,6 +4,8 @@ import React, { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { projectService, JoinProjectRequestDTO } from '@/lib/services/project.service';
+import { useToast } from '@/components/ToastProvider';
+import { useTranslation } from '@/components/I18nProvider';
 
 function JoinProjectForm() {
   const router = useRouter();
@@ -11,11 +13,12 @@ function JoinProjectForm() {
   const presetProject = searchParams.get('project') || '';
   const presetCreator = searchParams.get('creator') || '';
 
+  const { showToast } = useToast();
+  const { t } = useTranslation();
   const [projectName, setProjectName] = useState('');
   const [creatorId, setCreatorId] = useState('');
   const [code, setCode] = useState('');
   const [memberPseudo, setMemberPseudo] = useState('');
-  const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -30,20 +33,19 @@ function JoinProjectForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
 
     if (!projectName.trim() || !creatorId.trim() || !memberPseudo.trim() || !code.trim()) {
-      setError('Veuillez remplir tous les champs.');
+      showToast('Veuillez remplir tous les champs.', "error");
       return;
     }
 
     if (!isUUID(creatorId.trim())) {
-      setError("L'ID du créateur doit être un UUID valide.");
+      showToast("L'ID du créateur doit être un UUID valide.", "error");
       return;
     }
 
     if (!isValidCode(code.trim())) {
-      setError('Le code doit comporter exactement 6 caractères alphanumériques.');
+      showToast('Le code doit comporter exactement 6 caractères alphanumériques.', "error");
       return;
     }
 
@@ -57,16 +59,18 @@ function JoinProjectForm() {
       };
       await projectService.joinProject(payload);
 
+      showToast("Vous avez rejoint le projet !", "success");
       router.push(`/dashboard/project/${encodeURIComponent(projectName.trim())}`);
     } catch (err: any) {
       if (err?.status === 404) {
-        setError('Projet introuvable ou code invalide.');
+        showToast('Projet introuvable ou code invalide.', "error");
       } else if (err?.status === 409) {
-        setError("Vous êtes déjà membre de ce projet ou le pseudo est déjà utilisé.");
+        showToast("Vous êtes déjà membre de ce projet. Redirection...", "success");
+        router.push(`/dashboard/project/${encodeURIComponent(projectName.trim())}`);
       } else if (err?.message) {
-        setError(err.message);
+        showToast(err.message, "error");
       } else {
-        setError('Erreur inattendue lors de la tentative de rejoindre le projet.');
+        showToast('Erreur inattendue lors de la tentative de rejoindre le projet.', "error");
       }
     } finally {
       setSubmitting(false);
@@ -98,17 +102,10 @@ function JoinProjectForm() {
             Rejoindre un projet par code
           </h1>
           <p style={{ color: '#6B7280', marginBottom: 20 }}>
-            Entrez le nom du projet, l'identifiant (UUID) de son créateur, le code à 6 caractères et votre pseudo.
+            Entrez le nom du projet, le code du créateur, le code à 6 caractères et votre pseudo.
           </p>
 
-          {error && (
-            <div style={{
-              background: '#FEF2F2', color: '#991B1B', border: '1px solid #FECACA',
-              padding: '10px 12px', borderRadius: 8, marginBottom: 16
-            }}>
-              {error}
-            </div>
-          )}
+          {/* Erreurs gérées par Toasts */}
 
           <form onSubmit={handleSubmit}>
             <div style={{ display: 'grid', gap: 16 }}>
@@ -127,7 +124,7 @@ function JoinProjectForm() {
                   type="text"
                   value={projectName}
                   onChange={(e) => setProjectName(e.target.value)}
-                  placeholder="Ex: MonProjet"
+                  placeholder=""
                   style={{
                     width: '100%', padding: '10px 12px', border: '1px solid #E5E7EB',
                     borderRadius: 8, fontSize: '0.95rem'
@@ -137,12 +134,12 @@ function JoinProjectForm() {
               </div>
 
               <div style={{ display: hasPreset ? 'none' : 'block' }}>
-                <label style={{ display: 'block', fontWeight: 600, marginBottom: 6 }}>ID du créateur (UUID)</label>
+                <label style={{ display: 'block', fontWeight: 600, marginBottom: 6 }}>Code du créateur</label>
                 <input
                   type="text"
                   value={creatorId}
                   onChange={(e) => setCreatorId(e.target.value)}
-                  placeholder="550e8400-e29b-41d4-a716-446655440000"
+                  placeholder=""
                   style={{
                     width: '100%', padding: '10px 12px', border: '1px solid #E5E7EB',
                     borderRadius: 8, fontSize: '0.95rem'
@@ -152,12 +149,12 @@ function JoinProjectForm() {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontWeight: 600, marginBottom: 6 }}>Code (6 caractères)</label>
+                <label style={{ display: 'block', fontWeight: 600, marginBottom: 6 }}>{t('joinProject.codeLabel')}</label>
                 <input
                   type="text"
                   value={code}
                   onChange={(e) => setCode(e.target.value.toUpperCase())}
-                  placeholder="ABC123"
+                  placeholder=""
                   maxLength={6}
                   style={{
                     width: '100%', padding: '10px 12px', border: '1px solid #E5E7EB',
@@ -173,7 +170,7 @@ function JoinProjectForm() {
                   type="text"
                   value={memberPseudo}
                   onChange={(e) => setMemberPseudo(e.target.value)}
-                  placeholder="Ex: Jean Dupont"
+                  placeholder=""
                   style={{
                     width: '100%', padding: '10px 12px', border: '1px solid #E5E7EB',
                     borderRadius: 8, fontSize: '0.95rem'
