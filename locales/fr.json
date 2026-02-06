@@ -164,5 +164,24 @@
   },
   "joinProject": {
     "codeLabel": "Codes à 6 caractères du groupe"
+  },
+  "follow": {
+    "title": "Mon Réseau",
+    "followers": "Abonnés",
+    "following": "Abonnements",
+    "empty": "Aucun utilisateur trouvé",
+    "emptyFollowingDesc": "Commencez à suivre des personnes pour voir votre réseau s'agrandir.",
+    "emptyFollowersDesc": "Vous n'avez pas encore d'abonnés. Partagez votre profil !",
+    "unsubscribe": "Se désabonner",
+    "subscribe": "S'abonner"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "loadMore": "Voir plus",
+    "subscribed": "Abonné avec succès",
+    "unsubscribed": "Désabonné avec succès",
+    "errorLoadingUsers": "Erreur lors du chargement des utilisateurs",
+    "errorUnsubscribing": "Erreur lors du désabonnement",
+    "errorSubscribing": "Erreur lors de l'abonnement"
   }
 }

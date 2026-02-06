@@ -164,5 +164,24 @@
   },
   "joinProject": {
     "codeLabel": "Group 6-character code"
+  },
+  "follow": {
+    "title": "My Network",
+    "followers": "Followers",
+    "following": "Following",
+    "empty": "No users found",
+    "emptyFollowingDesc": "Start following people to see your network grow.",
+    "emptyFollowersDesc": "You don't have any followers yet. Share your profile!",
+    "unsubscribe": "Unsubscribe",
+    "subscribe": "Subscribe"
+  },
+  "common": {
+    "loading": "Loading...",
+    "loadMore": "See more",
+    "subscribed": "Subscribed successfully",
+    "unsubscribed": "Unsubscribed successfully",
+    "errorLoadingUsers": "Error loading users",
+    "errorUnsubscribing": "Error unsubscribing",
+    "errorSubscribing": "Error subscribing"
   }
 }

@@ -9,38 +9,39 @@ import { useTranslation } from '@/components/I18nProvider';
 
 function JoinProjectForm() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const presetProject = searchParams.get('project') || '';
-  const presetCreator = searchParams.get('creator') || '';
-
   const { showToast } = useToast();
   const { t } = useTranslation();
-  const [projectName, setProjectName] = useState('');
-  const [creatorId, setCreatorId] = useState('');
+
+  const [targetProject, setTargetProject] = useState<{ name: string; creatorId: string } | null>(null);
   const [code, setCode] = useState('');
   const [memberPseudo, setMemberPseudo] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (presetProject) setProjectName(presetProject);
-    if (presetCreator) setCreatorId(presetCreator);
-  }, [presetProject, presetCreator]);
-
-  const hasPreset = Boolean(presetProject && presetCreator);
+    // Retrieve target project from localStorage
+    const storedProject = localStorage.getItem('target_join_project');
+    if (storedProject) {
+      try {
+        const parsed = JSON.parse(storedProject);
+        if (parsed.project_name && parsed.creator_id) {
+          setTargetProject({
+            name: parsed.project_name,
+            creatorId: parsed.creator_id
+          });
+        }
+      } catch (e) {
+        console.error("Failed to parse target project from local storage", e);
+      }
+    }
+  }, []);
 
   const isValidCode = (val: string) => /^[A-Za-z0-9]{6}$/.test(val);
-  const isUUID = (val: string) => /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/.test(val);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!projectName.trim() || !creatorId.trim() || !memberPseudo.trim() || !code.trim()) {
+    if (!targetProject?.name || !targetProject?.creatorId || !memberPseudo.trim() || !code.trim()) {
       showToast('Veuillez remplir tous les champs.', "error");
-      return;
-    }
-
-    if (!isUUID(creatorId.trim())) {
-      showToast("L'ID du créateur doit être un UUID valide.", "error");
       return;
     }
 
@@ -52,21 +53,24 @@ function JoinProjectForm() {
     setSubmitting(true);
     try {
       const payload: JoinProjectRequestDTO = {
-        projectName: projectName.trim(),
-        creatorId: creatorId.trim(),
+        projectName: targetProject.name,
+        creatorId: targetProject.creatorId,
         code: code.trim().toUpperCase(),
         memberPseudo: memberPseudo.trim(),
       };
       await projectService.joinProject(payload);
 
+      // Clear the target project from storage after success
+      localStorage.removeItem('target_join_project');
+
       showToast("Vous avez rejoint le projet !", "success");
-      router.push(`/dashboard/project/${encodeURIComponent(projectName.trim())}`);
+      router.push(`/dashboard/project/${encodeURIComponent(targetProject.name)}`);
     } catch (err: any) {
       if (err?.status === 404) {
         showToast('Projet introuvable ou code invalide.', "error");
       } else if (err?.status === 409) {
         showToast("Vous êtes déjà membre de ce projet. Redirection...", "success");
-        router.push(`/dashboard/project/${encodeURIComponent(projectName.trim())}`);
+        router.push(`/dashboard/project/${encodeURIComponent(targetProject.name)}`);
       } else if (err?.message) {
         showToast(err.message, "error");
       } else {
@@ -105,47 +109,27 @@ function JoinProjectForm() {
             Entrez le nom du projet, le code du créateur, le code à 6 caractères et votre pseudo.
           </p>
 
-          {/* Erreurs gérées par Toasts */}
-
           <form onSubmit={handleSubmit}>
             <div style={{ display: 'grid', gap: 16 }}>
-              {hasPreset && (
-                <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 8, padding: '10px 12px' }}>
-                  <div style={{ fontWeight: 600, color: '#111827' }}>Projet ciblé</div>
-                  <div style={{ color: '#6B7280' }}>
-                    {projectName} • Créateur: {creatorId ? `${creatorId.slice(0, 8)}…` : ''}
-                  </div>
+              {/* Projet ciblé (Read-only) */}
+              <div>
+                <label style={{ display: 'block', fontWeight: 600, marginBottom: 6 }}>Projet ciblé</label>
+                <div style={{
+                  background: '#F9FAFB',
+                  border: '1px solid #E5E7EB',
+                  borderRadius: 8,
+                  padding: '12px 16px',
+                  color: targetProject ? '#111827' : '#9CA3AF'
+                }}>
+                  {targetProject ? (
+                    <>
+                      <span style={{ fontWeight: 500 }}>{targetProject.name}</span>
+                      <span style={{ color: '#6B7280' }}> • Créateur: {targetProject.creatorId.slice(0, 8)}...</span>
+                    </>
+                  ) : (
+                    "Aucun projet sélectionné"
+                  )}
                 </div>
-              )}
-
-              <div style={{ display: hasPreset ? 'none' : 'block' }}>
-                <label style={{ display: 'block', fontWeight: 600, marginBottom: 6 }}>Nom du projet</label>
-                <input
-                  type="text"
-                  value={projectName}
-                  onChange={(e) => setProjectName(e.target.value)}
-                  placeholder=""
-                  style={{
-                    width: '100%', padding: '10px 12px', border: '1px solid #E5E7EB',
-                    borderRadius: 8, fontSize: '0.95rem'
-                  }}
-                  required={!hasPreset}
-                />
-              </div>
-
-              <div style={{ display: hasPreset ? 'none' : 'block' }}>
-                <label style={{ display: 'block', fontWeight: 600, marginBottom: 6 }}>Code du créateur</label>
-                <input
-                  type="text"
-                  value={creatorId}
-                  onChange={(e) => setCreatorId(e.target.value)}
-                  placeholder=""
-                  style={{
-                    width: '100%', padding: '10px 12px', border: '1px solid #E5E7EB',
-                    borderRadius: 8, fontSize: '0.95rem'
-                  }}
-                  required={!hasPreset}
-                />
               </div>
 
               <div>
