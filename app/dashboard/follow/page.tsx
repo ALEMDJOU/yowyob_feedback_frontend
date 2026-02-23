@@ -299,48 +299,64 @@ export default function FollowPage() {
             {/* Stats Section */}
             <div className="stats-grid">
                 {[
-                    { label: t('follow.followers'), count: stats?.followersCount || 0, icon: <UserCheck size={18} /> },
-                    { label: t('follow.following'), count: stats?.followingCount || 0, icon: <UserPlus size={18} /> }
-                ].map((stat, idx) => (
-                    <motion.div
-                        key={idx}
-                        whileHover={{ y: -5, boxShadow: '0 12px 20px -5px rgba(0,0,0,0.1)' }}
-                        style={{
-                            background: 'var(--card-bg)',
-                            padding: '24px',
-                            borderRadius: '24px',
-                            textAlign: 'center',
-                            border: '1px solid var(--border-color)',
-                            backdropFilter: 'blur(10px)',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            gap: '8px'
-                        }}
-                    >
-                        <div style={{
-                            color: 'var(--primary-color)',
-                            background: 'rgba(var(--primary-rgb), 0.1)',
-                            padding: '8px',
-                            borderRadius: '12px',
-                            marginBottom: '4px'
-                        }}>
-                            {stat.icon}
-                        </div>
-                        <span style={{ fontSize: '36px', fontWeight: '900', display: 'block', color: 'var(--text-main)', lineHeight: 1 }}>
-                            {stat.count}
-                        </span>
-                        <span style={{
-                            color: 'var(--text-secondary)',
-                            fontSize: '13px',
-                            fontWeight: '600',
-                            textTransform: 'uppercase',
-                            letterSpacing: '1px'
-                        }}>
-                            {stat.label}
-                        </span>
-                    </motion.div>
-                ))}
+                    { id: 'followers', label: t('follow.followers'), count: stats?.followersCount || 0, icon: <UserCheck size={18} /> },
+                    { id: 'following', label: t('follow.following'), count: stats?.followingCount || 0, icon: <UserPlus size={18} /> }
+                ].map((stat, idx) => {
+                    const isActive = activeTab === stat.id;
+                    return (
+                        <motion.div
+                            key={idx}
+                            whileHover={{ y: -5, boxShadow: '0 12px 20px -5px rgba(0,0,0,0.1)' }}
+                            onClick={() => setActiveTab(stat.id as TabType)}
+                            style={{
+                                background: isActive ? 'rgba(var(--primary-rgb), 0.05)' : 'var(--card-bg)',
+                                padding: '24px',
+                                borderRadius: '24px',
+                                textAlign: 'center',
+                                border: isActive
+                                    ? '2px solid var(--primary-color)'
+                                    : '1px solid var(--border-color)',
+                                backdropFilter: 'blur(10px)',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                gap: '8px',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease',
+                                boxShadow: isActive ? '0 8px 20px rgba(var(--primary-rgb), 0.15)' : 'none'
+                            }}
+                        >
+                            <div style={{
+                                color: isActive ? 'white' : 'var(--primary-color)',
+                                background: isActive ? 'var(--primary-color)' : 'rgba(var(--primary-rgb), 0.1)',
+                                padding: '8px',
+                                borderRadius: '12px',
+                                marginBottom: '4px',
+                                transition: 'all 0.2s ease'
+                            }}>
+                                {stat.icon}
+                            </div>
+                            <span style={{
+                                fontSize: '36px',
+                                fontWeight: '900',
+                                display: 'block',
+                                color: isActive ? 'var(--primary-color)' : 'var(--text-main)',
+                                lineHeight: 1
+                            }}>
+                                {stat.count}
+                            </span>
+                            <span style={{
+                                color: isActive ? 'var(--primary-color)' : 'var(--text-secondary)',
+                                fontSize: '13px',
+                                fontWeight: '700',
+                                textTransform: 'uppercase',
+                                letterSpacing: '1px'
+                            }}>
+                                {stat.label}
+                            </span>
+                        </motion.div>
+                    );
+                })}
             </div>
 
             {/* Tabs - Style Segmented Control */}
@@ -352,7 +368,7 @@ export default function FollowPage() {
                 marginBottom: '32px',
                 position: 'relative'
             }}>
-                {(['following', 'followers'] as TabType[]).map((tab) => (
+                {(['followers', 'following'] as TabType[]).map((tab) => (
                     <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}

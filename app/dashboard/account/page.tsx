@@ -51,15 +51,19 @@ export default function FollowerIndexPage() {
           </div>
 
           <div className="profile-info-container-ig">
-            <div className="profile-top-row-ig">
-              <h1 className="profile-username-ig">{displayHandle}</h1>
-              {user.certified && <i className="fas fa-check-circle certified-icon-ig"></i>}
-              <Link href="/dashboard/account/edit" className="btn btn-secondary edit-profile-btn-ig">
-                {t('account.editProfile')}
-              </Link>
-              <a href="#" className="settings-icon-ig" aria-label="Paramètres du compte">
-                <i className="fas fa-cog"></i>
-              </a>
+            <div className="profile-top-row-ig" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <h1 className="profile-username-ig" style={{ margin: 0, marginRight: '15px' }}>{displayHandle}</h1>
+                {user.certified && <i className="fas fa-check-circle certified-icon-ig" style={{ margin: 0 }}></i>}
+              </div>
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <Link href="/dashboard/account/edit" className="btn btn-secondary edit-profile-btn-ig" style={{ margin: 0 }}>
+                  {t('account.editProfile')}
+                </Link>
+                <a href="#" className="settings-icon-ig" aria-label="Paramètres du compte">
+                  <i className="fas fa-cog"></i>
+                </a>
+              </div>
             </div>
 
             <div className="profile-stats-ig">

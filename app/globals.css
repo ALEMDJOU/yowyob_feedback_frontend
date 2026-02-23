@@ -2261,3 +2261,147 @@ html {
         font-size: 1.5rem;
     }
 }
+
+/* ========================================= */
+/* BOUTON VOIR LA DÉMO + MODAL VIDÉO         */
+/* ========================================= */
+
+/* Bouton "Voir la démo" — Style glassmorphism avec icône play */
+.btn-demo-video {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 32px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 50px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: var(--text-light);
+    font-size: 1.05em;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: 'Montserrat', sans-serif;
+}
+
+.btn-demo-video:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 25px rgba(142, 36, 170, 0.4), 0 0 60px rgba(106, 27, 154, 0.15);
+    transform: translateY(-2px);
+}
+
+.btn-demo-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    font-size: 0.85em;
+    box-shadow: 0 4px 15px rgba(106, 27, 154, 0.4);
+    animation: demoPulse 2s ease-in-out infinite;
+}
+
+@keyframes demoPulse {
+    0%, 100% { box-shadow: 0 4px 15px rgba(106, 27, 154, 0.4); }
+    50% { box-shadow: 0 4px 25px rgba(142, 36, 170, 0.7); }
+}
+
+/* Modal — Overlay sombre avec backdrop blur */
+.demo-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    animation: demoFadeIn 0.3s ease-out;
+}
+
+@keyframes demoFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Contenu du modal — carte vidéo */
+.demo-modal-content {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 25px 80px rgba(106, 27, 154, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    animation: demoScaleIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes demoScaleIn {
+    from { transform: scale(0.92); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* Lecteur vidéo */
+.demo-modal-video {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 80vh;
+    background: #000;
+    border-radius: 16px;
+}
+
+/* Bouton fermer */
+.demo-modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(4px);
+}
+
+.demo-modal-close:hover {
+    background: rgba(106, 27, 154, 0.8);
+    transform: scale(1.1);
+}
+
+/* Responsive — Mobile */
+@media (max-width: 600px) {
+    .btn-demo-video {
+        padding: 12px 22px;
+        font-size: 0.95em;
+    }
+
+    .btn-demo-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 0.75em;
+    }
+
+    .demo-modal-content {
+        border-radius: 10px;
+    }
+
+    .demo-modal-video {
+        border-radius: 10px;
+    }
+}

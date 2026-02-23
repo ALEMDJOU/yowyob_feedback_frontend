@@ -1,10 +1,12 @@
 // components/LandingPage.tsx
 'use client';
 
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState, useRef, useCallback } from 'react';
 import { useTranslation, I18nContext } from './I18nProvider';
 import Image from 'next/image';
 import Link from 'next/link';
+
+const DEMO_VIDEO_URL = 'https://rwjlcxbvpoozggzkjfmi.supabase.co/storage/v1/object/public/videos/yowvideo.mp4';
 
 // Configuration pour l'animation au défilement
 const CONFIG = {
@@ -24,7 +26,7 @@ const useScrollAnimation = () => {
                     const delay = entry.target.getAttribute('data-delay') || '0';
                     setTimeout(() => {
                         // Ajoute la classe 'visible' qui déclenche l'animation CSS (.visible est dans globals.css)
-                        entry.target.classList.add('visible'); 
+                        entry.target.classList.add('visible');
                         observer.unobserve(entry.target); // Arrête d'observer après l'apparition
                     }, parseInt(delay) + CONFIG.animationDelay);
                 }
@@ -40,31 +42,56 @@ const useScrollAnimation = () => {
         return () => {
             observer.disconnect();
         };
-    }, []); 
+    }, []);
 };
 
 
 // Composant principal (nettoyé)
 const LandingPage = () => {
     useScrollAnimation();
+    const [showDemoModal, setShowDemoModal] = useState(false);
+    const videoRef = useRef<HTMLVideoElement>(null);
+
+    const closeDemoModal = useCallback(() => {
+        setShowDemoModal(false);
+        if (videoRef.current) {
+            videoRef.current.pause();
+            videoRef.current.currentTime = 0;
+        }
+    }, []);
+
+    // Fermer le modal avec la touche Échap
+    useEffect(() => {
+        const handleEsc = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') closeDemoModal();
+        };
+        if (showDemoModal) {
+            document.addEventListener('keydown', handleEsc);
+            document.body.style.overflow = 'hidden';
+        }
+        return () => {
+            document.removeEventListener('keydown', handleEsc);
+            document.body.style.overflow = '';
+        };
+    }, [showDemoModal, closeDemoModal]);
 
     // Check if we're inside I18nProvider
     const context = useContext(I18nContext);
-    
+
     // If not inside I18nProvider, render nothing or a minimal version
     if (!context) {
-      return (
-        <section className="hero-section">
-          <div className="container">
-            <div className="hero-content fade-in-up" style={{ textAlign: 'center', width: '100%' }}>
-              <h1 className="text-reveal" style={{ opacity: 1, visibility: 'visible' }}>Welcome to Yowyob Feedback</h1>
-              <h3 className="fade-in-up delay-1">The ultimate platform for feedback</h3>
-              <p className="small-text fade-in-up delay-2">Join thousands of students and professionals today.</p>
-            </div>
-          </div>
-          <div className="particles" id="particles"></div>
-        </section>
-      );
+        return (
+            <section className="hero-section">
+                <div className="container">
+                    <div className="hero-content fade-in-up" style={{ textAlign: 'center', width: '100%' }}>
+                        <h1 className="text-reveal" style={{ opacity: 1, visibility: 'visible' }}>Welcome to Yowyob Feedback</h1>
+                        <h3 className="fade-in-up delay-1">The ultimate platform for feedback</h3>
+                        <p className="small-text fade-in-up delay-2">Join thousands of students and professionals today.</p>
+                    </div>
+                </div>
+                <div className="particles" id="particles"></div>
+            </section>
+        );
     }
 
     const { t } = useTranslation();
@@ -77,15 +104,32 @@ const LandingPage = () => {
                     <div className="hero-content fade-in-up" style={{ textAlign: 'center', width: '100%' }}>
                         {/* Correction grammaticale : "Bienvenue" au lieu de "Bienvenu" */}
                         <h1 className="text-reveal" style={{ opacity: 1, visibility: 'visible' }}>{t('landing.welcomeTitle')}</h1>
-                        
+
                         <h3 className="fade-in-up delay-1">{t('landing.subtitle')}</h3>
-                        
+
                         <p className="small-text fade-in-up delay-2">{t('landing.cta')}</p>
+
+                        {/* Bouton Voir la démo */}
+                        <div className="hero-buttons fade-in-up delay-2" style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginTop: '10px', flexWrap: 'wrap' }}>
+                            <Link href="/auth/register" className="btn btn-primary btn-large" style={{ borderRadius: '50px', letterSpacing: '0.5px' }}>
+                                {t('landing.joinButton')}
+                            </Link>
+                            <button
+                                onClick={() => setShowDemoModal(true)}
+                                className="btn-demo-video"
+                                id="btn-watch-demo"
+                            >
+                                <span className="btn-demo-icon">
+                                    <i className="fas fa-play"></i>
+                                </span>
+                                {t('landing.watchDemo')}
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div className="particles" id="particles"></div>
             </section>
-            
+
             {/* FEATURES SECTION : "Pourquoi choisir Yowyob Feedback ?" */}
             <section id="features" className="features-section">
                 <div className="container">
@@ -185,6 +229,25 @@ const LandingPage = () => {
                     <p>{t('landing.cta')}</p>
                 </div>
             </section>
+
+            {/* VIDEO DEMO MODAL — Lazy: la vidéo n'est téléchargée qu'au clic */}
+            {showDemoModal && (
+                <div className="demo-modal-overlay" onClick={closeDemoModal}>
+                    <div className="demo-modal-content" onClick={(e) => e.stopPropagation()}>
+                        <button className="demo-modal-close" onClick={closeDemoModal} aria-label="Fermer">
+                            <i className="fas fa-times"></i>
+                        </button>
+                        <video
+                            ref={videoRef}
+                            src={DEMO_VIDEO_URL}
+                            controls
+                            autoPlay
+                            preload="none"
+                            className="demo-modal-video"
+                        />
+                    </div>
+                </div>
+            )}
         </>
     );
 }
