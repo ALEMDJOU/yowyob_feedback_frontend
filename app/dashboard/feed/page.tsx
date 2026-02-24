@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import Script from 'next/script';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/components/I18nProvider';
@@ -282,27 +283,36 @@ export default function FeedPage() {
                                         }}
                                         className="user-card-premium"
                                     >
-                                        <div style={{ position: 'relative', width: '90px', height: '90px', margin: '0 auto 20px' }}>
-                                            <img
-                                                src={user.user_logo || "https://i.ibb.co/Qf983vG/avatar-placeholder.png"}
-                                                alt={displayName}
-                                                style={{
-                                                    width: '100%', height: '100%', borderRadius: '50%',
-                                                    border: '4px solid #F3F4F6', objectFit: 'cover'
-                                                }}
-                                            />
-                                            {isOrg && (
-                                                <div style={{
-                                                    position: 'absolute', bottom: '0', right: '0',
-                                                    background: 'white', borderRadius: '50%', padding: '3px'
-                                                }}>
-                                                    <i className="fas fa-check-circle" style={{ color: '#7C3AED', fontSize: '1.2rem' }}></i>
-                                                </div>
-                                            )}
-                                        </div>
-                                        <h4 style={{ margin: '0 0 8px 0', color: '#111827', fontSize: '1.2rem', fontWeight: 700 }}>
-                                            {displayName}
-                                        </h4>
+                                        <Link
+                                            href={`/dashboard/user/${user.user_id}/feedbacks`}
+                                            style={{ textDecoration: 'none', display: 'block' }}
+                                            title={displayName}
+                                        >
+                                            <div style={{ position: 'relative', width: '90px', height: '90px', margin: '0 auto 20px', cursor: 'pointer' }}>
+                                                <img
+                                                    src={user.user_logo || "https://i.ibb.co/Qf983vG/avatar-placeholder.png"}
+                                                    alt={displayName}
+                                                    style={{
+                                                        width: '100%', height: '100%', borderRadius: '50%',
+                                                        border: '4px solid #F3F4F6', objectFit: 'cover',
+                                                        transition: 'border-color 0.25s',
+                                                    }}
+                                                    onMouseOver={e => (e.currentTarget.style.borderColor = '#7C3AED')}
+                                                    onMouseOut={e => (e.currentTarget.style.borderColor = '#F3F4F6')}
+                                                />
+                                                {isOrg && (
+                                                    <div style={{
+                                                        position: 'absolute', bottom: '0', right: '0',
+                                                        background: 'white', borderRadius: '50%', padding: '3px'
+                                                    }}>
+                                                        <i className="fas fa-check-circle" style={{ color: '#7C3AED', fontSize: '1.2rem' }}></i>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <h4 style={{ margin: '0 0 8px 0', color: '#7C3AED', fontSize: '1.2rem', fontWeight: 700 }}>
+                                                {displayName}
+                                            </h4>
+                                        </Link>
                                         <p style={{ fontSize: '0.9rem', color: '#6B7280', marginBottom: '20px', fontWeight: 500 }}>{subTitle}</p>
                                         {isSubscribed ? (
                                             <button
@@ -329,6 +339,35 @@ export default function FeedPage() {
                                                 }
                                             </button>
                                         )}
+                                        <Link
+                                            href={`/dashboard/user/${user.user_id}/feedbacks`}
+                                            style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                gap: '8px',
+                                                marginTop: '10px',
+                                                padding: '10px',
+                                                borderRadius: '14px',
+                                                border: '2px solid #7C3AED',
+                                                color: '#7C3AED',
+                                                fontWeight: 700,
+                                                fontSize: '0.9rem',
+                                                textDecoration: 'none',
+                                                transition: 'all 0.25s ease',
+                                            }}
+                                            onMouseOver={e => {
+                                                (e.currentTarget as HTMLAnchorElement).style.background = '#7C3AED';
+                                                (e.currentTarget as HTMLAnchorElement).style.color = 'white';
+                                            }}
+                                            onMouseOut={e => {
+                                                (e.currentTarget as HTMLAnchorElement).style.background = 'transparent';
+                                                (e.currentTarget as HTMLAnchorElement).style.color = '#7C3AED';
+                                            }}
+                                        >
+                                            <i className="fas fa-comments" />
+                                            {t('userFeedbacksPage.sectionTitle')}
+                                        </Link>
                                     </motion.div>
                                 );
                             })}

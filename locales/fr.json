@@ -36,7 +36,10 @@
     "subtitle": "La plateforme ultime pour émettre et consulter des retours d'expérience sur les stages et formations.",
     "cta": "Rejoignez des milliers d'étudiants et de professionnels dès aujourd'hui.",
     "joinButton": "Je m'inscris !",
-    "watchDemo": "Voir la démo"
+    "watchDemo": "Voir la démo",
+    "viewFeedbacks": "Voir les feedbacks",
+    "latestFeedbacks": "Ce que la communauté en dit",
+    "latestFeedbacksDesc": "Découvrez les feedbacks déjà rédigés sur notre plateforme"
   },
   "features": {
     "title": "Pourquoi choisir Yowyob Feedback ?",
@@ -184,5 +187,23 @@
     "errorLoadingUsers": "Erreur lors du chargement des utilisateurs",
     "errorUnsubscribing": "Erreur lors du désabonnement",
     "errorSubscribing": "Erreur lors de l'abonnement"
+  },
+  "feedbacksPage": {
+    "title": "Retours de la Communauté",
+    "subtitle": "Découvrez les feedbacks déjà rédigés sur notre plateforme",
+    "backToHome": "Retour à l'accueil",
+    "loading": "Chargement des derniers feedbacks...",
+    "noFeedbacks": "Aucun feedback trouvé pour le moment. Soyez le premier à partager votre expérience !",
+    "error": "Impossible de charger les feedbacks. Veuillez réessayer plus tard."
+  },
+  "userFeedbacksPage": {
+    "backToFeed": "Retour au fil d'actualité",
+    "feedbacksBy": "Feedbacks de {name}",
+    "sectionTitle": "Feedbacks des projets",
+    "loading": "Chargement des feedbacks...",
+    "noFeedbacks": "Aucun feedback pour les projets de cet utilisateur.",
+    "error": "Impossible de charger les feedbacks.",
+    "member": "Membre",
+    "organization": "Organisation"
   }
 }

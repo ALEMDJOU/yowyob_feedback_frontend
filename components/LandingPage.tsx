@@ -5,6 +5,7 @@ import React, { useEffect, useContext, useState, useRef, useCallback } from 'rea
 import { useTranslation, I18nContext } from './I18nProvider';
 import Image from 'next/image';
 import Link from 'next/link';
+import LandingFeed from './landingFeed';
 
 const DEMO_VIDEO_URL = 'https://rwjlcxbvpoozggzkjfmi.supabase.co/storage/v1/object/public/videos/yowvideo.mp4';
 
@@ -124,6 +125,16 @@ const LandingPage = () => {
                                 </span>
                                 {t('landing.watchDemo')}
                             </button>
+                            <Link
+                                href="/feedbacks"
+                                className="btn-demo-video btn-view-feedbacks"
+                                id="btn-view-feedbacks"
+                            >
+                                <span className="btn-demo-icon">
+                                    <i className="fas fa-list"></i>
+                                </span>
+                                {t('landing.viewFeedbacks')}
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -179,6 +190,9 @@ const LandingPage = () => {
                     </div>
                 </div>
             </section>
+
+            {/* FEEDBACKS SECTION */}
+            <LandingFeed />
 
             {/* HOW IT WORKS SECTION : "Comment ça marche ?" */}
             <section id="how-it-works" className="how-it-works-section">

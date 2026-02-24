@@ -1,0 +1,143 @@
+/* feedbacks.css */
+.feedbacks-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding-bottom: 80px;
+}
+
+.feedbacks-header {
+    background: linear-gradient(160deg, #4A00B7 0%, #8E24AA 100%);
+    color: white;
+    padding: 80px 0 60px;
+    text-align: center;
+    margin-bottom: 50px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.feedbacks-header .container {
+    position: relative;
+    z-index: 2;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 600;
+    margin-bottom: 25px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    font-size: 0.95rem;
+    padding: 8px 16px;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.back-link:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(-5px);
+}
+
+.feedbacks-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    margin-bottom: 20px;
+    letter-spacing: -1px;
+}
+
+.feedbacks-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.feedbacks-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* ====================== */
+/* ORDERED GRID           */
+/* ====================== */
+
+.masonry-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+@media (max-width: 1024px) {
+    .masonry-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+    }
+}
+
+@media (max-width: 640px) {
+    .masonry-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .feedbacks-header {
+        padding: 60px 0 40px;
+    }
+}
+
+/* Glassmorphism Loader */
+.feedbacks-loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 0;
+    gap: 20px;
+    color: #4A00B7;
+    font-weight: 600;
+}
+
+.loader-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(106, 27, 154, 0.1);
+    border-top-color: #4A00B7;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Empty state styling */
+.empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.empty-state i {
+    font-size: 4rem;
+    color: #dee2e6;
+    margin-bottom: 25px;
+    display: block;
+}
+
+.empty-state h3 {
+    font-size: 1.5rem;
+    color: #343a40;
+    margin-bottom: 15px;
+}

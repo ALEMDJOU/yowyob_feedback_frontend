@@ -1,0 +1,264 @@
+/* user-feedbacks.css — Dedicated CSS for the User Feedbacks page */
+
+/* ====================== */
+/* PAGE LAYOUT            */
+/* ====================== */
+
+.user-feedbacks-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8f9fa 0%, #f0eafb 100%);
+    padding-bottom: 80px;
+    font-family: 'Inter', 'Montserrat', system-ui, -apple-system, sans-serif;
+}
+
+/* ====================== */
+/* PROFILE HEADER         */
+/* ====================== */
+
+.uf-header {
+    background: linear-gradient(160deg, #4A00B7 0%, #8E24AA 100%);
+    color: white;
+    padding: 60px 0 80px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.uf-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.06) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+.uf-header-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.uf-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    margin-bottom: 30px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 8px 16px;
+    border-radius: 30px;
+    backdrop-filter: blur(8px);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.uf-back-btn:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(-4px);
+}
+
+.uf-avatar-wrapper {
+    position: relative;
+    width: 110px;
+    height: 110px;
+    margin: 0 auto 24px;
+}
+
+.uf-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+.uf-avatar-ring {
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    animation: ringPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes ringPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.4;
+    }
+
+    50% {
+        transform: scale(1.07);
+        opacity: 0.1;
+    }
+}
+
+.uf-user-name {
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0 0 6px;
+    letter-spacing: -0.5px;
+}
+
+.uf-user-role {
+    font-size: 1rem;
+    opacity: 0.8;
+    margin: 0 0 20px;
+}
+
+.uf-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 6px 16px;
+    border-radius: 20px;
+}
+
+/* ====================== */
+/* MAIN CONTENT           */
+/* ====================== */
+
+.uf-content {
+    max-width: 1100px;
+    margin: -40px auto 0;
+    padding: 0 20px;
+    position: relative;
+    z-index: 10;
+}
+
+.uf-section-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #111827;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.uf-section-title::before {
+    content: '';
+    display: block;
+    width: 5px;
+    height: 28px;
+    background: linear-gradient(to bottom, #4A00B7, #8E24AA);
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+/* ====================== */
+/* ORDERED GRID           */
+/* ====================== */
+
+.uf-masonry-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    padding-top: 10px;
+}
+
+/* Ensure cards take full height of the row */
+.uf-masonry-item {
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 1024px) {
+    .uf-masonry-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+    }
+}
+
+@media (max-width: 640px) {
+    .uf-masonry-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .uf-user-name {
+        font-size: 1.5rem;
+    }
+
+    .uf-header {
+        padding: 50px 0 70px;
+    }
+}
+
+/* ====================== */
+/* STATES (loading/empty) */
+/* ====================== */
+
+.uf-loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 0;
+    gap: 16px;
+    color: #6B7280;
+    font-weight: 500;
+}
+
+.uf-spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid rgba(74, 0, 183, 0.12);
+    border-top-color: #4A00B7;
+    border-radius: 50%;
+    animation: uf-spin 0.9s linear infinite;
+}
+
+@keyframes uf-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.uf-empty {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+    color: #6B7280;
+    margin-top: 20px;
+}
+
+.uf-empty i {
+    font-size: 3.5rem;
+    color: #D1C4E9;
+    margin-bottom: 16px;
+    display: block;
+}
+
+.uf-empty h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.uf-empty p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+}

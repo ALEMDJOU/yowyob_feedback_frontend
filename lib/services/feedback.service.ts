@@ -62,7 +62,8 @@ class FeedbackService {
     }
 
     async getAllFeedbacks(): Promise<FeedbackResponseDTO[]> {
-        return apiClient.get<FeedbackResponseDTO[]>('/feedbacks');
+        return apiClient.get<FeedbackResponseDTO[]>('/feedbacks/all');
+
     }
 }
 

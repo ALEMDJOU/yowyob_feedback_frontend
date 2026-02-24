@@ -36,7 +36,10 @@
     "subtitle": "The ultimate platform to give and consult feedback about internships and trainings.",
     "cta": "Join thousands of students and professionals today.",
     "joinButton": "Sign up now",
-    "watchDemo": "Watch the demo"
+    "watchDemo": "Watch the demo",
+    "viewFeedbacks": "View feedbacks",
+    "latestFeedbacks": "What the community is saying",
+    "latestFeedbacksDesc": "Discover the latest feedback shared by our members about their experiences."
   },
   "features": {
     "title": "Why choose Yowyob Feedback?",
@@ -184,5 +187,23 @@
     "errorLoadingUsers": "Error loading users",
     "errorUnsubscribing": "Error unsubscribing",
     "errorSubscribing": "Error subscribing"
+  },
+  "feedbacksPage": {
+    "title": "Community Feedbacks",
+    "subtitle": "Discover experiences and insights shared by our active community.",
+    "backToHome": "Back to Home",
+    "loading": "Loading latest feedbacks...",
+    "noFeedbacks": "No feedbacks found at the moment. Be the first to share your experience!",
+    "error": "Failed to load feedbacks. Please try again later."
+  },
+  "userFeedbacksPage": {
+    "backToFeed": "Back to Feed",
+    "feedbacksBy": "Feedbacks by {name}",
+    "sectionTitle": "Project feedbacks",
+    "loading": "Loading feedbacks...",
+    "noFeedbacks": "No feedbacks yet for this user's projects.",
+    "error": "Failed to load feedbacks.",
+    "member": "Member",
+    "organization": "Organization"
   }
 }

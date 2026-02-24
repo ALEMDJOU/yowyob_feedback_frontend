@@ -2110,7 +2110,7 @@ html {
     backdrop-filter: blur(15px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 24px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -2220,6 +2220,7 @@ html {
         grid-template-columns: 1fr;
     }
 }
+
 /* --- AUTH PAGE RESPONSIVE STYLES --- */
 .auth-page {
     min-height: 100vh;
@@ -2246,17 +2247,19 @@ html {
 @media (max-width: 600px) {
     .auth-page {
         padding: 15px;
-        align-items: flex-start; /* Better for mobile keyboards */
+        align-items: flex-start;
+        /* Better for mobile keyboards */
         padding-top: 40px;
     }
 
     .auth-card {
         padding: 25px 20px;
         max-width: 100%;
-        box-shadow: none !important; /* Flat on mobile often looks cleaner or simple shadow */
+        box-shadow: none !important;
+        /* Flat on mobile often looks cleaner or simple shadow */
         border: 1px solid #eee;
     }
-    
+
     .auth-header h2 {
         font-size: 1.5rem;
     }
@@ -2308,8 +2311,15 @@ html {
 }
 
 @keyframes demoPulse {
-    0%, 100% { box-shadow: 0 4px 15px rgba(106, 27, 154, 0.4); }
-    50% { box-shadow: 0 4px 25px rgba(142, 36, 170, 0.7); }
+
+    0%,
+    100% {
+        box-shadow: 0 4px 15px rgba(106, 27, 154, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 4px 25px rgba(142, 36, 170, 0.7);
+    }
 }
 
 /* Modal — Overlay sombre avec backdrop blur */
@@ -2328,8 +2338,13 @@ html {
 }
 
 @keyframes demoFadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 /* Contenu du modal — carte vidéo */
@@ -2344,8 +2359,15 @@ html {
 }
 
 @keyframes demoScaleIn {
-    from { transform: scale(0.92); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
+    from {
+        transform: scale(0.92);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 /* Lecteur vidéo */
@@ -2404,4 +2426,54 @@ html {
     .demo-modal-video {
         border-radius: 10px;
     }
+}
+
+/* ========================================= */
+/* MASONRY GRID FOR LANDING FEED            */
+/* ========================================= */
+
+.masonry-grid {
+    column-count: 3;
+    column-gap: 30px;
+    width: 100%;
+    padding: 20px 0;
+}
+
+.masonry-item {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 30px;
+    break-inside: avoid;
+    transform: translateZ(0);
+    /* Fix for some browsers */
+}
+
+@media (max-width: 992px) {
+    .masonry-grid {
+        column-count: 2;
+        column-gap: 20px;
+    }
+
+    .masonry-item {
+        margin-bottom: 20px;
+    }
+}
+
+@media (max-width: 640px) {
+    .masonry-grid {
+        column-count: 1;
+        column-gap: 0;
+    }
+}
+
+.btn-demo-video.btn-view-feedbacks {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    color: white;
+}
+
+.btn-demo-video.btn-view-feedbacks:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
 }
