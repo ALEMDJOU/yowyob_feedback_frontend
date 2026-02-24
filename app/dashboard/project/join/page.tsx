@@ -81,27 +81,25 @@ function JoinProjectForm() {
     <>
       <link rel="stylesheet" href="/feed.css" />
 
-      <div style={{ maxWidth: 720, margin: '0 auto', padding: 20 }}>
+      <div className="project-form-wrapper">
         <Link
           href="/dashboard/project"
+          className="back-link"
           style={{
             display: 'inline-flex', alignItems: 'center', gap: 8,
-            color: '#7C3AED', textDecoration: 'none', fontSize: '0.95rem',
-            fontWeight: 600, marginBottom: 24
+            color: 'var(--primary-color)', textDecoration: 'none', fontSize: '0.95rem',
+            fontWeight: 600, marginBottom: 24, transition: 'color 0.2s'
           }}
         >
           <i className="fas fa-arrow-left"></i>
           Retour aux projets
         </Link>
 
-        <div style={{
-          background: '#fff', borderRadius: 12, padding: 24,
-          boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: '1px solid #E5E7EB'
-        }}>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#111827', margin: '0 0 8px' }}>
+        <div className="project-form-card">
+          <h1 className="project-form-header">
             Rejoindre un projet par code
           </h1>
-          <p style={{ color: '#6B7280', marginBottom: 20 }}>
+          <p className="project-form-subtitle">
             Entrez le nom du projet, le code du créateur, le code à 6 caractères et votre pseudo.
           </p>
 
@@ -118,84 +116,69 @@ function JoinProjectForm() {
                 </div>
               )}
 
-              <div style={{ display: hasPreset ? 'none' : 'block' }}>
-                <label style={{ display: 'block', fontWeight: 600, marginBottom: 6 }}>Nom du projet</label>
+              <div className="project-form-group" style={{ display: hasPreset ? 'none' : 'block' }}>
+                <label className="project-form-label">Nom du projet</label>
                 <input
                   type="text"
                   value={projectName}
                   onChange={(e) => setProjectName(e.target.value)}
                   placeholder=""
-                  style={{
-                    width: '100%', padding: '10px 12px', border: '1px solid #E5E7EB',
-                    borderRadius: 8, fontSize: '0.95rem'
-                  }}
+                  className="project-form-input"
                   required={!hasPreset}
                 />
               </div>
 
-              <div style={{ display: hasPreset ? 'none' : 'block' }}>
-                <label style={{ display: 'block', fontWeight: 600, marginBottom: 6 }}>Code du créateur</label>
+              <div className="project-form-group" style={{ display: hasPreset ? 'none' : 'block' }}>
+                <label className="project-form-label">Code du créateur</label>
                 <input
                   type="text"
                   value={creatorId}
                   onChange={(e) => setCreatorId(e.target.value)}
                   placeholder=""
-                  style={{
-                    width: '100%', padding: '10px 12px', border: '1px solid #E5E7EB',
-                    borderRadius: 8, fontSize: '0.95rem'
-                  }}
+                  className="project-form-input"
                   required={!hasPreset}
                 />
               </div>
 
-              <div>
-                <label style={{ display: 'block', fontWeight: 600, marginBottom: 6 }}>{t('joinProject.codeLabel')}</label>
+              <div className="project-form-group">
+                <label className="project-form-label">{t('joinProject.codeLabel')}</label>
                 <input
                   type="text"
                   value={code}
                   onChange={(e) => setCode(e.target.value.toUpperCase())}
                   placeholder=""
                   maxLength={6}
-                  style={{
-                    width: '100%', padding: '10px 12px', border: '1px solid #E5E7EB',
-                    borderRadius: 8, fontSize: '0.95rem', letterSpacing: 2, textTransform: 'uppercase'
-                  }}
+                  className="project-form-input"
+                  style={{ letterSpacing: 2, textTransform: 'uppercase' }}
                   required
                 />
               </div>
 
-              <div>
-                <label style={{ display: 'block', fontWeight: 600, marginBottom: 6 }}>Votre pseudo</label>
+              <div className="project-form-group">
+                <label className="project-form-label">Votre pseudo</label>
                 <input
                   type="text"
                   value={memberPseudo}
                   onChange={(e) => setMemberPseudo(e.target.value)}
                   placeholder=""
-                  style={{
-                    width: '100%', padding: '10px 12px', border: '1px solid #E5E7EB',
-                    borderRadius: 8, fontSize: '0.95rem'
-                  }}
+                  className="project-form-input"
                   required
                 />
               </div>
 
-              <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end', marginTop: 8 }}>
+              <div className="project-form-actions">
                 <Link
                   href="/dashboard/project"
-                  style={{
-                    padding: '10px 16px', background: '#F3F4F6', border: '1px solid #E5E7EB',
-                    color: '#111827', borderRadius: 8, textDecoration: 'none', fontWeight: 600
-                  }}
+                  className="project-btn-cancel"
                 >
                   Annuler
                 </Link>
                 <button
                   type="submit"
                   disabled={submitting}
+                  className="project-btn-submit"
                   style={{
-                    padding: '10px 16px', background: submitting ? '#A78BFA' : '#7C3AED',
-                    color: '#fff', border: 'none', borderRadius: 8, fontWeight: 700,
-                    cursor: submitting ? 'not-allowed' : 'pointer'
+                    backgroundColor: submitting ? '#A78BFA' : 'var(--primary-color)'
                   }}
                 >
                   {submitting ? 'Vérification...' : 'Rejoindre le projet'}

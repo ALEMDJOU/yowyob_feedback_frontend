@@ -8,20 +8,17 @@ import { motion } from 'framer-motion';
 import { userService } from '@/lib/services/user.service';
 
 type Props = {
-  isCollapsed: boolean;
+  isSidebarOpen: boolean;
   toggleSidebar: () => void;
 };
 
-export default function FeedSidebar({ isCollapsed, toggleSidebar }: Props) {
+export default function FeedSidebar({ isSidebarOpen, toggleSidebar }: Props) {
   const { t } = useTranslation();
   const pathname = usePathname();
   const router = useRouter();
 
   // État pour stocker l'URL dynamique du profil
   const [profileUrl, setProfileUrl] = useState<string>('/dashboard/account');
-
-  const collapsedWidth = "80px";
-  const expandedWidth = "260px";
 
   const isActive = (path: string) => pathname === path || pathname?.startsWith(path + '/');
 
@@ -59,55 +56,30 @@ export default function FeedSidebar({ isCollapsed, toggleSidebar }: Props) {
   };
 
   return (
-    <aside
-      className={`sidebar ${isCollapsed ? 'collapsed-mini' : ''}`}
-      style={{
-        width: isCollapsed ? collapsedWidth : expandedWidth,
-        minWidth: isCollapsed ? collapsedWidth : expandedWidth,
-        transform: 'translateX(0)',
-        padding: isCollapsed ? '20px 0' : '20px',
-        transition: 'width 0.3s ease, padding 0.3s ease'
-      }}
-    >
+    <aside className="sidebar">
       <div className="sidebar-header" style={{
         display: 'flex',
-        flexDirection: isCollapsed ? 'column' : 'row',
+        flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: isCollapsed ? 'center' : 'space-between',
+        justifyContent: 'space-between',
         marginBottom: '30px',
-        gap: isCollapsed ? '15px' : '0'
+        gap: '15px'
       }}>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <Image src="/images/logo.jpg" alt="Logo" width={35} height={35} style={{ minWidth: '35px' }} />
-          {!isCollapsed && (
-            <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="app-name">
-              {t('sidebar.appName')}
-            </motion.span>
-          )}
+          <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="app-name">
+            {t('sidebar.appName')}
+          </motion.span>
         </div>
 
-        <motion.button
+        <button
+          className="mobile-close-btn"
           onClick={toggleSidebar}
-          whileTap={{ scale: 0.9 }}
-          style={{
-            background: 'linear-gradient(135deg, #FFFFFF 0%, #F5F5F5 50%, #E1BEE7 100%)',
-            border: '1px solid #D1C4E9',
-            cursor: 'pointer',
-            padding: '8px',
-            borderRadius: '8px',
-            display: 'flex',
-            color: '#6A1B9A'
-          }}
+          aria-label="Fermer le menu"
         >
-          <motion.svg
-            animate={{ rotate: isCollapsed ? 180 : 0 }}
-            width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
-          >
-            <rect width="18" height="18" x="3" y="3" rx="2"></rect>
-            <line x1="9" y1="3" x2="9" y2="21"></line>
-          </motion.svg>
-        </motion.button>
+          <i className="fas fa-times"></i>
+        </button>
       </div>
 
       <nav className="main-nav" style={{ width: '100%' }}>
@@ -119,13 +91,13 @@ export default function FeedSidebar({ isCollapsed, toggleSidebar }: Props) {
             { href: profileUrl, icon: 'fas fa-user-circle', label: t('sidebar.account') },
           ].map((item) => (
             <li key={item.href} className={isActive(item.href) ? 'active' : ''} style={{ width: '100%' }}>
-              <Link href={item.href} style={{
+              <Link href={item.href} onClick={() => { if (window.innerWidth <= 768) toggleSidebar(); }} style={{
                 display: 'flex',
-                justifyContent: isCollapsed ? 'center' : 'flex-start',
+                justifyContent: 'flex-start',
                 padding: '12px 15px'
               }}>
                 <i className={`${item.icon} icon`} style={{ margin: 0, fontSize: '1.2rem' }} />
-                {!isCollapsed && <span style={{ marginLeft: '15px' }}>{item.label}</span>}
+                <span style={{ marginLeft: '15px' }}>{item.label}</span>
               </Link>
             </li>
           ))}
@@ -137,7 +109,7 @@ export default function FeedSidebar({ isCollapsed, toggleSidebar }: Props) {
               className="logout-link"
               style={{
                 display: 'flex',
-                justifyContent: isCollapsed ? 'center' : 'flex-start',
+                justifyContent: 'flex-start',
                 padding: '12px 15px',
                 textDecoration: 'none',
                 color: '#ff5252',
@@ -145,7 +117,7 @@ export default function FeedSidebar({ isCollapsed, toggleSidebar }: Props) {
               }}
             >
               <i className="fas fa-sign-out-alt icon" style={{ margin: 0, fontSize: '1.2rem', color: '#ff5252' }} />
-              {!isCollapsed && <span style={{ marginLeft: '15px', fontWeight: 'bold' }}>{t('sidebar.logout')}</span>}
+              <span style={{ marginLeft: '15px', fontWeight: 'bold' }}>{t('sidebar.logout')}</span>
             </a>
           </li>
         </ul>

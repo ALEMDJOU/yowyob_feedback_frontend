@@ -801,20 +801,29 @@ section h2 {
 
 .footer .social-icons {
     margin-top: 20px;
+    display: flex;
+    gap: 15px;
 }
 
-.footer .social-icons img {
-    height: 30px;
-    width: 30px;
-    margin-right: 15px;
-    filter: grayscale(100%) brightness(150%);
-    /* Pour adapter les icônes aux couleurs du site */
-    transition: filter 0.3s ease;
+.footer .social-icons a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.05);
+    /* Lighter background for better contrast */
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
 }
 
-.footer .social-icons img:hover {
-    filter: grayscale(0%) brightness(100%);
-    /* Couleur originale au survol */
+.footer .social-icons a:hover {
+    background-color: var(--primary-accent);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(74, 0, 183, 0.3);
 }
 
 .footer-bottom {
@@ -822,6 +831,38 @@ section h2 {
     border-top: 1px solid var(--gray-dark);
     padding-top: 20px;
     color: var(--gray-medium);
+}
+
+/* Custom Grid classes for Auth Form */
+.auth-grid-step {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.auth-col-span-2 {
+    grid-column: span 2;
+}
+
+@media (max-width: 768px) {
+    .auth-grid-step {
+        grid-template-columns: 1fr;
+    }
+
+    .auth-col-span-2 {
+        grid-column: span 1;
+    }
+
+    .footer .social-icons {
+        justify-content: center;
+    }
+
+    .footer-col {
+        text-align: center;
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+    }
 }
 
 /* Auth (login / register) styles */
@@ -920,10 +961,6 @@ section h2 {
         padding: 20px;
         border-radius: 12px;
     }
-
-    .hero-content h1 {
-        font-size: 2.2rem;
-    }
 }
 
 /* Responsive Design */
@@ -971,6 +1008,14 @@ section h2 {
 }
 
 @media (max-width: 768px) {
+    .hero-content h1 {
+        font-size: 2.2em;
+    }
+
+    .hero-content p {
+        font-size: 1em;
+    }
+
     .mobile-menu-toggle {
         display: block;
     }
@@ -1985,113 +2030,6 @@ html {
     scroll-behavior: smooth;
 }
 
-/* Animations responsives */
-@media (max-width: 768px) {
-
-    .fade-in-up,
-    .text-reveal,
-    .animate-on-scroll {
-        animation-duration: 0.6s;
-    }
-
-    .particle {
-        width: 2px;
-        height: 2px;
-    }
-
-    /* Sections responsive */
-    section {
-        padding: 60px 0;
-    }
-
-    section h2 {
-        font-size: 2em;
-        margin-bottom: 40px;
-    }
-
-    .hero-content h1 {
-        font-size: 2.2em;
-    }
-
-    .hero-content h3 {
-        font-size: 1.1em;
-    }
-
-    .feature-grid,
-    .steps-grid,
-    .testimonial-slider {
-        gap: 20px;
-    }
-
-    .feature-item,
-    .step-item,
-    .testimonial-item {
-        padding: 20px;
-    }
-
-    .step-item .step-number {
-        width: 50px;
-        height: 50px;
-        line-height: 50px;
-        font-size: 1.5em;
-    }
-
-    .cta-section h2 {
-        font-size: 2em;
-    }
-
-    .cta-section p {
-        font-size: 1.1em;
-    }
-}
-
-@media (max-width: 480px) {
-    .navbar nav ul {
-        flex-direction: column;
-        gap: 10px;
-        text-align: center;
-    }
-
-    .navbar nav ul li {
-        margin: 0;
-    }
-
-    .btn-large {
-        padding: 12px 25px;
-        font-size: 1em;
-    }
-
-    .hero-section {
-        padding: 60px 0;
-    }
-
-    .hero-content h1 {
-        font-size: 1.8em;
-    }
-
-    .hero-content h3 {
-        font-size: 1em;
-    }
-
-    section {
-        padding: 40px 0;
-    }
-
-    section h2 {
-        font-size: 1.6em;
-        margin-bottom: 30px;
-    }
-
-    .testimonial-slider {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .testimonial-item {
-        max-width: 100%;
-    }
-}
-
 /* Yowbot (chat FAB) responsive styles */
 .yowbot-fab {
     width: 65px;
@@ -2110,7 +2048,7 @@ html {
     backdrop-filter: blur(15px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 24px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -2220,6 +2158,7 @@ html {
         grid-template-columns: 1fr;
     }
 }
+
 /* --- AUTH PAGE RESPONSIVE STYLES --- */
 .auth-page {
     min-height: 100vh;
@@ -2246,17 +2185,19 @@ html {
 @media (max-width: 600px) {
     .auth-page {
         padding: 15px;
-        align-items: flex-start; /* Better for mobile keyboards */
+        align-items: flex-start;
+        /* Better for mobile keyboards */
         padding-top: 40px;
     }
 
     .auth-card {
         padding: 25px 20px;
         max-width: 100%;
-        box-shadow: none !important; /* Flat on mobile often looks cleaner or simple shadow */
+        box-shadow: none !important;
+        /* Flat on mobile often looks cleaner or simple shadow */
         border: 1px solid #eee;
     }
-    
+
     .auth-header h2 {
         font-size: 1.5rem;
     }

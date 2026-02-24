@@ -7,58 +7,26 @@ import PageTransition from '@/components/PageTransition';
 import '../feed.css';
 
 export default function DashboardClient({ children }: { children: React.ReactNode }) {
-    const [isCollapsed, setIsCollapsed] = useState(false);
-    const [isMobile, setIsMobile] = useState(false);
-
-    useEffect(() => {
-        const handleResize = () => {
-            const mobile = window.innerWidth <= 768;
-            setIsMobile(mobile);
-            // On mobile, default to collapsed (hidden). On desktop, default to open.
-            if (mobile) {
-                setIsCollapsed(true);
-            } else {
-                setIsCollapsed(false);
-            }
-        };
-
-        handleResize();
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     const toggleSidebar = () => {
-        setIsCollapsed(!isCollapsed);
+        setIsSidebarOpen(!isSidebarOpen);
     };
 
     return (
         <MagicPageEnhancer>
-            <div className={`dashboard-container ${isMobile ? 'mobile-view' : ''}`}>
-                <FeedSidebar isCollapsed={isCollapsed} toggleSidebar={toggleSidebar} />
+            <div className={`dashboard-container ${isSidebarOpen ? 'mobile-nav-active' : ''}`}>
+                <FeedSidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
                 {/* Mobile Overlay Backdrop */}
-                {isMobile && !isCollapsed && (
+                {isSidebarOpen && (
                     <div
                         className="sidebar-overlay"
-                        onClick={() => setIsCollapsed(true)}
-                        style={{
-                            position: 'fixed',
-                            top: 0,
-                            left: 0,
-                            width: '100vw',
-                            height: '100vh',
-                            background: 'rgba(0,0,0,0.5)',
-                            zIndex: 99,
-                            backdropFilter: 'blur(2px)'
-                        }}
+                        onClick={() => setIsSidebarOpen(false)}
                     />
                 )}
 
-                <main className="main-content" style={{
-                    marginLeft: isMobile ? '0' : (isCollapsed ? '80px' : '250px'),
-                    transition: 'margin 0.3s ease',
-                    width: isMobile ? '100%' : 'auto' // Important for causing reflow
-                }}>
+                <main className="main-content">
                     <div className="mobile-dashboard-header">
                         <button className="sidebar-toggle" onClick={toggleSidebar} aria-label="Menu">
                             <i className="fas fa-bars"></i>

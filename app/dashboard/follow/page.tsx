@@ -269,38 +269,49 @@ export default function FollowPage() {
                 }
             `}</style>
 
-            {/* Header épuré */}
-            <div className="content-header" style={{ marginBottom: '40px' }}>
-                <div className="header-title" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                    <div style={{
-                        background: 'linear-gradient(135deg, var(--primary-color), var(--primary-hover))',
-                        padding: '12px',
-                        borderRadius: '16px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: '0 8px 16px rgba(var(--primary-rgb), 0.2)'
-                    }}>
-                        <Bell size={28} color="white" />
+            {/* Header épuré avec l'icône de la cloche animée */}
+            <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '60px', textAlign: 'center' }}
+            >
+                <div style={{ position: 'relative', marginBottom: '25px' }}>
+                    <div
+                        style={{
+                            background: 'white', border: '3px solid #7C3AED', borderRadius: '50%', padding: '8px',
+                            boxShadow: '0 20px 40px rgba(124, 58, 237, 0.2)',
+                            width: '140px', height: '140px', overflow: 'hidden', display: 'flex',
+                            alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1
+                        }}
+                    >
+                        <Bell size={70} color="#7C3AED" strokeWidth={2} style={{ marginBottom: '5px' }} />
                     </div>
-                    <h1 style={{
-                        fontSize: '32px',
-                        fontWeight: '800',
-                        margin: 0,
-                        background: 'linear-gradient(to right, var(--text-main), var(--text-secondary))',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent'
-                    }}>
-                        {t('follow.title')}
-                    </h1>
+                    <motion.div
+                        animate={{ scale: [1, 1.15, 1], opacity: [0.3, 0.1, 0.3] }}
+                        transition={{ duration: 3, repeat: Infinity }}
+                        style={{
+                            position: 'absolute', top: '-10px', left: '-10px', right: '-10px', bottom: '-10px',
+                            border: '2px solid #7C3AED', borderRadius: '50%', zIndex: 0
+                        }}
+                    />
                 </div>
-            </div>
+
+                <h1 style={{
+                    fontSize: '2.5rem',
+                    fontWeight: 900,
+                    color: '#111827',
+                    letterSpacing: '-0.025em',
+                    marginBottom: '10px'
+                }}>
+                    {t('follow.title')}
+                </h1>
+            </motion.div>
 
             {/* Stats Section */}
             <div className="stats-grid">
                 {[
-                    { label: t('follow.followers'), count: stats?.followersCount || 0, icon: <UserCheck size={18} /> },
-                    { label: t('follow.following'), count: stats?.followingCount || 0, icon: <UserPlus size={18} /> }
+                    { label: t('follow.following'), count: stats?.followersCount || 0, icon: <UserCheck size={18} /> },
+                    { label: t('follow.followers'), count: stats?.followingCount || 0, icon: <UserPlus size={18} /> }
                 ].map((stat, idx) => (
                     <motion.div
                         key={idx}

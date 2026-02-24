@@ -1,22 +1,28 @@
 import { NextResponse } from 'next/server';
 import Groq from "groq-sdk";
 
-// On initialise Groq avec ta clé API (à mettre dans .env.local)
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
 export async function POST(req: Request) {
     try {
         const { message, history } = await req.json();
 
+        // Check for api key existence at runtime
+        const apiKey = process.env.GROQ_API_KEY;
+        if (!apiKey) {
+            return NextResponse.json({ reply: "Configuration Groq manquante (Clé API requise)." }, { status: 500 });
+        }
+
+        // On initialise Groq avec ta clé API (à mettre dans .env.local)
+        const groq = new Groq({ apiKey });
+
         const completion = await groq.chat.completions.create({
             messages: [
-                { 
-                    role: "system", 
+                {
+                    role: "system",
                     content: `Tu es YowBot, l'assistant expert de Yowyob. 
                     Tes règles :
                     1. Réponds toujours en français.
                     2. Sois concis et amical.
-                    3. Tu connais le dashboard : onglets Feed, Abonnements, Projets et Compte.` 
+                    3. Tu connais le dashboard : onglets Feed, Abonnements, Projets et Compte.`
                 },
                 ...history, // On passe l'historique pour qu'il se souvienne du contexte
                 { role: "user", content: message }

@@ -77,19 +77,8 @@ export default function CreateProjectPage() {
             <>
                 <link rel="stylesheet" href="/feed.css" />
 
-                <div style={{
-                    maxWidth: '600px',
-                    margin: '0 auto',
-                    padding: '40px 20px'
-                }}>
-                    <div style={{
-                        background: 'white',
-                        borderRadius: '16px',
-                        padding: '40px',
-                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                        border: '1px solid #E5E7EB',
-                        textAlign: 'center'
-                    }}>
+                <div className="project-form-wrapper">
+                    <div className="project-form-card" style={{ textAlign: 'center' }}>
                         <div style={{
                             width: '80px',
                             height: '80px',
@@ -103,20 +92,11 @@ export default function CreateProjectPage() {
                             <i className="fas fa-check" style={{ fontSize: '2.5rem', color: 'white' }}></i>
                         </div>
 
-                        <h1 style={{
-                            fontSize: '1.75rem',
-                            fontWeight: 700,
-                            color: '#1F2937',
-                            marginBottom: '12px'
-                        }}>
+                        <h1 className="project-form-header">
                             Groupe créé avec succès !
                         </h1>
 
-                        <p style={{
-                            fontSize: '1rem',
-                            color: '#6B7280',
-                            marginBottom: '32px'
-                        }}>
+                        <p className="project-form-subtitle">
                             Votre groupe <strong>{createdProjectName}</strong> a été créé.
                         </p>
 
@@ -231,43 +211,17 @@ export default function CreateProjectPage() {
                             </p>
                         </div>
 
-                        <div style={{
-                            display: 'flex',
-                            gap: '12px',
-                            justifyContent: 'center',
-                            flexWrap: 'wrap'
-                        }}>
+                        <div className="project-form-actions" style={{ justifyContent: 'center' }}>
                             <Link
                                 href="/dashboard/project"
-                                style={{
-                                    padding: '12px 24px',
-                                    backgroundColor: '#F3F4F6',
-                                    color: '#1F2937',
-                                    border: '1px solid #E5E7EB',
-                                    borderRadius: '8px',
-                                    fontSize: '0.95rem',
-                                    fontWeight: 600,
-                                    textDecoration: 'none',
-                                    transition: 'all 0.2s',
-                                    display: 'inline-block'
-                                }}
+                                className="project-btn-cancel"
                             >
                                 Retour aux projets
                             </Link>
 
                             <button
                                 onClick={() => router.push(`/dashboard/project/${encodeURIComponent(createdProjectName)}`)}
-                                style={{
-                                    padding: '12px 24px',
-                                    backgroundColor: '#7C3AED',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '8px',
-                                    fontSize: '0.95rem',
-                                    fontWeight: 600,
-                                    cursor: 'pointer',
-                                    transition: 'all 0.2s'
-                                }}
+                                className="project-btn-submit"
                             >
                                 Accéder au groupe
                             </button>
@@ -282,18 +236,14 @@ export default function CreateProjectPage() {
         <>
             <link rel="stylesheet" href="/feed.css" />
 
-            <div style={{
-                maxWidth: '700px',
-                margin: '0 auto',
-                padding: '20px'
-            }}>
+            <div className="project-form-wrapper">
                 <Link
                     href="/dashboard/project"
                     style={{
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: '8px',
-                        color: '#7C3AED',
+                        color: 'var(--primary-color)',
                         textDecoration: 'none',
                         fontSize: '0.95rem',
                         fontWeight: 600,
@@ -305,27 +255,21 @@ export default function CreateProjectPage() {
                     Retour aux projets
                 </Link>
 
-                <div style={{
-                    background: 'white',
-                    borderRadius: '12px',
-                    padding: '32px',
-                    boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-                    border: '1px solid #E5E7EB'
-                }}>
-                    <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: '#1F2937', marginBottom: '8px' }}>
+                <div className="project-form-card">
+                    <h1 className="project-form-header">
                         Créer un nouveau groupe
                     </h1>
-                    <p style={{ color: '#6B7280', fontSize: '0.95rem', marginBottom: '32px' }}>
+                    <p className="project-form-subtitle">
                         Remplissez les informations ci-dessous pour créer votre groupe de projet
                     </p>
 
                     <form onSubmit={handleSubmit}>
-                        <div style={{ marginBottom: '24px' }}>
-                            <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 600, color: '#1F2937', marginBottom: '8px' }}>
+                        <div className="project-form-group">
+                            <label className="project-form-label">
                                 Photo du groupe
                             </label>
 
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                            <div className="project-image-upload" style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                                 <div style={{
                                     width: '100px',
                                     height: '100px',
@@ -335,7 +279,8 @@ export default function CreateProjectPage() {
                                     background: '#F3F4F6',
                                     display: 'flex',
                                     alignItems: 'center',
-                                    justifyContent: 'center'
+                                    justifyContent: 'center',
+                                    flexShrink: 0
                                 }}>
                                     {avatarPreview ? (
                                         <img src={avatarPreview} alt="Aperçu" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -353,7 +298,8 @@ export default function CreateProjectPage() {
                                     fontSize: '0.9rem',
                                     fontWeight: 600,
                                     cursor: 'pointer',
-                                    display: 'inline-block'
+                                    display: 'inline-block',
+                                    textAlign: 'center'
                                 }}>
                                     <i className="fas fa-upload" style={{ marginRight: '8px' }}></i>
                                     Choisir une image
@@ -362,8 +308,8 @@ export default function CreateProjectPage() {
                             </div>
                         </div>
 
-                        <div style={{ marginBottom: '24px' }}>
-                            <label htmlFor="name" style={{ display: 'block', fontSize: '0.9rem', fontWeight: 600, color: '#1F2937', marginBottom: '8px' }}>
+                        <div className="project-form-group">
+                            <label htmlFor="name" className="project-form-label">
                                 Nom du groupe <span style={{ color: '#EF4444' }}>*</span>
                             </label>
                             <input
@@ -373,12 +319,12 @@ export default function CreateProjectPage() {
                                 onChange={(e) => setFormData(prev => ({ ...prev, project_name: e.target.value }))}
                                 placeholder=""
                                 required
-                                style={{ width: '100%', padding: '12px 16px', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '0.95rem' }}
+                                className="project-form-input"
                             />
                         </div>
 
-                        <div style={{ marginBottom: '32px' }}>
-                            <label htmlFor="description" style={{ display: 'block', fontSize: '0.9rem', fontWeight: 600, color: '#1F2937', marginBottom: '8px' }}>
+                        <div className="project-form-group" style={{ marginBottom: '32px' }}>
+                            <label htmlFor="description" className="project-form-label">
                                 Description <span style={{ color: '#EF4444' }}>*</span>
                             </label>
                             <textarea
@@ -388,23 +334,15 @@ export default function CreateProjectPage() {
                                 placeholder=""
                                 required
                                 rows={4}
-                                style={{ width: '100%', padding: '12px 16px', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '0.95rem', resize: 'vertical' }}
+                                className="project-form-input"
+                                style={{ resize: 'vertical' }}
                             />
                         </div>
 
-                        <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+                        <div className="project-form-actions">
                             <Link
                                 href="/dashboard/project"
-                                style={{
-                                    padding: '12px 24px',
-                                    backgroundColor: '#F3F4F6',
-                                    color: '#1F2937',
-                                    border: '1px solid #E5E7EB',
-                                    borderRadius: '8px',
-                                    fontSize: '0.95rem',
-                                    fontWeight: 600,
-                                    textDecoration: 'none'
-                                }}
+                                className="project-btn-cancel"
                             >
                                 Annuler
                             </Link>
@@ -412,18 +350,9 @@ export default function CreateProjectPage() {
                             <button
                                 type="submit"
                                 disabled={submitting || uploading}
+                                className="project-btn-submit"
                                 style={{
-                                    padding: '12px 24px',
-                                    backgroundColor: submitting || uploading ? '#A78BFA' : '#7C3AED',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '8px',
-                                    fontSize: '0.95rem',
-                                    fontWeight: 600,
-                                    cursor: submitting || uploading ? 'not-allowed' : 'pointer',
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    gap: '8px'
+                                    backgroundColor: submitting || uploading ? '#A78BFA' : 'var(--primary-color)'
                                 }}
                             >
                                 <i className="fas fa-plus-circle"></i>

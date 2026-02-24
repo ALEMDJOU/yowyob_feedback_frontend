@@ -30,13 +30,13 @@ export default function Footer() {
                         <p>{t('footer.phone')}</p>
                         <div className="social-icons">
                             <a href="#" aria-label="Facebook" title="Facebook">
-                                <Image src="/images/facebook.jpeg" alt="Facebook" width={36} height={36} style={{ borderRadius: '6px' }} />
+                                <i className="fab fa-facebook-f"></i>
                             </a>
                             <a href="#" aria-label="X (anciennement Twitter)" title="X">
-                                <Image src="/images/X.png" alt="X" width={36} height={36} style={{ borderRadius: '6px' }} />
+                                <i className="fab fa-twitter"></i>
                             </a>
                             <a href="#" aria-label="LinkedIn" title="LinkedIn">
-                                <Image src="/images/linkedin.png" alt="LinkedIn" width={36} height={36} style={{ borderRadius: '6px' }} />
+                                <i className="fab fa-linkedin-in"></i>
                             </a>
                         </div>
                     </div>

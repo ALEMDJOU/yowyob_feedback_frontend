@@ -3,22 +3,32 @@
 
 /* Variables de couleurs basées sur votre style.css */
 :root {
-    --primary-color: #6A1B9A; /* Violet profond (pour le hover, fond de bouton) */
-    --primary-accent: #4A00B7; /* Le violet vif/logo (pour l'actif, les icônes) */
-    --text-light: #ECF0F1; /* Blanc cassé */
-    --text-dark: #2C3E50; /* Presque noir, pour les titres sur fond clair */
-    
-    --background-main: #f5f5f7; /* Fond clair pour le contenu principal (Main) */
-    --background-dark: #0c0b0b; /* Noir pour la Sidebar et les grands headers */
-    --sidebar-link-bg: #1e1e1e; /* Noir un peu moins profond pour le hover des liens */
-    
-    --table-bg: #fff; /* Utilisé comme fond de carte */
-    --border-color: #333; /* Bordure foncée */
-    
+    --primary-color: #6A1B9A;
+    /* Violet profond (pour le hover, fond de bouton) */
+    --primary-accent: #4A00B7;
+    /* Le violet vif/logo (pour l'actif, les icônes) */
+    --text-light: #ECF0F1;
+    /* Blanc cassé */
+    --text-dark: #2C3E50;
+    /* Presque noir, pour les titres sur fond clair */
+
+    --background-main: #f5f5f7;
+    /* Fond clair pour le contenu principal (Main) */
+    --background-dark: #0c0b0b;
+    /* Noir pour la Sidebar et les grands headers */
+    --sidebar-link-bg: #1e1e1e;
+    /* Noir un peu moins profond pour le hover des liens */
+
+    --table-bg: #fff;
+    /* Utilisé comme fond de carte */
+    --border-color: #333;
+    /* Bordure foncée */
+
     /* Ombre violette légère appliquée aux cartes */
-    --shadow-violet: 0 4px 15px rgba(74, 0, 183, 0.15); /* Basé sur --primary-accent */
+    --shadow-violet: 0 4px 15px rgba(74, 0, 183, 0.15);
+    /* Basé sur --primary-accent */
     --shadow-violet-hover: 0 8px 20px rgba(74, 0, 183, 0.25);
-    
+
     --delete-btn-bg: #dc3545;
 }
 
@@ -44,20 +54,23 @@ body {
 /* --- Sidebar (Thème Sombre : Noir/Violet) --- */
 .sidebar {
     width: 250px;
-    background: var(--background-dark); 
+    background: var(--background-dark);
     color: var(--text-light);
     padding: 20px;
     display: flex;
     flex-direction: column;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.4);
-    transition: width 0.3s ease, transform 0.3s ease; 
-    
+    transition: width 0.3s ease, transform 0.3s ease;
+
     /* MODIFICATIONS CLÉS POUR FIXER LA SIDEBAR ET EMPÊCHER LE DÉFILEMENT */
-    position: fixed; /* Fixe l'élément par rapport à la fenêtre du navigateur */
-    height: 100vh; /* Prend 100% de la hauteur visible */
+    position: fixed;
+    /* Fixe l'élément par rapport à la fenêtre du navigateur */
+    height: 100vh;
+    /* Prend 100% de la hauteur visible */
     top: 0;
     left: 0;
-    z-index: 100; /* Assure qu'elle est au-dessus du contenu principal */
+    z-index: 100;
+    /* Assure qu'elle est au-dessus du contenu principal */
 }
 
 .sidebar-header {
@@ -69,7 +82,7 @@ body {
 }
 
 .logo-image {
-    width: 35px; 
+    width: 35px;
     height: 35px;
     object-fit: contain;
     margin-right: 10px;
@@ -81,7 +94,7 @@ body {
     color: whitesmoke;
 }
 
-.main-nav ul { 
+.main-nav ul {
     list-style: none;
 }
 
@@ -133,8 +146,9 @@ body {
 /* --- Main Content (Thème Clair) --- */
 .main-content {
     /* MODIFICATION CLÉ 2 : Ajout de la marge pour décaler le contenu */
-    margin-left: 250px; /* Doit être égal à la largeur de la sidebar */
-    
+    margin-left: 250px;
+    /* Doit être égal à la largeur de la sidebar */
+
     flex-grow: 1;
     padding: 30px;
     background-color: var(--background-main);
@@ -217,8 +231,9 @@ body {
 .members-grid-container {
     display: grid;
     /* 6 colonnes pour desktop pour faire une ligne courte (Section A) */
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); 
-    gap: 15px; /* Réduire l'espacement pour compacter la section */
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    /* Réduire l'espacement pour compacter la section */
     padding: 0;
 }
 
@@ -226,30 +241,33 @@ body {
 .member-card {
     background-color: var(--table-bg);
     border-radius: 12px;
-    box-shadow: var(--shadow-violet); 
-    padding: 15px 10px; /* Padding plus petit */
+    box-shadow: var(--shadow-violet);
+    padding: 15px 10px;
+    /* Padding plus petit */
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     height: 100%;
-    position: relative; 
-    cursor: pointer; 
+    position: relative;
+    cursor: pointer;
 }
 
 .member-card:hover {
     transform: translateY(-5px);
     /* APPLICATION DE L'OMBRE VIOLETTE AU SURVOL */
-    box-shadow: var(--shadow-violet-hover); 
+    box-shadow: var(--shadow-violet-hover);
 }
 
 .card-avatar {
-    width: 60px; /* Taille réduite */
+    width: 60px;
+    /* Taille réduite */
     height: 60px;
     border-radius: 50%;
     object-fit: cover;
-    margin-bottom: 5px; /* Moins d'espace */
+    margin-bottom: 5px;
+    /* Moins d'espace */
     border: 3px solid var(--primary-accent);
 }
 
@@ -260,12 +278,13 @@ body {
 }
 
 .card-name {
-    font-size: 0.9rem; /* Texte plus petit */
+    font-size: 0.9rem;
+    /* Texte plus petit */
     font-weight: 500;
 }
 
 .subscribe-btn {
-    display: none; 
+    display: none;
 }
 
 .card-type {
@@ -284,11 +303,13 @@ body {
 /* --- SECTION B : Contenu Principal (Feedbacks) --- */
 
 .feedback-section {
-    flex-grow: 1; /* S'assure que la Section B prend l'espace restant */
+    flex-grow: 1;
+    /* S'assure que la Section B prend l'espace restant */
 }
 
 .feedback-section h2 {
-    font-size: 1.5rem; /* Plus grand que Section A */
+    font-size: 1.5rem;
+    /* Plus grand que Section A */
     font-weight: 600;
     color: var(--text-dark);
     margin-bottom: 20px;
@@ -298,7 +319,7 @@ body {
 .feedback-card {
     background-color: var(--table-bg);
     border-radius: 12px;
-    box-shadow: var(--shadow-violet); 
+    box-shadow: var(--shadow-violet);
     padding: 20px;
     margin-bottom: 25px;
     transition: box-shadow 0.3s ease;
@@ -390,16 +411,17 @@ body {
     padding: 0;
     overflow: hidden;
     transform: translateX(-100%);
-    
+
     /* MAINTIEN DES PROPRIÉTÉS FIXES lors de l'effondrement */
-    position: fixed; 
+    position: fixed;
     height: 100vh;
-    top: 0; 
+    top: 0;
     left: 0;
 }
 
-.sidebar.collapsed ~ .main-content {
-    margin-left: 0; /* Revient à une marge de zéro */
+.sidebar.collapsed~.main-content {
+    margin-left: 0;
+    /* Revient à une marge de zéro */
     width: 100%;
 }
 
@@ -414,7 +436,7 @@ body {
 
 @media (min-width: 1400px) {
     .members-grid-container {
-        grid-template-columns: repeat(6, 1fr); 
+        grid-template-columns: repeat(6, 1fr);
     }
 }
 
@@ -430,7 +452,7 @@ body {
         /* 4 colonnes sur tablette */
         grid-template-columns: repeat(4, 1fr);
     }
-    
+
     .feedback-card {
         padding: 15px;
     }
@@ -441,46 +463,20 @@ body {
         /* 3 colonnes sur mobile vertical */
         grid-template-columns: repeat(3, 1fr);
     }
-    
+
     .member-card {
-        flex-direction: column; 
+        flex-direction: column;
         padding: 10px;
     }
-    
+
     .card-avatar {
         margin-right: 0;
     }
-    
+
     .feedback-actions button {
         padding: 5px 8px;
         font-size: 0.8rem;
     }
 }
 
-/* Gestion du responsive pour la sidebar fixée */
-@media (max-width: 768px) {
-    /* Sur petit écran, on peut choisir de masquer complètement la sidebar ou de la faire passer en vue mobile */
-    .sidebar {
-        /* Par exemple, la masquer par défaut et la faire apparaître via un bouton */
-        width: 0;
-        transform: translateX(-100%);
-    }
-    
-    .sidebar.collapsed {
-        /* Si vous utilisez un bouton pour la faire apparaître, cet état devrait être inversé */
-        width: 0;
-        transform: translateX(-100%);
-    }
-    
-    /* Le contenu principal doit toujours prendre tout l'espace sur mobile (pas de marge) */
-    .main-content {
-        margin-left: 0;
-    }
-    
-    .sidebar.active {
-        /* Si vous utilisez une classe 'active' pour afficher la sidebar en plein écran sur mobile */
-        width: 100%;
-        transform: translateX(0);
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    }
-}
+/* Legacy sidebar mobile media query removed to favor dashboard/account/css/feed.css */

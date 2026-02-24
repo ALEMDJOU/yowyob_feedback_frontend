@@ -184,6 +184,18 @@ export default function SignupPage() {
     return (
         <div className="auth-page" style={{ backgroundColor: '#f0f2f5', minHeight: '100vh', padding: '40px 20px' }}>
             <motion.div initial="hidden" animate="visible" className="auth-card" style={{ maxWidth: '750px', margin: '0 auto', padding: '40px', boxShadow: '0 10px 30px rgba(0,0,0,0.08)', borderRadius: '16px', backgroundColor: '#fff' }}>
+                {/* Retour arrière animé */}
+                <motion.div variants={itemVariants} whileHover={{ x: -5 }} style={{ marginBottom: '20px' }}>
+                    <Link href="/" style={{ color: '#6A1B9A', fontSize: '0.9em', display: 'flex', alignItems: 'center', gap: '5px', textDecoration: 'none' }}>
+                        <motion.span animate={{ x: [0, -4, 0] }} transition={{ repeat: Infinity, duration: 1.5 }} style={{ display: 'inline-flex' }}>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path d="M15 19l-7-7 7-7" stroke="#6A1B9A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                        </motion.span>
+                        Retour
+                    </Link>
+                </motion.div>
+
                 <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} style={{ textAlign: 'center', marginBottom: '30px' }}>
                     <Image src="/images/logo.jpg" alt="Logo" width={80} height={80} style={{ borderRadius: '50%' }} />
                     <h2 style={{ color: '#6A1B9A', marginTop: '15px', fontWeight: '800' }}>{step === 1 ? "Identité et Contact" : "Profil et Sécurité"}</h2>
@@ -212,23 +224,40 @@ export default function SignupPage() {
                                 animate="visible"
                                 exit="exit"
                                 transition={{ duration: 0.3 }}
-                                style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}
+                                className="auth-grid-step"
                             >
-                                <div style={{ gridColumn: 'span 2' }}>
+                                <div className="auth-col-span-2">
                                     <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>Type de compte</label>
-                                    <select
-                                        className="auth-form-control"
-                                        style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '2px solid #eee' }}
-                                        value={userType}
-                                        onChange={(e) => {
-                                            const val = e.target.value as UserType;
-                                            setUserType(val);
-                                            handleInputChange('user_type', val);
-                                        }}
-                                    >
-                                        <option value={UserType.PERSON}>👤 Particulier</option>
-                                        <option value={UserType.ORGANIZATION}>🏢 Entreprise / Organisation</option>
-                                    </select>
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                                        <div
+                                            onClick={() => {
+                                                setUserType(UserType.PERSON);
+                                                handleInputChange('user_type', UserType.PERSON);
+                                            }}
+                                            style={{
+                                                padding: '15px', borderRadius: '10px', border: userType === UserType.PERSON ? '2px solid #6A1B9A' : '2px solid #eee',
+                                                backgroundColor: userType === UserType.PERSON ? 'rgba(106, 27, 154, 0.05)' : 'white', cursor: 'pointer',
+                                                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', transition: 'all 0.2s'
+                                            }}
+                                        >
+                                            <i className="fas fa-user" style={{ fontSize: '24px', color: userType === UserType.PERSON ? '#6A1B9A' : '#aaa' }}></i>
+                                            <span style={{ fontWeight: userType === UserType.PERSON ? '700' : '500', color: userType === UserType.PERSON ? '#6A1B9A' : '#555' }}>Particulier</span>
+                                        </div>
+                                        <div
+                                            onClick={() => {
+                                                setUserType(UserType.ORGANIZATION);
+                                                handleInputChange('user_type', UserType.ORGANIZATION);
+                                            }}
+                                            style={{
+                                                padding: '15px', borderRadius: '10px', border: userType === UserType.ORGANIZATION ? '2px solid #6A1B9A' : '2px solid #eee',
+                                                backgroundColor: userType === UserType.ORGANIZATION ? 'rgba(106, 27, 154, 0.05)' : 'white', cursor: 'pointer',
+                                                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', transition: 'all 0.2s', textAlign: 'center'
+                                            }}
+                                        >
+                                            <i className="fas fa-building" style={{ fontSize: '24px', color: userType === UserType.ORGANIZATION ? '#6A1B9A' : '#aaa' }}></i>
+                                            <span style={{ fontWeight: userType === UserType.ORGANIZATION ? '700' : '500', color: userType === UserType.ORGANIZATION ? '#6A1B9A' : '#555' }}>Entreprise / Organisation</span>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 {userType === UserType.PERSON ? (
@@ -243,7 +272,7 @@ export default function SignupPage() {
                                         </div>
                                     </>
                                 ) : (
-                                    <div style={{ gridColumn: 'span 2' }}>
+                                    <div className="auth-col-span-2">
                                         <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600' }}>Nom de l'organisation</label>
                                         <input
                                             type="text"
@@ -259,26 +288,26 @@ export default function SignupPage() {
 
                                 <div>
                                     <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#6A1B9A' }}>
-                                        <span style={{ color: '#6A1B9A' }}>🌐</span> Domaine d'activité
+                                        <i className="fas fa-globe" style={{ color: '#6A1B9A', marginRight: '6px' }}></i> Domaine d'activité
                                     </label>
                                     <input type="text" className="auth-form-control" placeholder="Ex: Informatique, Commerce..." style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} onChange={(e) => handleInputChange('domain', e.target.value)} value={formData.domain || ''} required />
                                 </div>
 
                                 <div>
                                     <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#6A1B9A' }}>
-                                        <span style={{ color: '#6A1B9A' }}>📧</span> Email
+                                        <i className="fas fa-envelope" style={{ color: '#6A1B9A', marginRight: '6px' }}></i> Email
                                     </label>
                                     <input type="email" className="auth-form-control" style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} onChange={(e) => handleInputChange('email', e.target.value)} value={formData.email || ''} required />
                                 </div>
 
-                                <div style={{ gridColumn: 'span 2' }}>
+                                <div className="auth-col-span-2">
                                     <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#6A1B9A' }}>
-                                        <span style={{ color: '#6A1B9A' }}>📞</span> Téléphone (Cameroun)
+                                        <i className="fas fa-phone-alt" style={{ color: '#6A1B9A', marginRight: '6px' }}></i> Téléphone (Cameroun)
                                     </label>
                                     <input type="text" className="auth-form-control" placeholder="6XXXXXXXX" style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} onChange={(e) => handleInputChange('contact', e.target.value)} value={formData.contact || ''} required />
                                 </div>
 
-                                <div style={{ gridColumn: 'span 2', marginTop: '10px' }}>
+                                <div className="auth-col-span-2" style={{ marginTop: '10px' }}>
                                     <button
                                         type="button"
                                         onClick={nextStep}
@@ -296,10 +325,10 @@ export default function SignupPage() {
                                 animate="visible"
                                 exit="exit"
                                 transition={{ duration: 0.3 }}
-                                style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}
+                                className="auth-grid-step"
                             >
                                 {userType === UserType.PERSON && (
-                                    <div style={{ gridColumn: 'span 2' }}>
+                                    <div className="auth-col-span-2">
                                         <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600' }}>Occupation / Profession</label>
                                         <input type="text" className="auth-form-control" placeholder="Ex: Étudiant, Développeur..." style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} onChange={(e) => handleInputChange('occupation', e.target.value)} value={formData.occupation || ''} required />
                                     </div>
@@ -307,44 +336,33 @@ export default function SignupPage() {
 
                                 <div>
                                     <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#6A1B9A' }}>
-                                        <span style={{ color: '#6A1B9A' }}>📍</span> Localisation
+                                        <i className="fas fa-map-marker-alt" style={{ color: '#6A1B9A', marginRight: '6px' }}></i> Localisation
                                     </label>
                                     <input type="text" className="auth-form-control" placeholder="Ex: Douala, Cameroun" style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} onChange={(e) => handleInputChange('location', e.target.value)} value={formData.location || ''} required />
                                 </div>
 
                                 <div>
                                     <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#6A1B9A' }}>
-                                        <span style={{ color: '#6A1B9A' }}>📝</span> Description
+                                        <i className="fas fa-align-left" style={{ color: '#6A1B9A', marginRight: '6px' }}></i> Description
                                     </label>
                                     <textarea className="auth-form-control" rows={2} style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} placeholder="Décrivez brièvement l'activité..." onChange={(e) => handleInputChange('description', e.target.value)} value={formData.description || ''} required />
                                 </div>
 
-                                <div style={{ gridColumn: 'span 2' }}>
+                                <div className="auth-col-span-2">
                                     <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#6A1B9A' }}>
-                                        <span style={{ color: '#6A1B9A' }}>🖼️</span> Logo ou Photo
+                                        <i className="fas fa-image" style={{ color: '#6A1B9A', marginRight: '6px' }}></i> Logo ou Photo
                                     </label>
                                     <input type="file" accept="image/*" onChange={handleImageUpload} style={{ width: '100%', padding: '10px', backgroundColor: '#f9f9f9', borderRadius: '8px', border: '1px dashed #ccc' }} />
-                                    {formData.user_logo && <p style={{ fontSize: '0.8rem', color: '#2E7D32', marginTop: '5px' }}>✓ Image chargée</p>}
+                                    {formData.user_logo && <p style={{ fontSize: '0.8rem', color: '#2E7D32', marginTop: '5px' }}><i className="fas fa-check" style={{ marginRight: '4px' }}></i> Image chargée</p>}
                                 </div>
 
-                                <div style={{ gridColumn: 'span 2' }}>
+                                <div className="auth-col-span-2">
                                     <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600' }}>Mot de passe</label>
                                     <div style={{ position: 'relative' }}>
-                                        <input type={showPassword ? "text" : "password"} className="auth-form-control" style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} onChange={(e) => handleInputChange('password', e.target.value)} required />
-                                        <span onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', display: 'inline-flex' }}>
-                                            {showPassword ? (
-                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" stroke="#6A1B9A" strokeWidth="2" fill="none" />
-                                                    <circle cx="12" cy="12" r="3" fill="#6A1B9A" />
-                                                </svg>
-                                            ) : (
-                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" stroke="#6A1B9A" strokeWidth="2" fill="none" />
-                                                    <circle cx="12" cy="12" r="3" fill="#6A1B9A" />
-                                                    <path d="M4 4l16 16" stroke="#6A1B9A" strokeWidth="2" />
-                                                </svg>
-                                            )}
-                                        </span>
+                                        <input type={showPassword ? "text" : "password"} className="auth-form-control" style={{ width: '100%', padding: '12px', paddingRight: '45px', borderRadius: '8px', border: '1px solid #ddd' }} onChange={(e) => handleInputChange('password', e.target.value)} required />
+                                        <motion.button type="button" whileHover={{ color: '#4A148C' }} onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', background: 'none', border: 'none', color: '#6A1B9A', fontSize: '1.2em', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '30px', height: '30px', padding: 0 }}>
+                                            <i className={showPassword ? "fas fa-eye-slash" : "fas fa-eye"} style={{ width: '100%', textAlign: 'center' }}></i>
+                                        </motion.button>
                                     </div>
                                     <div style={{ marginTop: '8px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px', backgroundColor: '#f9f9f9', padding: '8px', borderRadius: '6px' }}>
                                         <Requirement met={passwordMetadata.hasMinLength} text="8+ caractères" />
@@ -355,17 +373,19 @@ export default function SignupPage() {
                                     </div>
                                 </div>
 
-                                <div style={{ gridColumn: 'span 2' }}>
+                                <div className="auth-col-span-2">
                                     <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600' }}>Confirmation</label>
-                                    <input type={showPassword ? "text" : "password"} className="auth-form-control" style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+                                    <div style={{ position: 'relative' }}>
+                                        <input type={showPassword ? "text" : "password"} className="auth-form-control" style={{ width: '100%', padding: '12px', paddingRight: '45px', borderRadius: '8px', border: '1px solid #ddd' }} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+                                    </div>
                                     {confirmPassword && (
                                         <div style={{ fontSize: '0.75rem', marginTop: '4px', color: formData.password === confirmPassword ? '#2E7D32' : '#D32F2F' }}>
-                                            {formData.password === confirmPassword ? '✓ Les mots de passe correspondent' : '✗ Les mots de passe diffèrent'}
+                                            {formData.password === confirmPassword ? <><i className="fas fa-check" style={{ marginRight: '4px' }}></i> Les mots de passe correspondent</> : <><i className="fas fa-times" style={{ marginRight: '4px' }}></i> Les mots de passe diffèrent</>}
                                         </div>
                                     )}
                                 </div>
 
-                                <div style={{ gridColumn: 'span 2', display: 'flex', gap: '15px' }}>
+                                <div className="auth-col-span-2" style={{ display: 'flex', gap: '15px' }}>
                                     <button
                                         type="button"
                                         onClick={prevStep}
@@ -380,7 +400,7 @@ export default function SignupPage() {
                                         style={{ flex: 2, padding: '16px', backgroundColor: '#6A1B9A', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: 'bold' }}
                                         disabled={loading || uploading}
                                     >
-                                        {loading ? '🚀 Traitement...' : 'S\'inscrire'}
+                                        {loading ? <><i className="fas fa-spinner fa-spin" style={{ marginRight: '8px' }}></i> Traitement...</> : 'S\'inscrire'}
                                     </motion.button>
                                 </div>
                             </motion.div>

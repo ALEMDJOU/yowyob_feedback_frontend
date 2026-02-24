@@ -52,7 +52,7 @@ body {
 
 /* --- Sidebar (Thème Sombre : Noir/Violet) --- */
 .sidebar {
-    width: 250px;
+    width: 280px;
     background: var(--background-dark);
     color: var(--text-light);
     padding: 20px;
@@ -108,6 +108,7 @@ body {
     text-decoration: none;
     padding: 10px 15px;
     border-radius: 8px;
+    font-weight: 700;
     transition: background-color 0.3s ease;
 }
 
@@ -145,7 +146,7 @@ body {
 /* --- Main Content (Thème Clair) --- */
 .main-content {
     /* MODIFICATION CLÉ 2 : Ajout de la marge pour décaler le contenu */
-    margin-left: 250px;
+    margin-left: 280px;
     /* Doit être égal à la largeur de la sidebar */
 
     flex-grow: 1;
@@ -478,45 +479,76 @@ body {
     }
 }
 
-/* Gestion du responsive pour la sidebar fixée */
+/* 
+    Ensure `.mobile-close-btn` is explicitly hidden globally (desktop).
+    It will be set to `display: flex !important` in the mobile media query below 
+    only when `.mobile-nav-active` is triggered.
+*/
+.mobile-close-btn {
+    display: none;
+}
+
+/* Prevent text wrapping in sidebar links (e.g. "Mes abonnements") */
+.sidebar .main-nav span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Conflicting legacy sidebar query replaced by standard drawer settings */
 @media (max-width: 768px) {
+
+    /* Sur petit écran, sidebar est fermée par defaut */
     .sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100vh;
-        width: 250px;
-        transform: translateX(0);
-        /* Visible state (not collapsed) */
-        z-index: 1000;
+        transform: translateX(-100%) !important;
+        box-shadow: none !important;
+        width: 260px !important;
+        z-index: 101 !important;
         transition: transform 0.3s ease;
     }
 
-    .sidebar.collapsed {
-        transform: translateX(-100%);
-        /* Hidden state */
-        width: 0 !important;
-        min-width: 0 !important;
-        padding: 0 !important;
-        /* Keep width so it slides out nicely, just transform moves it */
+    /* Quand la nav est active, on affiche la sidebar */
+    .mobile-nav-active .sidebar {
+        transform: translateX(0) !important;
+        box-shadow: 2px 0 20px rgba(0, 0, 0, 0.5) !important;
     }
 
-    .main-content {
-        margin-left: 0 !important;
-        /* Always full width on mobile */
-        width: 100%;
-    }
-
-    /* Overlay background when sidebar is open on mobile */
-    .sidebar:not(.collapsed)::before {
-        content: '';
+    /* Le voile noir (uniquement sur mobile quand actif) */
+    .sidebar-overlay {
+        display: block;
         position: fixed;
         top: 0;
-        left: 250px;
+        left: 0;
         width: 100vw;
         height: 100vh;
         background: rgba(0, 0, 0, 0.5);
-        z-index: 999;
+        z-index: 100;
+        backdrop-filter: blur(2px);
+    }
+
+    /* Bouton de fermeture sur mobile : masqué par défaut */
+    .mobile-close-btn {
+        display: none;
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 5px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Le bouton apparaît seulement quand la sidebar est active (ouverte) */
+    .mobile-nav-active .mobile-close-btn {
+        display: flex !important;
+    }
+
+    /* Le contenu principal prend tout l'espace sur mobile (pas de marge) */
+    .main-content {
+        margin-left: 0 !important;
+        width: 100%;
+        padding: 15px;
     }
 }
 
@@ -561,5 +593,144 @@ body {
 @media (max-width: 768px) {
     .desktop-toggle {
         display: none;
+    }
+}
+
+/* ----------------------------------------------------------------- */
+/* --- Formulaires Projet (Create & Join) Responsives --- */
+/* ----------------------------------------------------------------- */
+
+.project-form-wrapper {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.project-form-card {
+    background: white;
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid #E5E7EB;
+}
+
+.project-form-header {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1F2937;
+    margin-bottom: 8px;
+}
+
+.project-form-subtitle {
+    color: #6B7280;
+    font-size: 0.95rem;
+    margin-bottom: 32px;
+}
+
+.project-form-group {
+    margin-bottom: 24px;
+}
+
+.project-form-label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1F2937;
+    margin-bottom: 8px;
+}
+
+.project-form-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.project-form-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(106, 27, 154, 0.1);
+}
+
+.project-form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 32px;
+}
+
+.project-btn-cancel {
+    padding: 12px 24px;
+    background-color: #F3F4F6;
+    color: #1F2937;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.project-btn-cancel:hover {
+    background-color: #E5E7EB;
+}
+
+.project-btn-submit {
+    padding: 12px 24px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.project-btn-submit:hover:not(:disabled) {
+    background-color: var(--primary-accent);
+}
+
+.project-btn-submit:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Responsivité Mobile des Formulaires Project */
+@media (max-width: 768px) {
+    .project-form-wrapper {
+        padding: 20px 15px;
+    }
+
+    .project-form-card {
+        padding: 20px 15px;
+    }
+
+    .project-form-header {
+        font-size: 1.5rem;
+    }
+
+    .project-form-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+        gap: 15px;
+    }
+
+    .project-form-actions a,
+    .project-form-actions button {
+        width: 100%;
+    }
+
+    .project-image-upload {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 15px;
     }
 }

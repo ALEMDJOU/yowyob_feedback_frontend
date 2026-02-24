@@ -149,10 +149,9 @@ export default function FeedPage() {
         <div style={{
             minHeight: '100vh',
             background: 'linear-gradient(135deg, #F9FAFB 0%, #F3F4FB 100%)',
-            padding: '40px 20px',
             fontFamily: "'Inter', system-ui, -apple-system, sans-serif"
         }}>
-            <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+            <div className="feed-content-wrapper" style={{ maxWidth: '900px', margin: '0 auto' }}>
                 <link rel="stylesheet" href="/feed.css" />
 
                 {/* --- HEADER --- */}

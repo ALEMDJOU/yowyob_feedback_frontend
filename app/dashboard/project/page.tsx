@@ -7,6 +7,7 @@ import { projectService, ProjectResponseDTO } from '@/lib/services/project.servi
 import { userService } from '@/lib/services';
 import { useToast } from '@/components/ToastProvider';
 import ConfirmationModal from '@/components/ConfirmationModal';
+import { motion } from 'framer-motion';
 
 interface Project {
     id: string;
@@ -211,113 +212,107 @@ export default function ProjectsPage() {
             <link rel="stylesheet" href="/projects.css" />
             <link rel="stylesheet" href="/feed.css" />
 
-            <header className="content-header" style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '24px',
-                paddingBottom: '16px',
-                borderBottom: '1px solid #E5E7EB',
-                flexWrap: 'wrap',
-                gap: '16px'
-            }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <i className="fas fa-layer-group" style={{ color: '#7C3AED', fontSize: '1.5rem' }}></i>
-                    <h1 style={{ color: '#1F2937', fontSize: '1.75rem', margin: 0, fontWeight: 700 }}>{t('sidebar.projects')}</h1>
-                </div>
-
-                <div style={{ position: 'relative' }} ref={menuRef}>
-                    <button
-                        onClick={() => setShowMenu(!showMenu)}
+            <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                style={{
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '40px', textAlign: 'center'
+                }}
+            >
+                <div style={{ position: 'relative', marginBottom: '25px' }}>
+                    <div
                         style={{
-                            backgroundColor: '#F3F4F6',
-                            border: '1.5px solid #000000',
-                            color: '#000000',
-                            width: '42px',
-                            height: '42px',
-                            borderRadius: '50%',
-                            fontSize: '1.5rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            padding: 0,
-                            cursor: 'pointer',
-                            transition: 'all 0.2s ease',
-                            fontWeight: 400,
-                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = '#E5E7EB';
-                            e.currentTarget.style.transform = 'scale(1.05)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = '#F3F4F6';
-                            e.currentTarget.style.transform = 'scale(1)';
+                            background: 'white', border: '3px solid #7C3AED', borderRadius: '50%', padding: '8px',
+                            boxShadow: '0 20px 40px rgba(124, 58, 237, 0.2)',
+                            width: '140px', height: '140px', overflow: 'hidden', display: 'flex',
+                            alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1
                         }}
                     >
-                        <span style={{ marginTop: '-2px' }}>+</span>
-                    </button>
-
-                    {showMenu && (
-                        <div style={{
-                            position: 'absolute',
-                            right: 0,
-                            top: '52px',
-                            backgroundColor: 'white',
-                            minWidth: '220px',
-                            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-                            borderRadius: '10px',
-                            padding: '8px 0',
-                            zIndex: 100,
-                            border: '1px solid #E5E7EB',
-                            animation: 'fadeIn 0.2s ease-out'
-                        }}>
-                            <Link
-                                href="/dashboard/project/create"
-                                style={{
-                                    textDecoration: 'none',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    padding: '12px 16px',
-                                    color: '#1F2937',
-                                    transition: 'background-color 0.2s',
-                                    cursor: 'pointer',
-                                    fontSize: '0.95rem',
-                                    fontWeight: 500
-                                }}
-                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F3F4F6'}
-                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                            >
-                                <i className="fas fa-plus-circle" style={{ marginRight: '12px', color: '#7C3AED', width: '16px', textAlign: 'center' }}></i>
-                                Créer un projet
-                            </Link>
-                            <Link
-                                href="/dashboard/project/join"
-                                style={{
-                                    textDecoration: 'none',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    padding: '12px 16px',
-                                    color: '#1F2937',
-                                    transition: 'background-color 0.2s',
-                                    cursor: 'pointer',
-                                    fontSize: '0.95rem',
-                                    fontWeight: 500
-                                }}
-                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F3F4F6'}
-                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                            >
-                                <i className="fas fa-user-plus" style={{ marginRight: '12px', color: '#7C3AED', width: '16px', textAlign: 'center' }}></i>
-                                Rejoindre un projet
-                            </Link>
-                        </div>
-                    )}
+                        <i className="fas fa-layer-group" style={{ fontSize: '4rem', color: '#7C3AED' }}></i>
+                    </div>
+                    <motion.div
+                        animate={{ scale: [1, 1.15, 1], opacity: [0.3, 0.1, 0.3] }}
+                        transition={{ duration: 3, repeat: Infinity }}
+                        style={{
+                            position: 'absolute', top: '-10px', left: '-10px', right: '-10px', bottom: '-10px',
+                            border: '2px solid #7C3AED', borderRadius: '50%', zIndex: 0
+                        }}
+                    />
                 </div>
-            </header>
+
+                <h1 style={{
+                    fontSize: '2.5rem',
+                    fontWeight: 900,
+                    color: '#111827',
+                    letterSpacing: '-0.025em',
+                    marginBottom: '20px'
+                }}>
+                    {t('sidebar.projects')}
+                </h1>
+
+                <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                    <Link
+                        href="/dashboard/project/create"
+                        style={{
+                            textDecoration: 'none',
+                            display: 'flex',
+                            alignItems: 'center',
+                            padding: '12px 24px',
+                            backgroundColor: '#7C3AED',
+                            color: 'white',
+                            borderRadius: '12px',
+                            fontWeight: 600,
+                            boxShadow: '0 4px 6px -1px rgba(124, 58, 237, 0.2), 0 2px 4px -1px rgba(124, 58, 237, 0.1)',
+                            transition: 'all 0.2s ease',
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                            e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(124, 58, 237, 0.3), 0 4px 6px -2px rgba(124, 58, 237, 0.15)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(124, 58, 237, 0.2), 0 2px 4px -1px rgba(124, 58, 237, 0.1)';
+                        }}
+                    >
+                        <i className="fas fa-plus-circle" style={{ marginRight: '8px', fontSize: '1.1rem' }}></i>
+                        Créer un projet
+                    </Link>
+
+                    <Link
+                        href="/dashboard/project/join"
+                        style={{
+                            textDecoration: 'none',
+                            display: 'flex',
+                            alignItems: 'center',
+                            padding: '12px 24px',
+                            backgroundColor: 'white',
+                            color: '#111827',
+                            border: '1px solid #E5E7EB',
+                            borderRadius: '12px',
+                            fontWeight: 600,
+                            boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                            transition: 'all 0.2s ease',
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = '#F9FAFB';
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                            e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = 'white';
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.boxShadow = '0 1px 2px 0 rgba(0, 0, 0, 0.05)';
+                        }}
+                    >
+                        <i className="fas fa-user-plus" style={{ marginRight: '8px', color: '#7C3AED', fontSize: '1.1rem' }}></i>
+                        Rejoindre un projet
+                    </Link>
+                </div>
+            </motion.div>
 
             <div className="project-list" style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))',
                 gap: '20px',
                 padding: '8px'
             }}>

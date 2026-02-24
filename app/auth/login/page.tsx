@@ -122,26 +122,15 @@ export default function LoginPage() {
               />
               <motion.button
                 type="button"
-                whileHover={{ scale: 1.2, color: '#4A148C' }}
-                whileTap={{ scale: 0.8 }}
+                whileHover={{ color: '#4A148C' }}
                 onClick={() => setShowPassword(!showPassword)}
                 style={{
                   position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)',
-                  background: 'none', border: 'none', cursor: 'pointer', color: '#6A1B9A', fontSize: '1.3em'
+                  background: 'none', border: 'none', cursor: 'pointer', color: '#6A1B9A', fontSize: '1.2em',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', width: '30px', height: '30px', padding: 0
                 }}
               >
-                {showPassword ? (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" stroke="#6A1B9A" strokeWidth="2" fill="none" />
-                    <circle cx="12" cy="12" r="3" fill="#6A1B9A" />
-                  </svg>
-                ) : (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" stroke="#6A1B9A" strokeWidth="2" fill="none" />
-                    <circle cx="12" cy="12" r="3" fill="#6A1B9A" />
-                    <path d="M4 4l16 16" stroke="#6A1B9A" strokeWidth="2" />
-                  </svg>
-                )}
+                <i className={showPassword ? "fas fa-eye-slash" : "fas fa-eye"} style={{ width: '100%', textAlign: 'center' }}></i>
               </motion.button>
             </div>
           </motion.div>
@@ -171,7 +160,7 @@ export default function LoginPage() {
           >
             {loading ? (
               <motion.span animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity }}>
-                🔄 Connexion en cours...
+                <i className="fas fa-spinner fa-spin" style={{ marginRight: '8px' }}></i> Connexion en cours...
               </motion.span>
             ) : (
               t('auth.loginButton')
